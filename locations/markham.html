@@ -22,7 +22,7 @@
     "description": "Professional construction and renovation contractor serving Markham, ON",
     "url": "https://amaximumconstruction.com/locations/markham/",
     "telephone": "+1-647-XXX-XXXX",
-    "email": "info@amaximumconstruction.com",
+    "email": "amaximumconstructioncorp@gmail.com",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Markham, ON",
@@ -139,20 +139,55 @@
     
     .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
     
-    header {
-      background: var(--surface);
-      box-shadow: var(--shadow-soft);
-      padding: 16px 0;
+    .topbar-wrap {
       position: sticky;
       top: 0;
       z-index: 100;
+      padding-top: 14px;
     }
 
-    header nav { display: flex; gap: 24px; padding: 16px 32px; }
-    header a { font-weight: 600; color: #3a445a; opacity: 0.86; transition: 0.2s; }
-    header a:hover { opacity: 1; color: var(--primary); }
-    header .logo { display: inline-block; }
-    header .logo img { height: 60px; }
+    .topbar {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid #e8edf5;
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .logo { display: inline-flex; padding: 8px; border-radius: 14px; }
+    .logo img { height: 72px; width: auto; }
+
+    .nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+      font-weight: 600;
+      color: #3a445a;
+    }
+
+    .nav a { opacity: 0.86; text-decoration: none; }
+    .nav a:hover { opacity: 1; color: var(--primary); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-btn {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
     main { padding: 40px 32px; }
     h1 { font-size: 42px; margin: 0 0 16px; }
@@ -189,7 +224,21 @@
     }
 
     @media (max-width: 768px) {
-      header nav { padding: 12px 16px; gap: 8px; font-size: 14px; }
+      .menu-btn { display: flex; align-items: center; justify-content: center; }
+      .nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 14px;
+        box-shadow: var(--shadow-soft);
+        padding: 10px;
+        flex-direction: column;
+        min-width: 170px;
+      }
+      .nav.open { display: flex; }
       h1 { font-size: 28px; }
       main { padding: 24px 16px; }
       .grid { grid-template-columns: 1fr; }
@@ -197,18 +246,23 @@
   </style>
 </head>
 <body>
-  <header role="banner">
-    <nav class="shell" role="navigation">
-      <a class="logo" href="/" aria-label="aMaximum Construction home">
-        <img src="/amax-construction-site/img/logo.png" alt="aMaximum Construction">
+  <div class="topbar-wrap shell">
+    <header class="topbar" role="banner">
+      <a class="logo" href="/amax-construction-site/" aria-label="aMaximum home">
+        <img src="/amax-construction-site/img/logo.png" alt="aMaximum Construction logo">
       </a>
-      <a href="/">Home</a>
-      <a href="/#services">Services</a>
-      <a href="/amax-construction-site/locations/">Locations</a>
-      <a href="/amax-construction-site/blog/">Blog</a>
-      <a href="/#contact">Contact</a>
-    </nav>
-  </header>
+      <div class="topbar-right">
+        <nav class="nav" id="siteNav">
+          <a href="/amax-construction-site/">Home</a>
+          <a href="/amax-construction-site/#services">Services</a>
+          <a href="/amax-construction-site/locations/">Locations</a>
+          <a href="/amax-construction-site/blog/">Blog</a>
+          <a href="/amax-construction-site/#contact">Contact</a>
+        </nav>
+        <button class="menu-btn" id="menuBtn">☰</button>
+      </div>
+    </header>
+  </div>
 
   <main>
     <div class="shell">
@@ -320,7 +374,7 @@
       <section class="cta-section">
         <h2>Ready to Start Your Markham Project?</h2>
         <p style="margin: 16px 0; font-size: 18px;">Get a free, no-obligation quote from our experienced contractors.</p>
-        <a href="mailto:info@amaximumconstruction.com" class="btn">Get Free Quote</a>
+        <a href="/amax-construction-site/#contact" class="btn">Get Free Quote</a>
       </section>
     </div>
   </main>
@@ -332,6 +386,14 @@
   </footer>
 
   <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const siteNav = document.getElementById('siteNav');
+    if (menuBtn && siteNav) {
+      menuBtn.addEventListener('click', () => {
+        siteNav.classList.toggle('open');
+      });
+    }
+
     document.querySelectorAll('.faq-question').forEach(q => {
       q.addEventListener('click', () => {
         q.parentElement.classList.toggle('active');
