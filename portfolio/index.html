@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View our construction and renovation portfolio. See completed projects including decks, bathrooms, basements, fencing, and more across the GTA.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Portfolio | aMaximum Construction">
+  <meta property="og:description" content="Completed construction and renovation projects by aMaximum Construction in Toronto and the GTA.">
+  <meta property="og:type" content="website">
+  
+  <link rel="canonical" href="https://amaximumconstruction.com/portfolio/">
+  <title>Construction Portfolio | aMaximum Construction</title>
+
+  <!-- BreadcrumbList Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://amaximumconstruction.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Portfolio",
+        "item": "https://amaximumconstruction.com/portfolio/"
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    :root {
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --text: #121826;
+      --muted: #6b7280;
+      --primary: #ff6b35;
+      --line: #e6eaf0;
+      --radius-lg: 16px;
+      --shadow-soft: 0 12px 40px rgba(19, 33, 68, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; color: var(--text); }
+    body { background: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    
+    header {
+      background: var(--surface);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header nav { display: flex; gap: 24px; padding: 16px 32px; }
+    header a { font-weight: 600; color: #3a445a; opacity: 0.86; transition: 0.2s; }
+    header a:hover { opacity: 1; color: var(--primary); }
+    header .logo { display: inline-block; }
+    header .logo img { height: 60px; }
+
+    main { padding: 40px 32px; }
+    h1 { font-size: 42px; margin: 0 0 16px; }
+    h2 { font-size: 28px; margin: 40px 0 16px; }
+    p { line-height: 1.7; color: var(--muted); margin-bottom: 16px; }
+    
+    .hero { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 40px; margin-bottom: 40px; box-shadow: var(--shadow-soft); }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 24px 0; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px; transition: 0.2s; }
+    .card:hover { box-shadow: 0 8px 24px rgba(19, 33, 68, 0.12); transform: translateY(-2px); }
+    .card h3 { margin: 0 0 12px; font-size: 20px; color: var(--primary); }
+    .card p { margin: 0 0 12px; }
+    .card .meta { color: var(--muted); font-size: 14px; }
+
+    .placeholder { background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); border-radius: var(--radius-lg); height: 180px; display: flex; align-items: center; justify-content: center; color: var(--muted); margin-bottom: 16px; }
+
+    .cta-section { background: linear-gradient(135deg, var(--primary) 0%, #ff8855 100%); color: white; border-radius: var(--radius-lg); padding: 40px; text-align: center; margin: 40px 0; }
+    .cta-section h2 { color: white; margin-top: 0; }
+    .btn { display: inline-block; background: white; color: var(--primary); padding: 12px 24px; border-radius: 8px; font-weight: 600; transition: 0.2s; margin-top: 16px; }
+    .btn:hover { transform: scale(1.05); }
+
+    footer {
+      background: #1a252f;
+      color: white;
+      padding: 32px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      header nav { padding: 12px 16px; gap: 8px; font-size: 14px; }
+      h1 { font-size: 28px; }
+      main { padding: 24px 16px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <nav class="shell" role="navigation">
+      <a class="logo" href="/" aria-label="aMaximum Construction home">
+        <img src="/amax-construction-site/img/logo.png" alt="aMaximum Construction">
+      </a>
+      <a href="/">Home</a>
+      <a href="/#services">Services</a>
+      <a href="/amax-construction-site/locations/">Locations</a>
+      <a href="/amax-construction-site/blog/">Blog</a>
+      <a href="/amax-construction-site/portfolio/">Portfolio</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="shell">
+      <!-- Hero -->
+      <section class="hero">
+        <h1>Our Construction Portfolio</h1>
+        <p>Browse completed projects from residential renovations to commercial construction throughout the Greater Toronto Area.</p>
+      </section>
+
+      <!-- Featured Projects -->
+      <section>
+        <h2>Featured Projects</h2>
+        <p>Recent completed work showcasing our craftsmanship and attention to detail:</p>
+        
+        <div class="grid">
+          <!-- Project 1: Deck Build -->
+          <div class="card">
+            <div class="placeholder">🛠️ Deck Project</div>
+            <h3>Custom Weather-Resistant Deck</h3>
+            <div class="meta">Markham, ON | Completed 2025</div>
+            <p>Complete deck renovation with modern composite materials, built-in seating, and integrated lighting.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+
+          <!-- Project 2: Bathroom -->
+          <div class="card">
+            <div class="placeholder">🚿 Bathroom Project</div>
+            <h3>Luxury Bathroom Renovation</h3>
+            <div class="meta">Toronto, ON | Completed 2025</div>
+            <p>Complete master bathroom upgrade with heated floors, rainfall shower, and contemporary fixtures.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+
+          <!-- Project 3: Basement -->
+          <div class="card">
+            <div class="placeholder">🏠 Basement Project</div>
+            <h3>Finished Basement Recreation Room</h3>
+            <div class="meta">Richmond Hill, ON | Completed 2025</div>
+            <p>Basement finishing with family room, media setup, and additional bedroom space.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+
+          <!-- Project 4: Fence -->
+          <div class="card">
+            <div class="placeholder">🪵 Fence Project</div>
+            <h3>Privacy Fence Installation</h3>
+            <div class="meta">Vaughan, ON | Completed 2025</div>
+            <p>Cedar privacy fence with decorative caps and professional installation across 200 linear feet.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+
+          <!-- Project 5: Plumbing -->
+          <div class="card">
+            <div class="placeholder">🚽 Plumbing Project</div>
+            <h3>Complete Plumbing System Upgrade</h3>
+            <div class="meta">Newmarket, ON | Completed 2025</div>
+            <p>Full home plumbing system replacement with updated code compliance and improved water pressure.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+
+          <!-- Project 6: Roofing -->
+          <div class="card">
+            <div class="placeholder">🏘️ Roofing Project</div>
+            <h3>Residential Roof Replacement</h3>
+            <div class="meta">Toronto, ON | Completed 2025</div>
+            <p>Complete roof replacement with premium shingles, improved ventilation, and extended warranty.</p>
+            <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Categories -->
+      <section>
+        <h2>Browse by Service</h2>
+        <p>Filter projects by the type of work:</p>
+        
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🛠️ Deck Projects</h3>
+            <p>View all deck building and renovation work</p>
+          </a>
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🚿 Bathroom Work</h3>
+            <p>Browse bathroom renovation projects</p>
+          </a>
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🏠 Basement Finishing</h3>
+            <p>View basement renovation projects</p>
+          </a>
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🪵 Fencing</h3>
+            <p>See fence installation work</p>
+          </a>
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🚽 Plumbing</h3>
+            <p>View plumbing system upgrades</p>
+          </a>
+          <a href="#" class="card" style="text-align: center; cursor: pointer;">
+            <h3>🏘️ Roofing</h3>
+            <p>Browse roofing projects</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-section">
+        <h2>Ready to Start Your Project?</h2>
+        <p style="margin: 16px 0; font-size: 18px;">Let us help you bring your renovation vision to life.</p>
+        <a href="mailto:info@amaximumconstruction.com" class="btn">Get Free Consultation</a>
+      </section>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="shell">
+      <p>&copy; 2026 aMaximum Construction. Licensed and Insured. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
