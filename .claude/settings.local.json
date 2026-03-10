@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python update_all_pages.py)",
+      "Bash(python -c \":*)",
+      "Bash(start c:/Users/maxim/Desktop/amax-Construction-site/index.html)",
+      "Bash(start http://localhost:8080)",
+      "Bash(python -m http.server 8080)"
+    ]
+  }
+}
