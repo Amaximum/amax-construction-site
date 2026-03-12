@@ -228,6 +228,8 @@
 
     .island {
       margin-top: 18px;
+      width: min(var(--max), calc(100% - 32px));
+      margin-inline: auto;
       background:
         radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 107, 53, 0.09), transparent 46%),
         radial-gradient(520px circle at calc(var(--mx, 50%) - 18%) calc(var(--my, 50%) + 10%), rgba(79, 140, 255, 0.08), transparent 54%),
