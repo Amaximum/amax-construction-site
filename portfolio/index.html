@@ -11,6 +11,7 @@
   
   <link rel="canonical" href="https://amaximumconstruction.com/portfolio/">
   <title>Construction Portfolio | aMaximum Construction</title>
+  <script src="https://static.elfsight.com/platform/platform.js" async></script>
   <link rel="stylesheet" href="/css/styles.css">
 <!-- BreadcrumbList Schema -->
   <script type="application/ld+json">
@@ -32,25 +33,39 @@
       }
     ]
   }
-  </script>
+  
+  // Reveal on scroll
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((node, i) => {
+    node.style.transitionDelay = Math.min(i * 40, 320) + 'ms';
+    revealObserver.observe(node);
+  });
+</script>
 
 </head>
 <body>
 <div class="topbar-wrap shell">
   <header class="topbar" role="banner">
-    <a class="logo" href="/amax-construction-site/" aria-label="aMaximum Construction home">
+    <a class="logo" href="/" aria-label="aMaximum Construction home">
       <img src="/img/logo.png" alt="aMaximum Construction">
     </a>
     <div class="topbar-right">
       <nav class="nav" id="siteNav" aria-label="Main navigation">
-        <a href="/amax-construction-site/">Home</a>
-        <a href="/amax-construction-site/#services">Services</a>
+        <a href="/">Home</a>
+        <a href="/#services">Services</a>
         <a href="/locations/">Locations</a>
         <a href="/blog/">Blog</a>
         <a href="/portfolio/">Portfolio</a>
-        <a href="/amax-construction-site/#contact">Contact</a>
+        <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/amax-construction-site/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -115,9 +130,9 @@
             <a href="#" style="color: var(--primary); font-weight: 600;">View Project →</a>
           </div>
 
-          <!-- Project 6: Roofing -->
+          <!-- Project 6: Canopy -->
           <div class="card">
-            <div class="placeholder">🏘️ Roofing Project</div>
+            <div class="placeholder">⛺ Canopy Project</div>
             <h3>Residential Roof Replacement</h3>
             <div class="meta">Toronto, ON | Completed 2025</div>
             <p>Complete roof replacement with premium shingles, improved ventilation, and extended warranty.</p>
@@ -153,7 +168,7 @@
             <p>View plumbing system upgrades</p>
           </a>
           <a href="#" class="card" style="text-align: center; cursor: pointer;">
-            <h3>🏘️ Roofing</h3>
+            <h3>⛺ Canopy Installation</h3>
             <p>Browse roofing projects</p>
           </a>
         </div>
@@ -163,28 +178,82 @@
       <section class="cta-section">
         <h2>Ready to Start Your Project?</h2>
         <p style="margin: 16px 0; font-size: 18px;">Let us help you bring your renovation vision to life.</p>
-        <a href="/amax-construction-site/#contact" class="btn">Get Free Consultation</a>
+        <a href="/#contact" class="btn">Get Free Consultation</a>
       </section>
     </div>
   </main>
 
-  <footer class="site-footer">
+  <section class="island reveal" id="faq" aria-label="Frequently asked questions">
+  <span class="shine" aria-hidden="true"></span>
+  <div class="section-head">
+    <h2>Frequently Asked Questions</h2>
+    <p>Common questions about our services and process.</p>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>What types of projects has aMaximum Construction completed?</summary>
+      <p>Our portfolio includes deck building, fence installation, bathroom renovations, basement renovations, general contracting, carpentry, interlocking, landscaping, canopy installation, and handyman projects across Toronto and the GTA.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Where can I see photos of completed projects?</summary>
+      <p>Browse our portfolio on this page to see photos of completed construction and renovation projects across Toronto and the GTA. For more examples or to discuss a specific project type, contact us at amaximumconstructioncorp@gmail.com.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do you take on custom and unique projects?</summary>
+      <p>Yes. Every project we take on in Toronto and the GTA is unique to the client's property, budget, and goals. We've completed projects ranging from small handyman visits to full multi-trade home renovations. Contact us to discuss your specific vision.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I visit a recently completed project site?</summary>
+      <p>With homeowner permission, we can arrange site visits to recently completed projects similar to yours. This is the best way to evaluate the quality of our work firsthand. Ask us when requesting a quote.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How long has aMaximum Construction been building in Toronto?</summary>
+      <p>aMaximum Construction has been serving Toronto and GTA homeowners since 2021. Our team brings decades of combined construction experience to every project — from small repairs to complete renovations.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do you do both residential and commercial projects?</summary>
+      <p>Our primary focus is residential construction and renovation across Toronto and the GTA. We also take on light commercial projects — storefronts, office renovations, and commercial exterior work.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is your approach to project quality control?</summary>
+      <p>Every project includes a pre-start scope review, milestone inspections by our site supervisor, and a final walkthrough with the homeowner before closing out the job. We don't consider a project complete until you're satisfied.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I get a reference from a past client?</summary>
+      <p>Yes. We provide references from past clients on request. We're proud of our work and happy to connect you with homeowners in Toronto and the GTA who can speak to their experience with aMaximum Construction.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do you work with interior designers and architects?</summary>
+      <p>Yes. We work with interior designers, architects, and design-build teams across the GTA. We're experienced in executing design specifications and coordinating with other professionals on larger projects.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What warranty do you provide on completed projects?</summary>
+      <p>All completed projects come with a written workmanship warranty. Structural work carries a longer warranty period. Manufacturer warranties on materials are passed through to the homeowner. Full warranty terms are specified in your contract.</p>
+    </details>
+  </div>
+</section>
+
+<section class="shell" style="margin:40px auto;">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
+</section>
+<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>
+<footer class="site-footer">
   <div class="shell">
     <div class="footer-cols">
       <div class="footer-col footer-brand">
-        <a href="/amax-construction-site/" class="footer-logo-link"><img src="/img/logo.png" alt="aMaximum Construction" class="footer-logo"></a>
+        <a href="/" class="footer-logo-link"><img src="/img/logo.png" alt="aMaximum Construction" class="footer-logo"></a>
         <p>Licensed and insured construction &amp; renovation services in Toronto &amp; GTA.</p>
         <a href="mailto:amaximumconstructioncorp@gmail.com" class="footer-email">amaximumconstructioncorp@gmail.com</a>
       </div>
       <div class="footer-col">
         <h4>Services</h4>
         <ul>
-          <li><a href="/amax-construction-site/#services">Deck Building</a></li>
-          <li><a href="/amax-construction-site/#services">Fence Installation</a></li>
-          <li><a href="/amax-construction-site/#services">Bathroom Renovation</a></li>
-          <li><a href="/amax-construction-site/#services">Basement Renovation</a></li>
-          <li><a href="/amax-construction-site/#services">Plumbing</a></li>
-          <li><a href="/amax-construction-site/#services">Roofing &amp; More</a></li>
+          <li><a href="/deck-builder/">Deck Building</a></li>
+          <li><a href="/fence-contractor-in-toronto/">Fence Installation</a></li>
+          <li><a href="/bathroom-renovation/">Bathroom Renovation</a></li>
+          <li><a href="/basement-renovation-service-in-toronto/">Basement Renovation</a></li>
+          <li><a href="/handyman-service-in-toronto/">Handyman</a></li>
+          <li><a href="/general-contractor-in-toronto/">General Contractor</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -201,11 +270,11 @@
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="/amax-construction-site/">Home</a></li>
+          <li><a href="/">Home</a></li>
           <li><a href="/portfolio/">Portfolio</a></li>
           <li><a href="/blog/">Blog</a></li>
           <li><a href="/#faq">FAQ</a></li>
-          <li><a href="/amax-construction-site/#contact">Contact</a></li>
+          <li><a href="/#contact">Contact</a></li>
         </ul>
       </div>
     </div>

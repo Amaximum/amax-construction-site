@@ -9,6 +9,7 @@
   <meta property="og:url" content="https://amaximumconstruction.com/deck-builder-toronto/">
   <link rel="canonical" href="https://amaximumconstruction.com/deck-builder-toronto/">
   <title>Professional Deck Builder Toronto | aMaximum Construction</title>
+  <script src="https://static.elfsight.com/platform/platform.js" async></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -26,19 +27,19 @@
 <body>
 <div class="topbar-wrap shell">
   <header class="topbar" role="banner">
-    <a class="logo" href="/amax-construction-site/" aria-label="aMaximum Construction home">
+    <a class="logo" href="/" aria-label="aMaximum Construction home">
       <img src="/img/logo.png" alt="aMaximum Construction">
     </a>
     <div class="topbar-right">
       <nav class="nav" id="siteNav" aria-label="Main navigation">
-        <a href="/amax-construction-site/">Home</a>
-        <a href="/amax-construction-site/#services">Services</a>
+        <a href="/">Home</a>
+        <a href="/#services">Services</a>
         <a href="/locations/">Locations</a>
         <a href="/blog/">Blog</a>
         <a href="/portfolio/">Portfolio</a>
-        <a href="/amax-construction-site/#contact">Contact</a>
+        <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/amax-construction-site/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -131,24 +132,92 @@ if (menuBtn && siteNav) {
     siteNav.classList.toggle('open');
   });
 }
-  </script>
+  
+  // Reveal on scroll
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((node, i) => {
+    node.style.transitionDelay = Math.min(i * 40, 320) + 'ms';
+    revealObserver.observe(node);
+  });
+</script>
+<section class="island reveal" id="faq" aria-label="Frequently asked questions">
+  <span class="shine" aria-hidden="true"></span>
+  <div class="section-head">
+    <h2>Frequently Asked Questions</h2>
+    <p>Common questions about Deck services in Toronto.</p>
+  </div>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>How much does it cost to build a deck in Toronto?</summary>
+      <p>Deck building costs in Toronto typically range from $8,000 to $35,000+, depending on size, materials, and design complexity. Pressure-treated wood is the most affordable option, while composite decking costs more upfront but requires less maintenance. We provide detailed written quotes so you know exactly what you're paying for.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do I need a building permit for a deck in Toronto?</summary>
+      <p>In most municipalities including Toronto, a building permit is required for decks higher than 24 inches (60 cm) from the ground, or attached to the house. Our team handles the permit process and ensures your deck is code-compliant from start to finish.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is the best decking material for Toronto's climate?</summary>
+      <p>For Toronto's freeze-thaw climate, composite decking (Trex, TimberTech) performs best — it won't warp, crack, or splinter. Pressure-treated cedar is a great natural wood option with good rot resistance. We'll recommend the right material based on your budget, usage, and aesthetic goals.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How long does it take to build a deck?</summary>
+      <p>A standard deck in Toronto takes 1–2 weeks from permit approval to final inspection. Larger, multi-level decks or those with custom railings and stairs may take 2–4 weeks. We provide a clear timeline before work begins.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What is the difference between composite and pressure-treated wood decking?</summary>
+      <p>Composite decking is made from wood fibres and recycled plastic — it's low-maintenance, doesn't splinter, and carries long warranties (25+ years). Pressure-treated wood costs less upfront but requires sealing, staining, and regular maintenance. Both are strong choices depending on your priorities.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How long does a deck last?</summary>
+      <p>A well-built deck in Toronto can last 15–30+ years depending on materials and maintenance. Composite decks with proper installation typically last 25–30 years. Pressure-treated wood lasts 15–20 years with regular maintenance. Our workmanship warranty covers the structural build.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can you build a deck attached to the house?</summary>
+      <p>Yes. Attached decks are ledger-mounted to the house structure using flashing and hardware designed for Toronto's climate conditions. Proper ledger attachment is critical — it must meet Ontario Building Code requirements to ensure safety and prevent moisture infiltration.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What railing options are available for my deck?</summary>
+      <p>We offer aluminum, glass, composite, cable, and wood railing systems. Glass and cable railings maximize views, aluminum is low-maintenance, and wood matches traditional deck aesthetics. All railings are installed to OBC height and load requirements.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Do you handle deck repairs and replacements?</summary>
+      <p>Yes. We assess existing decks in Toronto for structural integrity, rotted boards, loose connections, and safety issues. We can repair specific sections or do a full replacement — whichever makes more financial sense for your situation.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How do I maintain my new deck?</summary>
+      <p>Composite decks need only occasional cleaning with soap and water. Wood decks should be cleaned, inspected, and re-sealed or stained every 2–3 years. Keep leaves and debris off the surface, ensure drainage isn't blocked, and check fasteners annually.</p>
+    </details>
+  </div>
+</section>
+
+<section class="shell" style="margin:40px auto;">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
+</section>
+<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>
 <footer class="site-footer">
   <div class="shell">
     <div class="footer-cols">
       <div class="footer-col footer-brand">
-        <a href="/amax-construction-site/" class="footer-logo-link"><img src="/img/logo.png" alt="aMaximum Construction" class="footer-logo"></a>
+        <a href="/" class="footer-logo-link"><img src="/img/logo.png" alt="aMaximum Construction" class="footer-logo"></a>
         <p>Licensed and insured construction &amp; renovation services in Toronto &amp; GTA.</p>
         <a href="mailto:amaximumconstructioncorp@gmail.com" class="footer-email">amaximumconstructioncorp@gmail.com</a>
       </div>
       <div class="footer-col">
         <h4>Services</h4>
         <ul>
-          <li><a href="/amax-construction-site/#services">Deck Building</a></li>
-          <li><a href="/amax-construction-site/#services">Fence Installation</a></li>
-          <li><a href="/amax-construction-site/#services">Bathroom Renovation</a></li>
-          <li><a href="/amax-construction-site/#services">Basement Renovation</a></li>
-          <li><a href="/amax-construction-site/#services">Plumbing</a></li>
-          <li><a href="/amax-construction-site/#services">Roofing &amp; More</a></li>
+          <li><a href="/deck-builder/">Deck Building</a></li>
+          <li><a href="/fence-contractor-in-toronto/">Fence Installation</a></li>
+          <li><a href="/bathroom-renovation/">Bathroom Renovation</a></li>
+          <li><a href="/basement-renovation-service-in-toronto/">Basement Renovation</a></li>
+          <li><a href="/handyman-service-in-toronto/">Handyman</a></li>
+          <li><a href="/general-contractor-in-toronto/">General Contractor</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -165,11 +234,11 @@ if (menuBtn && siteNav) {
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="/amax-construction-site/">Home</a></li>
+          <li><a href="/">Home</a></li>
           <li><a href="/portfolio/">Portfolio</a></li>
           <li><a href="/blog/">Blog</a></li>
           <li><a href="/#faq">FAQ</a></li>
-          <li><a href="/amax-construction-site/#contact">Contact</a></li>
+          <li><a href="/#contact">Contact</a></li>
         </ul>
       </div>
     </div>

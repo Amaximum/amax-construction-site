@@ -9,6 +9,16 @@ ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
+ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" async></script>'
+
+# Full reviews carousel (shown inline on every page)
+REVIEWS_SECTION = """\
+<section class="shell" style="margin:40px auto;">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
+</section>"""
+
+# Floating badge (bottom-right corner, appears on every page)
+REVIEWS_BADGE = '<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>'
 
 STANDARD_NAV = """\
 <div class="topbar-wrap shell">
@@ -43,12 +53,12 @@ STANDARD_FOOTER = """\
       <div class="footer-col">
         <h4>Services</h4>
         <ul>
-          <li><a href="/#services">Deck Building</a></li>
-          <li><a href="/#services">Fence Installation</a></li>
-          <li><a href="/#services">Bathroom Renovation</a></li>
-          <li><a href="/#services">Basement Renovation</a></li>
-          <li><a href="/#services">Plumbing</a></li>
-          <li><a href="/#services">Roofing &amp; More</a></li>
+          <li><a href="/deck-builder/">Deck Building</a></li>
+          <li><a href="/fence-contractor-in-toronto/">Fence Installation</a></li>
+          <li><a href="/bathroom-renovation/">Bathroom Renovation</a></li>
+          <li><a href="/basement-renovation-service-in-toronto/">Basement Renovation</a></li>
+          <li><a href="/handyman-service-in-toronto/">Handyman</a></li>
+          <li><a href="/general-contractor-in-toronto/">General Contractor</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -113,9 +123,11 @@ def process(filepath):
     # 2. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
 
-    # 3. Insert correct CSS link after </title>
+    # 3. Insert correct CSS link + Elfsight script after </title>
     if CSS_LINK not in html:
         html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
+    if ELFSIGHT_SCRIPT not in html:
+        html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -126,10 +138,14 @@ def process(filepath):
     elif RE_HEADER_BANNER.search(html):
         html = RE_HEADER_BANNER.sub(STANDARD_NAV, html, count=1)
 
-    # 6. Replace footer
-    if 'class="site-footer"' not in html:
-        if RE_FOOTER.search(html):
-            html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
+    # 6. Replace footer (always update to get correct service links)
+    if RE_FOOTER.search(html):
+        html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
+
+    # 6b. Inject reviews section + badge before footer (remove old ones first)
+    html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
+    html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
+    html = html.replace('<footer class="site-footer">', REVIEWS_SECTION + '\n' + REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
 
     # 7. Rename hero class (not on main index.html)
     if not is_main_index:
