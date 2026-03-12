@@ -172,6 +172,50 @@
     .nav a { opacity: 0.86; }
     .nav a:hover { opacity: 1; color: var(--primary); }
 
+    /* ── Services dropdown ──────────────────────────── */
+    .nav-has-dropdown {
+      position: relative;
+    }
+    .nav-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+    }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #e8edf5;
+      border-radius: 14px;
+      box-shadow: 0 16px 48px rgba(19,33,68,0.13);
+      padding: 8px;
+      min-width: 210px;
+      flex-direction: column;
+      gap: 1px;
+      z-index: 200;
+    }
+    .nav-has-dropdown:hover .nav-dropdown-menu {
+      display: flex;
+    }
+    .nav-dropdown-menu a {
+      padding: 7px 12px !important;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.82;
+      white-space: nowrap;
+      color: #3a445a;
+    }
+    .nav-dropdown-menu a:hover {
+      background: #f4f7fc !important;
+      opacity: 1;
+      color: var(--primary) !important;
+    }
+
     .menu-btn {
       display: none;
       width: 40px;
@@ -826,6 +870,29 @@
       .nav a { padding: 8px 10px; border-radius: 8px; }
       .nav a:hover { background: #f8fafc; }
       .topbar { position: relative; }
+      /* Dropdown mobile: show inline */
+      .nav-has-dropdown { width: 100%; }
+      .nav-has-dropdown .nav-dropdown-toggle { width: 100%; }
+      .nav-dropdown-menu {
+        display: flex;
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-left: 2px solid #e8edf5;
+        border-radius: 0;
+        padding: 2px 0 2px 8px;
+        background: transparent;
+        min-width: unset;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .nav-has-dropdown:hover .nav-dropdown-menu,
+      .nav-has-dropdown.open .nav-dropdown-menu {
+        max-height: 600px;
+      }
+      .nav-dropdown-menu a { font-size: 13px; padding: 5px 8px !important; }
       .split { grid-template-columns: 1fr; }
       .card {
         flex-basis: calc(50% - 14px);
