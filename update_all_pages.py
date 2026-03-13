@@ -9,7 +9,9 @@ ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
-ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" async></script>'
+ELFSIGHT_WIDGET_BLOCK = """<!-- Elfsight Google Reviews | Untitled Google Reviews -->
+<script src=\"https://elfsightcdn.com/platform.js\" async></script>
+<div class=\"elfsight-app-b029cad3-6f49-425c-9793-f556870797bb\" data-elfsight-app-lazy></div>"""
 GOOGLE_PLACES_KEY = 'AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc'
 PLACES_SCRIPT = f'<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key={GOOGLE_PLACES_KEY}&libraries=places&callback=initAddressAutocomplete" async defer></script>'
 AUTOCOMPLETE_INLINE = """<script>
@@ -31,11 +33,7 @@ function initAddressAutocomplete() {
 }
 </script>"""
 
-# Floating badge (bottom-right corner)
-REVIEWS_BADGE = """\
-<div class="elfsight-review-badge" id="reviews-badge" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:164px;pointer-events:auto;">
-  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>
-</div>"""
+# Legacy floating badge (remove if present)
 
 STANDARD_NAV = """\
 <div class="topbar-wrap shell">
@@ -110,10 +108,23 @@ STANDARD_FOOTER = """\
 # Regexes
 RE_STYLE_BLOCK = re.compile(r'[ \t]*<style[^>]*>[\s\S]*?</style>\s*\n?', re.DOTALL)
 RE_CSS_LINK    = re.compile(r'[ \t]*<link\s+rel="stylesheet"\s+href="[^"]*styles\.css"[^>]*>\s*\n?')
-RE_ELFSIGHT_SCRIPT = re.compile(r'[ \t]*<script\s+src="https://static\.elfsight\.com/platform/platform\.js"\s+async></script>\s*\n?')
-RE_REVIEWS_BADGE_WRAPPER = re.compile(
+RE_ELFSIGHT_ANY_SCRIPT = re.compile(
+  r'[ \t]*<script\s+src="https://(?:static\.elfsight\.com/platform/platform\.js|elfsightcdn\.com/platform\.js)"\s+async></script>\s*\n?',
+  re.IGNORECASE,
+)
+RE_ELFSIGHT_WIDGET_BLOCK = re.compile(
+  r'[ \t]*<!--\s*Elfsight Google Reviews \| Untitled Google Reviews\s*-->\s*\n?'
+  r'[ \t]*<script\s+src="https://elfsightcdn\.com/platform\.js"\s+async></script>\s*\n?'
+  r'[ \t]*<div\s+class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"[^>]*></div>\s*\n?',
+  re.IGNORECASE,
+)
+RE_ELFSIGHT_LEGACY_BADGE = re.compile(
   r'[ \t]*<div\s+class="elfsight-review-badge"[^>]*>[\s\S]*?</div>\s*</div>\s*\n?',
-  re.DOTALL,
+  re.DOTALL | re.IGNORECASE,
+)
+RE_ELFSIGHT_LEGACY_APP = re.compile(
+  r'[ \t]*<div\s+class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"[^>]*></div>\s*\n?',
+  re.IGNORECASE,
 )
 RE_TOPBAR      = re.compile(r'<div class="topbar-wrap shell">[\s\S]*?</header>\s*\n?[ \t]*</div>', re.DOTALL)
 RE_HEADER_BANNER = re.compile(r'[ \t]*<header[^>]*role="banner"[^>]*>[\s\S]*?</header>', re.DOTALL)
@@ -148,14 +159,12 @@ def process(filepath):
     # 3. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
 
-    # 4. Insert correct CSS link (always) and Elfsight script (needed for reviews badge)
+    # 4. Insert correct CSS link (always)
     if CSS_LINK not in html:
       html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
 
-    # Ensure only one Elfsight loader script exists (then add it back)
-    html = RE_ELFSIGHT_SCRIPT.sub('', html)
-    if ELFSIGHT_SCRIPT not in html:
-      html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
+    # Always strip Elfsight scripts; we'll re-add only on pages without forms
+    html = RE_ELFSIGHT_ANY_SCRIPT.sub('', html)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -170,14 +179,18 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Remove Elfsight blocks, then add back only where intended (badge only)
-    html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
-    html = RE_REVIEWS_BADGE_WRAPPER.sub('', html)
-    html = re.sub(r'[ \t]*<div\s+class="elfsight-app-3935cedc-[^"]+"[^>]*></div>\s*\n?', '', html)
+    # 6b. Elfsight Google Reviews widget: everywhere EXCEPT pages with forms
+    # Remove any legacy/new blocks first
+    html = RE_ELFSIGHT_WIDGET_BLOCK.sub('', html)
+    html = RE_ELFSIGHT_LEGACY_BADGE.sub('', html)
+    html = RE_ELFSIGHT_LEGACY_APP.sub('', html)
 
-    should_show_badge = (not has_form) or is_main_index
-    if should_show_badge and '<footer class="site-footer">' in html:
-      html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
+    should_show_widget = not has_form
+    if should_show_widget:
+      if '<footer class="site-footer">' in html:
+        html = html.replace('<footer class="site-footer">', ELFSIGHT_WIDGET_BLOCK + '\n\n<footer class="site-footer">', 1)
+      elif '</body>' in html:
+        html = html.replace('</body>', ELFSIGHT_WIDGET_BLOCK + '\n</body>', 1)
 
     # 6c. Google Places autocomplete only on pages with forms
     if has_form:
@@ -208,12 +221,12 @@ def process(filepath):
 
 updated = []
 for dirpath, dirnames, filenames in os.walk(ROOT):
-    dirnames[:] = [d for d in dirnames if d not in {'.git', 'services', 'img'}]
-    for fn in filenames:
-        if fn.endswith('.html') and fn not in SKIP_FILES:
-            fp = os.path.join(dirpath, fn)
-            if process(fp):
-                updated.append(fp.replace(ROOT, '').replace('\\', '/'))
+  dirnames[:] = [d for d in dirnames if d not in {'.git', 'img'}]
+  for fn in filenames:
+    if fn.endswith('.html') and fn not in SKIP_FILES:
+      fp = os.path.join(dirpath, fn)
+      if process(fp):
+        updated.append(fp.replace(ROOT, '').replace('\\', '/'))
 
 print(f'Updated {len(updated)} files:')
 for u in sorted(updated):
