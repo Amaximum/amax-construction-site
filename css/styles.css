@@ -2368,6 +2368,12 @@ section {
   .split {
     min-width: 0;
   }
+  /* Ensure reveal items stay visible on small screens even if JS is blocked */
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
   .nav-dropdown-menu {
     display: flex;
     position: static;
