@@ -75,10 +75,10 @@
     }
 
     .topbar {
-      background: rgba(255, 255, 255, 0.88);
+      background: linear-gradient(180deg, rgba(240, 244, 250, 0.96), rgba(232, 237, 245, 0.94));
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid #dfe6f1;
+      box-shadow: 0 14px 30px rgba(16, 30, 60, 0.12);
       border-radius: 999px;
       padding: 10px 16px;
       display: flex;
@@ -2321,8 +2321,8 @@ section {
     top: 84px;
     left: 10px;
     right: 10px;
-    background: #fff;
-    border: 1px solid var(--line);
+    background: #f4f6fb;
+    border: 1px solid #d6deeb;
     border-radius: var(--radius-lg);
     padding: 10px;
     box-shadow: 0 16px 40px rgba(19,33,68,0.14);

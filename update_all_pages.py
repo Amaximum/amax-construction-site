@@ -170,8 +170,7 @@ def process(filepath):
     html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
     html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
     html = re.sub(r'<div class="elfsight-review-badge"[\s\S]*?</div>\s*', '', html)
-    if not has_form:
-      html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
+    html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
 
     # 6c. Google Places autocomplete only on pages with forms
     if has_form:
