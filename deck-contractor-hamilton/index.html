@@ -11,6 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="https://amaximumconstruction.com/deck-contractor-hamilton/">
   <title>Professional Deck Contractor Hamilton | aMaximum Construction</title>
+  <script src="https://static.elfsight.com/platform/platform.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -48,7 +49,7 @@
         <a href="/portfolio/">Portfolio</a>
         <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/book-now/">BOOK NOW</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -103,118 +104,11 @@
     <div class="cta-section">
       <h2>Ready to Build Your Dream Deck in Hamilton?</h2>
       <p>Get a free consultation and detailed estimate for your deck project</p>
-      <button class="btn" id="bookingBtn">📅 Schedule Free Consultation</button>
+      <a class="btn" href="/book-now/">BOOK NOW</a>
     </div>
   </div>
 
-  <!-- Booking Modal -->
-  <div id="bookingModal" class="modal">
-    <div class="modal-overlay" id="modalOverlay"></div>
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose">&times;</button>
-      <h2>📅 Schedule Your Deck Consultation</h2>
-      <p style="color: #6b7280; margin-bottom: 32px;">Fill out the form and we'll contact you within 24 hours</p>
-      
-      <form id="bookingForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="clientName">Full Name *</label>
-            <input type="text" id="clientName" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="clientPhone">Phone *</label>
-            <input type="tel" id="clientPhone" name="phone" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="clientEmail">Email *</label>
-          <input type="email" id="clientEmail" name="email" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="clientAddress">Property Address in Hamilton *</label>
-          <input type="text" id="clientAddress" name="address" required placeholder="123 Main St, Hamilton, ON">
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="consultDate">Preferred Date *</label>
-            <input type="date" id="consultDate" name="date" required>
-          </div>
-          <div class="form-group">
-            <label for="timeSlot">Preferred Time *</label>
-            <select id="timeSlot" name="time" required>
-              <option value="">Select time...</option>
-              <option value="08:00-10:00">8:00 AM - 10:00 AM</option>
-              <option value="10:00-12:00">10:00 AM - 12:00 PM</option>
-              <option value="12:00-14:00">12:00 PM - 2:00 PM</option>
-              <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="projectDetails">Deck Project Details</label>
-          <textarea id="projectDetails" name="details" rows="4" placeholder="Deck size, material preferences, design ideas..."></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="projectFiles">Attach Photos</label>
-          <input type="file" id="projectFiles" name="files" multiple accept="image/*">
-        </div>
-        
-        <div style="display: flex; gap: 12px; margin-top: 24px;">
-          <button type="button" class="btn" id="cancelBtn" style="background: #e6eaf0; color: #121826;">Cancel</button>
-          <button type="submit" class="btn">Send Request</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const modal = document.getElementById('bookingModal');
-    const bookingBtn = document.getElementById('bookingBtn');
-    const modalClose = document.getElementById('modalClose');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const bookingForm = document.getElementById('bookingForm');
-    const consultDate = document.getElementById('consultDate');
-    
-    consultDate.min = new Date().toISOString().split('T')[0];
-    
-    bookingBtn.addEventListener('click', () => {
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
-    
-    const closeModal = () => {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    };
-    
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-    
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(bookingForm);
-      const data = Object.fromEntries(formData.entries());
-      
-      const subject = encodeURIComponent(`Deck Consultation - Hamilton`);
-      const body = encodeURIComponent(
-        `Deck Consultation Request - Hamilton\n\n` +
-        `Name: ${data.name}\nPhone: ${data.phone}\nEmail: ${data.email}\n` +
-        `Address: ${data.address}\nDate: ${data.date}\nTime: ${data.time}\n\n` +
-        `Details:\n${data.details || 'None provided'}`
-      );
-      
-      window.location.href = `mailto:amaximumconstructioncorp@gmail.com?subject=${subject}&body=${body}`;
-      alert('Opening email client...');
-      bookingForm.reset();
-      setTimeout(closeModal, 500);
-    });
+<script>
 
 // Mobile menu
 const menuBtn = document.getElementById('menuBtn');
@@ -239,6 +133,9 @@ if (menuBtn && siteNav) {
     revealObserver.observe(node);
   });
 </script>
+<section id="reviews-embed" class="shell">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>
+</section>
 <section class="island reveal" id="faq" aria-label="Frequently asked questions">
   <span class="shine" aria-hidden="true"></span>
   <div class="section-head">
@@ -336,26 +233,8 @@ if (menuBtn && siteNav) {
     </div>
   </div>
 </footer>
-<script>
-function initAddressAutocomplete() {
-  const input = document.querySelector('#clientAddress, input[name="address"]');
-  if (!input || typeof google === 'undefined' || !google.maps?.places) return;
-  const toronto = { lat: 43.6532, lng: -79.3832 };
-  const bounds = new google.maps.Circle({ center: toronto, radius: 65000 }).getBounds();
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    bounds,
-    componentRestrictions: { country: 'ca' },
-    fields: ['formatted_address', 'geometry', 'name'],
-    types: ['address'],
-  });
-  autocomplete.setBounds(bounds);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
-  });
-}
-</script>
-  
 
-<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc&libraries=places&callback=initAddressAutocomplete" async defer></script>
+<div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>
+</div>
 </body>
 </html>

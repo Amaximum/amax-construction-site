@@ -12,6 +12,7 @@
   <meta property="og:site_name" content="aMaximum Construction">
   <link rel="canonical" href="https://amaximumconstruction.com/interlocking-stone-services-in-toronto/">
   <title>Interlocking Stone Services in Toronto | Driveways & Patios | aMaximum Construction</title>
+  <script src="https://static.elfsight.com/platform/platform.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
 [
@@ -99,7 +100,7 @@
         <a href="/portfolio/">Portfolio</a>
         <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/book-now/">BOOK NOW</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -148,40 +149,7 @@
   <div class="cta-section">
     <h2>Get a Free Interlocking Quote in Toronto</h2>
     <p>Free on-site measurement and design consultation for your Toronto interlocking project.</p>
-    <button class="btn" id="bookingBtn">Get Free Quote</button>
-  </div>
-</div>
-<div id="bookingModal" class="modal">
-  <div class="modal-overlay" id="modalOverlay"></div>
-  <div class="modal-content">
-    <button class="modal-close" id="modalClose">&times;</button>
-    <h2>Free Consultation — Toronto</h2>
-    <form id="bookingForm">
-      <input type="hidden" name="service" value="Interlocking Stone Services — Toronto">
-      <div class="form-row">
-        <div class="form-group"><label>Name *</label><input type="text" name="name" required></div>
-        <div class="form-group"><label>Phone *</label><input type="tel" name="phone" required></div>
-      </div>
-      <div class="form-group"><label>Email *</label><input type="email" name="email" required></div>
-      <div class="form-group"><label>Address in Toronto *</label><input type="text" name="address" required></div>
-      <div class="form-row">
-        <div class="form-group"><label>Preferred Date *</label><input type="date" id="bookDate" name="date" required></div>
-        <div class="form-group"><label>Preferred Time *</label>
-          <select name="time" required>
-            <option value="">Select...</option>
-            <option>8–10 AM</option><option>10–12 PM</option>
-            <option>12–2 PM</option><option>2–4 PM</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group"><label>Project Details</label>
-        <textarea name="details" rows="3" placeholder="Describe your project briefly..."></textarea>
-      </div>
-      <div style="display:flex;gap:12px;margin-top:20px">
-        <button type="button" class="btn" id="cancelBtn" style="background:#e6eaf0;color:#121826">Cancel</button>
-        <button type="submit" class="btn">Send Request</button>
-      </div>
-    </form>
+    <a class="btn" href="/book-now/">BOOK NOW</a>
   </div>
 </div>
 <script>
@@ -234,6 +202,9 @@ if (f) f.addEventListener('submit', e => {
     revealObserver.observe(node);
   });
 </script>
+<section id="reviews-embed" class="shell">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>
+</section>
 <section class="island reveal" id="faq" aria-label="Frequently asked questions">
   <span class="shine" aria-hidden="true"></span>
   <div class="section-head">
@@ -331,26 +302,8 @@ if (f) f.addEventListener('submit', e => {
     </div>
   </div>
 </footer>
-<script>
-function initAddressAutocomplete() {
-  const input = document.querySelector('#clientAddress, input[name="address"]');
-  if (!input || typeof google === 'undefined' || !google.maps?.places) return;
-  const toronto = { lat: 43.6532, lng: -79.3832 };
-  const bounds = new google.maps.Circle({ center: toronto, radius: 65000 }).getBounds();
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    bounds,
-    componentRestrictions: { country: 'ca' },
-    fields: ['formatted_address', 'geometry', 'name'],
-    types: ['address'],
-  });
-  autocomplete.setBounds(bounds);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
-  });
-}
-</script>
-  
 
-<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc&libraries=places&callback=initAddressAutocomplete" async defer></script>
+<div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>
+</div>
 </body>
 </html>

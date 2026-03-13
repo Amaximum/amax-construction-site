@@ -20,6 +20,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/">
   <link rel="alternate" hreflang="en-CA" href="https://amaximumconstruction.com/">
   <title>aMaximum Construction | Construction & Renovation Services Toronto & GTA</title>
+  <script src="https://static.elfsight.com/platform/platform.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -85,7 +86,7 @@
         <a href="/portfolio/">Portfolio</a>
         <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/book-now/">BOOK NOW</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -98,7 +99,7 @@
         <h1>Construction & Renovation Services in Toronto & GTA</h1>
         <p class="lead">Licensed and insured team for decks, fences, bathrooms, basements, plumbing, electrical, landscaping, demolition, interlocking, carpentry, and more — with clear scope and reliable timelines.</p>
         <div class="hero-actions">
-          <button class="btn btn-primary btn-booking">📅 Get Free Quote</button>
+          <a class="btn btn-primary btn-booking" href="/book-now/">BOOK NOW</a>
           <a class="btn btn-ghost" href="#services">Explore Services</a>
         </div>
       </div>
@@ -337,7 +338,10 @@
       </article>
     </section>
 
-    <section class="island reveal" id="faq" aria-label="Frequently asked questions">
+<section id="reviews-embed" class="shell">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>
+</section>
+<section class="island reveal" id="faq" aria-label="Frequently asked questions">
   <span class="shine" aria-hidden="true"></span>
   <div class="section-head">
     <h2>Frequently Asked Questions</h2>
@@ -395,105 +399,12 @@
       </div>
 
       <aside class="contact-box">
-        <button class="btn btn-primary btn-booking">📅 Book Consultation</button>
+        <a class="btn btn-primary btn-booking" href="/book-now/">BOOK NOW</a>
         <strong style="margin-top: 1rem;">Or Email</strong>
         <a class="btn btn-secondary" href="mailto:amaximumconstructioncorp@gmail.com">amaximumconstructioncorp@gmail.com</a>
       </aside>
     </section>
   </main>
-
-  <!-- Booking Form Modal -->
-  <div id="bookingModal" class="modal" aria-hidden="true">
-    <div class="modal-overlay" id="modalOverlay"></div>
-    <div class="modal-content" role="dialog" aria-labelledby="modalTitle">
-      <button class="modal-close" id="modalClose" aria-label="Close booking form">&times;</button>
-      
-      <h2 id="modalTitle">📅 Schedule Your Consultation</h2>
-      <p class="modal-subtitle">Fill out the form below and we'll contact you to confirm your appointment</p>
-      
-      <form id="bookingForm" class="booking-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="clientName">Full Name *</label>
-            <input type="text" id="clientName" name="name" required placeholder="John Smith">
-          </div>
-          
-          <div class="form-group">
-            <label for="clientPhone">Phone Number *</label>
-            <input type="tel" id="clientPhone" name="phone" required placeholder="+1 (416) 555-0123">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="clientEmail">Email Address *</label>
-          <input type="email" id="clientEmail" name="email" required placeholder="john.smith@example.com">
-        </div>
-        
-        <div class="form-group">
-          <label for="clientAddress">Property Address *</label>
-          <input type="text" id="clientAddress" name="address" required placeholder="123 Main Street, Toronto, ON M5V 2T6">
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="serviceType">Service Type *</label>
-            <select id="serviceType" name="service" required>
-              <option value="">Select a service...</option>
-              <option value="deck">Deck Building</option>
-              <option value="fence">Fence Installation</option>
-              <option value="bathroom">Bathroom Renovation</option>
-              <option value="basement">Basement Renovation</option>
-              <option value="plumbing">Plumbing</option>
-              <option value="canopy">Canopy & Awnings</option>
-              <option value="landscaping">Landscaping</option>
-              <option value="contractor">General Contractor</option>
-              <option value="handyman">Handyman</option>
-              <option value="interlocking">Interlocking & Paving</option>
-              <option value="carpentry">Carpentry</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="consultDate">Preferred Date *</label>
-            <input type="date" id="consultDate" name="date" required>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="timeSlot">Preferred Time Window *</label>
-          <select id="timeSlot" name="time" required>
-            <option value="">Select time window...</option>
-            <option value="08:00-10:00">8:00 AM - 10:00 AM</option>
-            <option value="10:00-12:00">10:00 AM - 12:00 PM</option>
-            <option value="12:00-14:00">12:00 PM - 2:00 PM</option>
-            <option value="14:00-16:00">2:00 PM - 4:00 PM</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="projectDetails">Project Details</label>
-          <textarea id="projectDetails" name="details" rows="4" placeholder="Brief description of your project, materials preferences, or any specific requirements..."></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="projectFiles">Attach Photos or Documents</label>
-          <input type="file" id="projectFiles" name="files" multiple accept="image/*,.pdf,.doc,.docx">
-          <small style="color: var(--muted); font-size: 13px; margin-top: 4px;">
-            📎 You can attach photos of the project site, plans, or inspiration images (max 10 files)
-          </small>
-        </div>
-        
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-          <button type="submit" class="btn btn-primary">Send Booking Request</button>
-        </div>
-        
-        <p class="form-note">* Required fields. We'll contact you within 24 hours to confirm availability.</p>
-      </form>
-    </div>
-  </div>
-
-  
 
 <footer class="site-footer">
   <div class="shell">
@@ -626,115 +537,9 @@
       }, startDelay);
     });
 
-    // Booking Modal Functionality
-    const bookingModal = document.getElementById('bookingModal');
-    const bookingBtns = document.querySelectorAll('.btn-booking');
-    const modalClose = document.getElementById('modalClose');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const bookingForm = document.getElementById('bookingForm');
-    const consultDateInput = document.getElementById('consultDate');
-
-    // Set minimum date to today
-    const today = new Date().toISOString().split('T')[0];
-    consultDateInput.setAttribute('min', today);
-
-    // Open modal - attach to all booking buttons
-    bookingBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        bookingModal.classList.add('active');
-        bookingModal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-      });
-    });
-
-    // Close modal function
-    const closeModal = () => {
-      bookingModal.classList.remove('active');
-      bookingModal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    };
-
-    // Close modal events
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && bookingModal.classList.contains('active')) {
-        closeModal();
-      }
-    });
-
-    // Form submission
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      const formData = new FormData(bookingForm);
-      const data = Object.fromEntries(formData.entries());
-      
-      // Get attached files info
-      const fileInput = document.getElementById('projectFiles');
-      const files = fileInput.files;
-      let filesInfo = '';
-      if (files.length > 0) {
-        filesInfo = `\n\nAttached Files (${files.length}):\n`;
-        for (let i = 0; i < files.length; i++) {
-          filesInfo += `${i + 1}. ${files[i].name} (${(files[i].size / 1024).toFixed(1)} KB)\n`;
-        }
-        filesInfo += '\n[Note: Please manually attach these files to the email]';
-      }
-      
-      // Format email body
-      const emailSubject = encodeURIComponent(`Consultation Request - ${data.service}`);
-      const emailBody = encodeURIComponent(
-        `New Consultation Request\n\n` +
-        `Name: ${data.name}\n` +
-        `Phone: ${data.phone}\n` +
-        `Email: ${data.email}\n` +
-        `Address: ${data.address}\n\n` +
-        `Service: ${data.service}\n` +
-        `Preferred Date: ${data.date}\n` +
-        `Preferred Time: ${data.time}\n\n` +
-        `Project Details:\n${data.details || 'None provided'}` +
-        filesInfo
-      );
-      
-      // Open email client
-      window.location.href = `mailto:amaximumconstructioncorp@gmail.com?subject=${emailSubject}&body=${emailBody}`;
-      
-      // Show success message
-      const message = files.length > 0 
-        ? `Opening your email client...\n\nPlease manually attach the ${files.length} file(s) you selected before sending.`
-        : 'Opening your email client... Please send the pre-filled message to complete your booking request.';
-      alert(message);
-      
-      // Reset form and close modal
-      bookingForm.reset();
-      setTimeout(closeModal, 500);
-    });
   </script>
-<script>
-function initAddressAutocomplete() {
-  const input = document.querySelector('#clientAddress, input[name="address"]');
-  if (!input || typeof google === 'undefined' || !google.maps?.places) return;
-  const toronto = { lat: 43.6532, lng: -79.3832 };
-  const bounds = new google.maps.Circle({ center: toronto, radius: 65000 }).getBounds();
-  const autocomplete = new google.maps.places.Autocomplete(input, {
-    bounds,
-    componentRestrictions: { country: 'ca' },
-    fields: ['formatted_address', 'geometry', 'name'],
-    types: ['address'],
-  });
-  autocomplete.setBounds(bounds);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') e.preventDefault();
-  });
-}
-</script>
-  
 
-<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc&libraries=places&callback=initAddressAutocomplete" async defer></script>
+<div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>
+</div>
 </body>
 </html>

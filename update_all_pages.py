@@ -8,18 +8,22 @@ import os, re
 ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
+BOOKING_PAGE_REL = '/book-now/index.html'
+
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
-ELFSIGHT_SCRIPT = '<script src="https://elfsightcdn.com/platform.js" async></script>'
+# Use `defer` (not `async`) so the loader executes after HTML is parsed,
+# ensuring the widget divs are present when Elfsight scans the DOM.
+ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" defer></script>'
 
 # Elfsight widgets
 ELFSIGHT_REVIEWS_APP_CLASS = 'elfsight-app-b029cad3-6f49-425c-9793-f556870797bb'
 ELFSIGHT_RATING_APP_CLASS = 'elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875'
 
-ELFSIGHT_RATING_FLOAT_WRAPPER = f"""<div id=\"rating-widget\" style=\"position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;\">
-  <div class=\"{ELFSIGHT_RATING_APP_CLASS}\" data-elfsight-app-lazy></div>
+ELFSIGHT_RATING_FLOAT_WRAPPER = f"""<div id=\"rating-widget\" style=\"position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;\">\
+  <div class=\"{ELFSIGHT_RATING_APP_CLASS}\"></div>
 </div>"""
 
-ELFSIGHT_REVIEWS_EMBED_BLOCK = f"""<section id=\"reviews-embed\" class=\"shell\">\n  <div class=\"{ELFSIGHT_REVIEWS_APP_CLASS}\" data-elfsight-app-lazy></div>\n</section>"""
+ELFSIGHT_REVIEWS_EMBED_BLOCK = f"""<section id=\"reviews-embed\" class=\"shell\">\n  <div class=\"{ELFSIGHT_REVIEWS_APP_CLASS}\"></div>\n</section>"""
 GOOGLE_PLACES_KEY = 'AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc'
 PLACES_SCRIPT = f'<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key={GOOGLE_PLACES_KEY}&libraries=places&callback=initAddressAutocomplete" async defer></script>'
 AUTOCOMPLETE_INLINE = """<script>
@@ -58,7 +62,7 @@ STANDARD_NAV = """\
         <a href="/portfolio/">Portfolio</a>
         <a href="/#contact">Contact</a>
       </nav>
-      <a class="btn btn-primary btn-sm nav-quote" href="/#contact">Get Free Quote</a>
+      <a class="btn btn-primary btn-sm nav-quote" href="/book-now/">BOOK NOW</a>
       <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
     </div>
   </header>
@@ -117,7 +121,7 @@ STANDARD_FOOTER = """\
 RE_STYLE_BLOCK = re.compile(r'[ \t]*<style[^>]*>[\s\S]*?</style>\s*\n?', re.DOTALL)
 RE_CSS_LINK    = re.compile(r'[ \t]*<link\s+rel="stylesheet"\s+href="[^"]*styles\.css"[^>]*>\s*\n?')
 RE_ELFSIGHT_ANY_SCRIPT = re.compile(
-  r'[ \t]*<script\s+src="https://(?:static\.elfsight\.com/platform/platform\.js|elfsightcdn\.com/platform\.js)"\s+async></script>\s*\n?',
+  r'[ \t]*<script\s+src="https://(?:static\.elfsight\.com/platform/platform\.js|elfsightcdn\.com/platform\.js)"[^>]*></script>\s*\n?',
   re.IGNORECASE,
 )
 RE_ELFSIGHT_WIDGET_BLOCK = re.compile(
@@ -151,6 +155,103 @@ RE_HEADER_BANNER = re.compile(r'[ \t]*<header[^>]*role="banner"[^>]*>[\s\S]*?</h
 RE_FOOTER      = re.compile(r'<footer[\s\S]*?</footer>', re.DOTALL)
 RE_MULTI_BLANK = re.compile(r'\n{3,}')
 
+RE_BOOKING_MODAL_COMMENT = re.compile(r'[ \t]*<!--\s*Booking Form Modal\s*-->\s*\n?', re.IGNORECASE)
+RE_BOOKING_MODAL = re.compile(
+  r'[ \t]*<div[^>]*\bid="bookingModal"[^>]*>[\s\S]*?<form[^>]*\bid="bookingForm"[\s\S]*?</form>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_BOOKING_MODAL_GENERIC_COMMENT = re.compile(r'[ \t]*<!--\s*Booking Modal\s*-->\s*\n?', re.IGNORECASE)
+RE_BOOKING_MODAL_FRAGMENT_BY_COMMENT = re.compile(
+  r'[ \t]*<!--\s*Booking Modal\s*-->[\s\S]*?</form>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_BOOKING_MODAL_FRAGMENT_AFTER_MAIN = re.compile(
+  r'(</main>\s*)[\s\S]*?<div\s+class="form-group">[\s\S]*?\bid="clientAddress"[\s\S]*?</form>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_BOOKING_FORM_ORPHAN_FRAGMENT = re.compile(
+  r'\n[ \t]*<div\s+class="form-group">[\s\S]*?\bid="clientAddress"[\s\S]*?</form>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_BOOKING_MODAL_SCRIPT_TAIL = re.compile(
+  r'\n[ \t]*//\s*Booking Modal Functionality[\s\S]*?\n[ \t]*</script>',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_BOOKING_MODAL_SCRIPT_BLOCK_TO_MOBILE_MENU = re.compile(
+  r"\n[ \t]*const\s+modal\s*=\s*document\.getElementById\(['\"]bookingModal['\"]\);[\s\S]*?(?=\n[ \t]*//\s*Mobile menu)",
+  re.DOTALL | re.IGNORECASE,
+)
+
+# Cleanup for partial booking-modal deletions that left a “tail” of fields
+# (Email/Address/Date/Time/etc) plus stray </form></div></div>.
+RE_BOOKING_MODAL_ORPHAN_TAIL = re.compile(
+  r'\n[ \t]*<div\s+class="form-group">\s*<label>\s*Email\s*\*\s*</label>[\s\S]*?\bid="bookDate"[\s\S]*?</form>\s*</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_GOOGLE_PLACES_SCRIPT = re.compile(
+  r'[ \t]*<script[^>]+maps\.googleapis\.com/maps/api/js[^>]*></script>\s*\n?',
+  re.IGNORECASE,
+)
+RE_AUTOCOMPLETE_INLINE = re.compile(
+  r'[ \t]*<script>\s*function\s+initAddressAutocomplete\(\)\s*\{[\s\S]*?</script>\s*\n?',
+  re.IGNORECASE,
+)
+
+
+def _button_to_booking_link(match: re.Match) -> str:
+  attrs = match.group('attrs')
+  attrs = re.sub(r'\s*\btype\s*=\s*"[^"]*"', '', attrs, flags=re.IGNORECASE)
+  # Remove id attributes that were used for modal wiring.
+  attrs = re.sub(r'\s*\bid\s*=\s*"(?:bookingBtn|cancelBtn|modalClose|modalOverlay)"', '', attrs, flags=re.IGNORECASE)
+  if re.search(r'\bhref\s*=', attrs, re.IGNORECASE):
+    return f'<a{attrs}>BOOK NOW</a>'
+  return f'<a{attrs} href="/book-now/">BOOK NOW</a>'
+
+
+def _remove_div_by_id(html: str, element_id: str) -> str:
+  """Remove <div id="element_id">...</div> including nested divs.
+
+  Regex is fragile for nested HTML; this uses a depth counter on <div> tags.
+  """
+  start_re = re.compile(
+    r'<div\b[^>]*\bid\s*=\s*["\']' + re.escape(element_id) + r'["\'][^>]*>',
+    re.IGNORECASE,
+  )
+
+  while True:
+    m = start_re.search(html)
+    if not m:
+      return html
+
+    start = m.start()
+    i = m.end()
+    lower = html.lower()
+    depth = 1
+
+    while depth > 0:
+      next_open = lower.find('<div', i)
+      next_close = lower.find('</div', i)
+
+      if next_close == -1:
+        # Malformed HTML; remove only the start tag.
+        html = html[:start] + html[m.end():]
+        break
+
+      if next_open != -1 and next_open < next_close:
+        depth += 1
+        i = next_open + 4
+        continue
+
+      depth -= 1
+      close_end = lower.find('>', next_close)
+      if close_end == -1:
+        html = html[:start] + html[next_close:]
+        break
+      i = close_end + 1
+
+    else:
+      html = html[:start] + html[i:]
+
 def has_base_css(style_block):
     """Return True if this <style> block contains base/duplicated CSS."""
     return ('--bg:' in style_block or '--bg :' in style_block or
@@ -164,6 +265,7 @@ def process(filepath):
     rel = filepath.replace(ROOT, '').replace('\\', '/')
     is_main_index = (rel == '/index.html')
     in_blog = '/blog/' in rel
+    is_booking_page = (rel == BOOKING_PAGE_REL)
 
     # 1. Remove inline <style> blocks that contain base CSS
     def strip_style(m):
@@ -173,8 +275,25 @@ def process(filepath):
         return block
     html = RE_STYLE_BLOCK.sub(strip_style, html)
 
-    # 2. Detect if the page contains a form
-    has_form = re.search(r'<form[^>]*>', html, re.IGNORECASE) is not None
+    # 2. Booking CTA normalization (site-wide)
+    html = re.sub(
+      r'<button(?P<attrs>[^>]*\bclass\s*=\s*"[^"]*\bbtn-booking\b[^"]*"[^>]*)>\s*[\s\S]*?</button>',
+      _button_to_booking_link,
+      html,
+      flags=re.IGNORECASE,
+    )
+    html = re.sub(
+      r'<button(?P<attrs>[^>]*\bid\s*=\s*"bookingBtn"[^>]*)>\s*[\s\S]*?</button>',
+      _button_to_booking_link,
+      html,
+      flags=re.IGNORECASE,
+    )
+    html = re.sub(
+      r'href="/#contact"([^>]*>)\s*Get Free Quote\s*<',
+      r'href="/book-now/"\1BOOK NOW<',
+      html,
+      flags=re.IGNORECASE,
+    )
 
     # 3. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
@@ -185,6 +304,23 @@ def process(filepath):
 
     # Always strip Elfsight scripts; we'll re-add only on pages without forms
     html = RE_ELFSIGHT_ANY_SCRIPT.sub('', html)
+
+    # Strip booking modal UI from non-booking pages (form lives on /book-now/)
+    if not is_booking_page:
+      # Prefer robust removal first.
+      html = _remove_div_by_id(html, 'bookingModal')
+
+      html = RE_BOOKING_MODAL_COMMENT.sub('', html)
+      html = RE_BOOKING_MODAL_GENERIC_COMMENT.sub('', html)
+      html = RE_BOOKING_MODAL.sub('', html)
+      html = RE_BOOKING_MODAL_FRAGMENT_BY_COMMENT.sub('', html)
+      html = RE_BOOKING_MODAL_FRAGMENT_AFTER_MAIN.sub(r'\1', html)
+      html = RE_BOOKING_FORM_ORPHAN_FRAGMENT.sub('\n', html)
+      html = RE_BOOKING_MODAL_ORPHAN_TAIL.sub('\n', html)
+
+      # Remove booking-modal JS that becomes unsafe once modal markup is gone.
+      html = RE_BOOKING_MODAL_SCRIPT_TAIL.sub('\n  </script>', html)
+      html = RE_BOOKING_MODAL_SCRIPT_BLOCK_TO_MOBILE_MENU.sub('\n', html)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -202,7 +338,7 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Elfsight Google Reviews widget: everywhere EXCEPT pages with forms
+    # 6b. Elfsight widgets
     # Remove any legacy/new blocks first
     html = RE_ELFSIGHT_WIDGET_BLOCK.sub('', html)
     html = RE_ELFSIGHT_FLOAT_WRAPPER.sub('', html)
@@ -211,37 +347,27 @@ def process(filepath):
     html = RE_ELFSIGHT_LEGACY_BADGE.sub('', html)
     html = RE_ELFSIGHT_LEGACY_APP.sub('', html)
 
-    should_show_widgets = not has_form
-    if should_show_widgets:
-      if ELFSIGHT_SCRIPT not in html:
+    # Always show rating widget on every page
+    if ELFSIGHT_SCRIPT not in html:
         html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
-
-      # Embed reviews block before FAQ if possible (fallback: before footer)
-      inserted_reviews = False
-      faq_match = re.search(r'\n([ \t]*<section[^>]*\bid="faq"[^>]*>)', html, re.IGNORECASE)
-      if faq_match:
-        html = html[:faq_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[faq_match.start(1):]
-        inserted_reviews = True
-      else:
-        footer_match = re.search(r'\n([ \t]*<footer\b)', html, re.IGNORECASE)
-        if footer_match:
-          html = html[:footer_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[footer_match.start(1):]
-          inserted_reviews = True
-
-      if '</body>' in html:
+    if '</body>' in html:
         html = html.replace('</body>', '\n' + ELFSIGHT_RATING_FLOAT_WRAPPER + '\n</body>', 1)
 
-    # 6c. Google Places autocomplete only on pages with forms
-    if has_form:
-      html = re.sub(r'<script[^>]+maps\.googleapis\.com/maps/api/js[^>]*></script>', '', html)
-      needs_inline = 'initAddressAutocomplete' not in html
-      needs_script = 'google-places-script' not in html
-      if needs_inline and needs_script:
+    # Show reviews embed on every page EXCEPT the booking page, placed before FAQ when possible.
+    if not is_booking_page:
+        faq_match = re.search(r'\n([ \t]*<section[^>]*\bid="faq"[^>]*>)', html, re.IGNORECASE)
+        if faq_match:
+            html = html[:faq_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[faq_match.start(1):]
+        else:
+            footer_match = re.search(r'\n([ \t]*<footer\b)', html, re.IGNORECASE)
+            if footer_match:
+                html = html[:footer_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[footer_match.start(1):]
+
+    # 6c. Google Places autocomplete only on /book-now/
+    html = RE_GOOGLE_PLACES_SCRIPT.sub('', html)
+    html = RE_AUTOCOMPLETE_INLINE.sub('', html)
+    if is_booking_page:
         html = html.replace('</body>', AUTOCOMPLETE_INLINE + '\n  ' + PLACES_SCRIPT + '\n</body>', 1)
-      elif needs_inline:
-        html = html.replace('</body>', AUTOCOMPLETE_INLINE + '\n</body>', 1)
-      elif needs_script:
-        html = html.replace('</body>', PLACES_SCRIPT + '\n</body>', 1)
 
     # 7. Rename hero class (not on main index.html)
     if not is_main_index:
