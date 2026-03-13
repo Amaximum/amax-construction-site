@@ -240,5 +240,25 @@ if (menuBtn && siteNav) {
     </div>
   </div>
 </footer>
+<script>
+function initAddressAutocomplete() {
+  const input = document.querySelector('#clientAddress, input[name="address"]');
+  if (!input || typeof google === 'undefined' || !google.maps?.places) return;
+  const toronto = { lat: 43.6532, lng: -79.3832 };
+  const bounds = new google.maps.Circle({ center: toronto, radius: 65000 }).getBounds();
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    bounds,
+    componentRestrictions: { country: 'ca' },
+    fields: ['formatted_address', 'geometry', 'name'],
+    types: ['address'],
+  });
+  autocomplete.setBounds(bounds);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
+}
+</script>
+  
+<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc&libraries=places&callback=initAddressAutocomplete" async defer></script>
 </body>
 </html>

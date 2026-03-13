@@ -10,15 +10,32 @@ SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
 ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" async></script>'
-
-# Full reviews carousel (shown inline on pages without forms)
-REVIEWS_SECTION = """\
-<section class="shell" style="margin:40px auto;">
-  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
-</section>"""
+GOOGLE_PLACES_KEY = 'AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc'
+PLACES_SCRIPT = f'<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key={GOOGLE_PLACES_KEY}&libraries=places&callback=initAddressAutocomplete" async defer></script>'
+AUTOCOMPLETE_INLINE = """<script>
+function initAddressAutocomplete() {
+  const input = document.querySelector('#clientAddress, input[name="address"]');
+  if (!input || typeof google === 'undefined' || !google.maps?.places) return;
+  const toronto = { lat: 43.6532, lng: -79.3832 };
+  const bounds = new google.maps.Circle({ center: toronto, radius: 65000 }).getBounds();
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    bounds,
+    componentRestrictions: { country: 'ca' },
+    fields: ['formatted_address', 'geometry', 'name'],
+    types: ['address'],
+  });
+  autocomplete.setBounds(bounds);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') e.preventDefault();
+  });
+}
+</script>"""
 
 # Floating badge (bottom-right corner, pages without forms)
-REVIEWS_BADGE = '<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>'
+REVIEWS_BADGE = """\
+<div class="elfsight-review-badge" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:164px;pointer-events:auto;">
+  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>
+</div>"""
 
 STANDARD_NAV = """\
 <div class="topbar-wrap shell">
@@ -149,11 +166,24 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Remove Elfsight blocks, then add back only on pages without forms
+    # 6b. Remove Elfsight blocks, then add back only on pages without forms (badge only)
     html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
     html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
+    html = re.sub(r'<div class="elfsight-review-badge"[\s\S]*?</div>\s*', '', html)
     if not has_form:
-      html = html.replace('<footer class="site-footer">', REVIEWS_SECTION + '\n' + REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
+      html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
+
+    # 6c. Google Places autocomplete only on pages with forms
+    if has_form:
+      html = re.sub(r'<script[^>]+maps\.googleapis\.com/maps/api/js[^>]*></script>', '', html)
+      needs_inline = 'initAddressAutocomplete' not in html
+      needs_script = 'google-places-script' not in html
+      if needs_inline and needs_script:
+        html = html.replace('</body>', AUTOCOMPLETE_INLINE + '\n  ' + PLACES_SCRIPT + '\n</body>', 1)
+      elif needs_inline:
+        html = html.replace('</body>', AUTOCOMPLETE_INLINE + '\n</body>', 1)
+      elif needs_script:
+        html = html.replace('</body>', PLACES_SCRIPT + '\n</body>', 1)
 
     # 7. Rename hero class (not on main index.html)
     if not is_main_index:
