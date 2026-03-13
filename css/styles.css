@@ -310,6 +310,16 @@
     main .island:nth-of-type(even) .faq-item p { color: rgba(255,255,255,0.7); }
     main .island:nth-of-type(even) details[open] { border-color: rgba(255,255,255,0.15); }
 
+    /* Forms inside dark islands (e.g., booking page) */
+    main .island:nth-of-type(even) .form-group label {
+      color: #ffffff;
+    }
+    main .island:nth-of-type(even) .muted,
+    main .island:nth-of-type(even) .form-note,
+    main .island:nth-of-type(even) .booking-form small {
+      color: rgba(255, 255, 255, 0.65) !important;
+    }
+
     /* ── Blog pages: reset alternating (keep all light) ── */
     .page-blog main .island:nth-of-type(even) {
       background: var(--surface) !important;
