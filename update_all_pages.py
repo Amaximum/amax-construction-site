@@ -9,6 +9,16 @@ ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
+ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" async></script>'
+
+# Full reviews carousel (shown inline on pages without forms)
+REVIEWS_SECTION = """\
+<section class="shell" style="margin:40px auto;">
+  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
+</section>"""
+
+# Floating badge (bottom-right corner, pages without forms)
+REVIEWS_BADGE = '<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>'
 
 STANDARD_NAV = """\
 <div class="topbar-wrap shell">
@@ -111,13 +121,20 @@ def process(filepath):
         return block
     html = RE_STYLE_BLOCK.sub(strip_style, html)
 
-    # 2. Remove existing (possibly wrong-path) CSS link
+    # 2. Detect if the page contains a form (we keep Elfsight off on form pages)
+    has_form = re.search(r'<form[^>]*>', html, re.IGNORECASE) is not None
+
+    # 3. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
 
-    # 3. Insert correct CSS link after </title>
+    # 4. Insert correct CSS link (always) and Elfsight script only on pages without forms
     if CSS_LINK not in html:
-        html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
-    html = RE_ELFSIGHT_SCRIPT.sub('', html)
+      html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
+    if has_form:
+      html = RE_ELFSIGHT_SCRIPT.sub('', html)
+    else:
+      if ELFSIGHT_SCRIPT not in html:
+        html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -132,9 +149,11 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Remove Elfsight reviews section + floating badge everywhere
+    # 6b. Remove Elfsight blocks, then add back only on pages without forms
     html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
     html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
+    if not has_form:
+      html = html.replace('<footer class="site-footer">', REVIEWS_SECTION + '\n' + REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
 
     # 7. Rename hero class (not on main index.html)
     if not is_main_index:
