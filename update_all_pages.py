@@ -31,9 +31,9 @@ function initAddressAutocomplete() {
 }
 </script>"""
 
-# Floating badge (bottom-right corner, pages without forms)
+# Floating badge (bottom-right corner)
 REVIEWS_BADGE = """\
-<div class="elfsight-review-badge" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:164px;pointer-events:auto;">
+<div class="elfsight-review-badge" id="reviews-badge" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:164px;pointer-events:auto;">
   <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>
 </div>"""
 
@@ -111,6 +111,10 @@ STANDARD_FOOTER = """\
 RE_STYLE_BLOCK = re.compile(r'[ \t]*<style[^>]*>[\s\S]*?</style>\s*\n?', re.DOTALL)
 RE_CSS_LINK    = re.compile(r'[ \t]*<link\s+rel="stylesheet"\s+href="[^"]*styles\.css"[^>]*>\s*\n?')
 RE_ELFSIGHT_SCRIPT = re.compile(r'[ \t]*<script\s+src="https://static\.elfsight\.com/platform/platform\.js"\s+async></script>\s*\n?')
+RE_REVIEWS_BADGE_WRAPPER = re.compile(
+  r'[ \t]*<div\s+class="elfsight-review-badge"[^>]*>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL,
+)
 RE_TOPBAR      = re.compile(r'<div class="topbar-wrap shell">[\s\S]*?</header>\s*\n?[ \t]*</div>', re.DOTALL)
 RE_HEADER_BANNER = re.compile(r'[ \t]*<header[^>]*role="banner"[^>]*>[\s\S]*?</header>', re.DOTALL)
 RE_FOOTER      = re.compile(r'<footer[\s\S]*?</footer>', re.DOTALL)
@@ -138,20 +142,20 @@ def process(filepath):
         return block
     html = RE_STYLE_BLOCK.sub(strip_style, html)
 
-    # 2. Detect if the page contains a form (we keep Elfsight off on form pages)
+    # 2. Detect if the page contains a form
     has_form = re.search(r'<form[^>]*>', html, re.IGNORECASE) is not None
 
     # 3. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
 
-    # 4. Insert correct CSS link (always) and Elfsight script only on pages without forms
+    # 4. Insert correct CSS link (always) and Elfsight script (needed for reviews badge)
     if CSS_LINK not in html:
       html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
-    if has_form:
-      html = RE_ELFSIGHT_SCRIPT.sub('', html)
-    else:
-      if ELFSIGHT_SCRIPT not in html:
-        html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
+
+    # Ensure only one Elfsight loader script exists (then add it back)
+    html = RE_ELFSIGHT_SCRIPT.sub('', html)
+    if ELFSIGHT_SCRIPT not in html:
+      html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -166,11 +170,14 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Remove Elfsight blocks, then add back only on pages without forms (badge only)
+    # 6b. Remove Elfsight blocks, then add back only where intended (badge only)
     html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
-    html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
-    html = re.sub(r'<div class="elfsight-review-badge"[\s\S]*?</div>\s*', '', html)
-    html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
+    html = RE_REVIEWS_BADGE_WRAPPER.sub('', html)
+    html = re.sub(r'[ \t]*<div\s+class="elfsight-app-3935cedc-[^"]+"[^>]*></div>\s*\n?', '', html)
+
+    should_show_badge = (not has_form) or is_main_index
+    if should_show_badge and '<footer class="site-footer">' in html:
+      html = html.replace('<footer class="site-footer">', REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
 
     # 6c. Google Places autocomplete only on pages with forms
     if has_form:
