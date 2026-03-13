@@ -9,9 +9,17 @@ ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
-ELFSIGHT_WIDGET_BLOCK = """<!-- Elfsight Google Reviews | Untitled Google Reviews -->
-<script src=\"https://elfsightcdn.com/platform.js\" async></script>
-<div class=\"elfsight-app-b029cad3-6f49-425c-9793-f556870797bb\" data-elfsight-app-lazy></div>"""
+ELFSIGHT_SCRIPT = '<script src="https://elfsightcdn.com/platform.js" async></script>'
+
+# Elfsight widgets
+ELFSIGHT_REVIEWS_APP_CLASS = 'elfsight-app-b029cad3-6f49-425c-9793-f556870797bb'
+ELFSIGHT_RATING_APP_CLASS = 'elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875'
+
+ELFSIGHT_RATING_FLOAT_WRAPPER = f"""<div id=\"rating-widget\" style=\"position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;\">
+  <div class=\"{ELFSIGHT_RATING_APP_CLASS}\" data-elfsight-app-lazy></div>
+</div>"""
+
+ELFSIGHT_REVIEWS_EMBED_BLOCK = f"""<section id=\"reviews-embed\" class=\"shell\">\n  <div class=\"{ELFSIGHT_REVIEWS_APP_CLASS}\" data-elfsight-app-lazy></div>\n</section>"""
 GOOGLE_PLACES_KEY = 'AIzaSyBkEKDxWzpZfBitiQc3qURLsYm1r_u8ISc'
 PLACES_SCRIPT = f'<script id="google-places-script" src="https://maps.googleapis.com/maps/api/js?key={GOOGLE_PLACES_KEY}&libraries=places&callback=initAddressAutocomplete" async defer></script>'
 AUTOCOMPLETE_INLINE = """<script>
@@ -114,9 +122,21 @@ RE_ELFSIGHT_ANY_SCRIPT = re.compile(
 )
 RE_ELFSIGHT_WIDGET_BLOCK = re.compile(
   r'[ \t]*<!--\s*Elfsight Google Reviews \| Untitled Google Reviews\s*-->\s*\n?'
-  r'[ \t]*<script\s+src="https://elfsightcdn\.com/platform\.js"\s+async></script>\s*\n?'
+  r'(?:[ \t]*<script\s+src="https://elfsightcdn\.com/platform\.js"\s+async></script>\s*\n?)?'
   r'[ \t]*<div\s+class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"[^>]*></div>\s*\n?',
   re.IGNORECASE,
+)
+RE_ELFSIGHT_FLOAT_WRAPPER = re.compile(
+  r'[ \t]*<div\s+id="reviews-widget"[^>]*>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_ELFSIGHT_RATING_FLOAT_WRAPPER = re.compile(
+  r'[ \t]*<div\s+id="rating-widget"[^>]*>[\s\S]*?</div>\s*</div>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
+)
+RE_ELFSIGHT_REVIEWS_EMBED_BLOCK = re.compile(
+  r'[ \t]*<section\s+id="reviews-embed"[^>]*>[\s\S]*?</section>\s*\n?',
+  re.DOTALL | re.IGNORECASE,
 )
 RE_ELFSIGHT_LEGACY_BADGE = re.compile(
   r'[ \t]*<div\s+class="elfsight-review-badge"[^>]*>[\s\S]*?</div>\s*</div>\s*\n?',
@@ -169,6 +189,9 @@ def process(filepath):
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
 
+    # 4b. Fix malformed <body> tag (missing closing '>')
+    html = re.sub(r'(<body\b[^>\n]*)(\s*)\n', r'\1>\n', html)
+
     # 5. Replace nav HTML
     if RE_TOPBAR.search(html):
         html = RE_TOPBAR.sub(STANDARD_NAV, html, count=1)
@@ -182,15 +205,31 @@ def process(filepath):
     # 6b. Elfsight Google Reviews widget: everywhere EXCEPT pages with forms
     # Remove any legacy/new blocks first
     html = RE_ELFSIGHT_WIDGET_BLOCK.sub('', html)
+    html = RE_ELFSIGHT_FLOAT_WRAPPER.sub('', html)
+    html = RE_ELFSIGHT_RATING_FLOAT_WRAPPER.sub('', html)
+    html = RE_ELFSIGHT_REVIEWS_EMBED_BLOCK.sub('', html)
     html = RE_ELFSIGHT_LEGACY_BADGE.sub('', html)
     html = RE_ELFSIGHT_LEGACY_APP.sub('', html)
 
-    should_show_widget = not has_form
-    if should_show_widget:
-      if '<footer class="site-footer">' in html:
-        html = html.replace('<footer class="site-footer">', ELFSIGHT_WIDGET_BLOCK + '\n\n<footer class="site-footer">', 1)
-      elif '</body>' in html:
-        html = html.replace('</body>', ELFSIGHT_WIDGET_BLOCK + '\n</body>', 1)
+    should_show_widgets = not has_form
+    if should_show_widgets:
+      if ELFSIGHT_SCRIPT not in html:
+        html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
+
+      # Embed reviews block before FAQ if possible (fallback: before footer)
+      inserted_reviews = False
+      faq_match = re.search(r'\n([ \t]*<section[^>]*\bid="faq"[^>]*>)', html, re.IGNORECASE)
+      if faq_match:
+        html = html[:faq_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[faq_match.start(1):]
+        inserted_reviews = True
+      else:
+        footer_match = re.search(r'\n([ \t]*<footer\b)', html, re.IGNORECASE)
+        if footer_match:
+          html = html[:footer_match.start(1)] + ELFSIGHT_REVIEWS_EMBED_BLOCK + '\n' + html[footer_match.start(1):]
+          inserted_reviews = True
+
+      if '</body>' in html:
+        html = html.replace('</body>', '\n' + ELFSIGHT_RATING_FLOAT_WRAPPER + '\n</body>', 1)
 
     # 6c. Google Places autocomplete only on pages with forms
     if has_form:
