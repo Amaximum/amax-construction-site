@@ -9,16 +9,6 @@ ROOT = r'c:\Users\maxim\Desktop\amax-Construction-site'
 SKIP_FILES = {'index-seo-2026.html', 'service-template.html', 'update_all_pages.py'}
 
 CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
-ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" async></script>'
-
-# Full reviews carousel (shown inline on every page)
-REVIEWS_SECTION = """\
-<section class="shell" style="margin:40px auto;">
-  <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb" data-elfsight-app-lazy></div>
-</section>"""
-
-# Floating badge (bottom-right corner, appears on every page)
-REVIEWS_BADGE = '<div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875" data-elfsight-app-lazy></div>'
 
 STANDARD_NAV = """\
 <div class="topbar-wrap shell">
@@ -93,6 +83,7 @@ STANDARD_FOOTER = """\
 # Regexes
 RE_STYLE_BLOCK = re.compile(r'[ \t]*<style[^>]*>[\s\S]*?</style>\s*\n?', re.DOTALL)
 RE_CSS_LINK    = re.compile(r'[ \t]*<link\s+rel="stylesheet"\s+href="[^"]*styles\.css"[^>]*>\s*\n?')
+RE_ELFSIGHT_SCRIPT = re.compile(r'[ \t]*<script\s+src="https://static\.elfsight\.com/platform/platform\.js"\s+async></script>\s*\n?')
 RE_TOPBAR      = re.compile(r'<div class="topbar-wrap shell">[\s\S]*?</header>\s*\n?[ \t]*</div>', re.DOTALL)
 RE_HEADER_BANNER = re.compile(r'[ \t]*<header[^>]*role="banner"[^>]*>[\s\S]*?</header>', re.DOTALL)
 RE_FOOTER      = re.compile(r'<footer[\s\S]*?</footer>', re.DOTALL)
@@ -123,11 +114,10 @@ def process(filepath):
     # 2. Remove existing (possibly wrong-path) CSS link
     html = RE_CSS_LINK.sub('', html)
 
-    # 3. Insert correct CSS link + Elfsight script after </title>
+    # 3. Insert correct CSS link after </title>
     if CSS_LINK not in html:
         html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
-    if ELFSIGHT_SCRIPT not in html:
-        html = html.replace('</title>', '</title>\n  ' + ELFSIGHT_SCRIPT, 1)
+    html = RE_ELFSIGHT_SCRIPT.sub('', html)
 
     # 4. Fix /amax-construction-site/ paths
     html = html.replace('/amax-construction-site/', '/')
@@ -142,10 +132,9 @@ def process(filepath):
     if RE_FOOTER.search(html):
         html = RE_FOOTER.sub(STANDARD_FOOTER, html, count=1)
 
-    # 6b. Inject reviews section + badge before footer (remove old ones first)
+    # 6b. Remove Elfsight reviews section + floating badge everywhere
     html = re.sub(r'<section class="shell"[^>]*>\s*<div class="elfsight-app-b029cad3[^<]*</div>\s*</section>', '', html)
     html = re.sub(r'<div class="elfsight-app-3935cedc[^"]*"[^>]*></div>', '', html)
-    html = html.replace('<footer class="site-footer">', REVIEWS_SECTION + '\n' + REVIEWS_BADGE + '\n<footer class="site-footer">', 1)
 
     # 7. Rename hero class (not on main index.html)
     if not is_main_index:
