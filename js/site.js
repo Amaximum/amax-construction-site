@@ -82,7 +82,13 @@
     if (widget.getAttribute('data-draggable-bound') === '1') return;
     widget.setAttribute('data-draggable-bound', '1');
 
-    var storageKey = 'amax_rating_widget_pos_v1';
+    // v2 bumps so existing saved positions reset to the new default corner.
+    var storageKey = 'amax_rating_widget_pos_v2';
+
+    // Make the widget ~10% smaller, anchored from bottom-right.
+    // (Transform is kept even after dragging.)
+    widget.style.transformOrigin = 'bottom right';
+    widget.style.transform = 'scale(0.9)';
 
     function ensureHandle() {
       var handle = document.getElementById('rating-widget-handle');
@@ -128,7 +134,8 @@
 
     function setPosition(left, top) {
       var rect = widget.getBoundingClientRect();
-      var margin = 8;
+      // User requested extreme corner placement.
+      var margin = 0;
       var maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
       var maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
 
@@ -171,7 +178,7 @@
         return;
       }
       var r = widget.getBoundingClientRect();
-      var initial = setPosition(r.left, r.top);
+      var initial = setPosition(window.innerWidth - r.width, window.innerHeight - r.height);
       savePosition(initial);
     })();
 
