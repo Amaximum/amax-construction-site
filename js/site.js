@@ -19,6 +19,26 @@
       var isOpen = siteNav.classList.toggle('open');
       menuBtn.setAttribute('aria-expanded', String(isOpen));
     });
+
+    function closeMenu() {
+      siteNav.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    // Close menu when navigating to an in-page anchor.
+    siteNav.addEventListener('click', function (e) {
+      var el = e && e.target;
+      while (el && el !== siteNav) {
+        if (el.tagName && String(el.tagName).toLowerCase() === 'a') {
+          var href = el.getAttribute('href') || '';
+          if (href && href.charAt(0) === '#') {
+            closeMenu();
+          }
+          break;
+        }
+        el = el.parentNode;
+      }
+    });
   }
 
   function initRevealOnScroll() {

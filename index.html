@@ -71,6 +71,8 @@
   }
   </script>
 
+  <link rel="icon" href="/img/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/img/logo.png">
 </head>
 <body>
   <div class="topbar-wrap shell">
@@ -454,88 +456,6 @@
     </div>
   </div>
 </footer>
-
-  <script>
-
-    menuBtn.addEventListener('click', () => {
-      const isOpen = siteNav.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(isOpen));
-    });
-
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener('click', () => {
-        siteNav.classList.remove('open');
-        menuBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-
-    islandNodes.forEach((island) => {
-      island.addEventListener('mousemove', (event) => {
-        const rect = island.getBoundingClientRect();
-        const x = ((event.clientX - rect.left) / rect.width) * 100;
-        const y = ((event.clientY - rect.top) / rect.height) * 100;
-        island.style.setProperty('--mx', `${x}%`);
-        island.style.setProperty('--my', `${y}%`);
-      });
-
-      island.addEventListener('mouseleave', () => {
-        island.style.setProperty('--mx', '50%');
-        island.style.setProperty('--my', '50%');
-      });
-    });
-
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.14 });
-
-    revealNodes.forEach((node, index) => {
-      node.style.transitionDelay = `${Math.min(index * 40, 380)}ms`;
-      revealObserver.observe(node);
-    });
-
-    // Image gallery rotation with beautiful transitions
-    const galleries = document.querySelectorAll('.card-gallery');
-    
-    galleries.forEach((gallery, galleryIndex) => {
-      const images = gallery.querySelectorAll('img');
-      if (images.length === 0) return;
-      
-      let currentIndex = 0;
-      images[currentIndex].classList.add('active');
-      
-      const rotateImages = () => {
-        const current = images[currentIndex];
-        const nextIndex = (currentIndex + 1) % images.length;
-        const next = images[nextIndex];
-        
-        // Start fading out current image
-        current.classList.add('fading-out');
-        current.classList.remove('active');
-        
-        // Start fading in next image
-        next.classList.add('active');
-        next.classList.remove('fading-out');
-        
-        currentIndex = nextIndex;
-      };
-      
-      // Stagger the start time for each gallery (0-3 seconds)
-      const startDelay = (galleryIndex * 250) % 3000;
-      // Rotate every 4.5 seconds
-      const rotateInterval = 4500;
-      
-      setTimeout(() => {
-        setInterval(rotateImages, rotateInterval);
-      }, startDelay);
-    });
-
-  </script>
-
 <div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>
 </div>
 </body>

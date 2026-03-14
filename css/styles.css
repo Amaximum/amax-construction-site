@@ -2607,3 +2607,67 @@ section {
     margin: 0 0 clamp(32px, 6vw, 60px);
   }
 }
+
+/* ============================================================
+   MOBILE/TAP HARDENING
+   ============================================================ */
+
+/* On touch devices, avoid continuous transforms on large containers.
+   (iOS Safari can occasionally miss taps inside animated transform layers.) */
+@media (hover: none), (pointer: coarse) {
+  main .island:nth-of-type(1),
+  main .island:nth-of-type(2),
+  main .island:nth-of-type(3),
+  main .island:nth-of-type(4) {
+    animation: none !important;
+  }
+
+  .island {
+    will-change: auto;
+  }
+
+  .island:hover {
+    transform: none;
+  }
+}
+
+/* Fix cards inside dark/even islands on small screens (min-width/flex overrides can break wrapping). */
+@media (max-width: 760px) {
+  main .island:nth-of-type(even) .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  main .island:nth-of-type(even) .cards .card {
+    flex: initial;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 560px) {
+  main .island:nth-of-type(even) .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  #rating-widget {
+    right: 10px !important;
+    bottom: 10px !important;
+    max-width: 180px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  #rating-widget {
+    max-width: 160px !important;
+  }
+}
+
+/* If muted text is used inside the orange hero banner, ensure contrast. */
+.page-hero .muted {
+  color: rgba(255, 255, 255, 0.92) !important;
+}

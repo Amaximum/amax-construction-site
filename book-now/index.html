@@ -15,6 +15,17 @@
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
   <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="/img/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/img/logo.png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "aMaximum Construction",
+      "url": "https://amaximumconstruction.com/",
+      "logo": "https://amaximumconstruction.com/img/logo.png"
+    }
+  </script>
 </head>
 <body>
   <div class="topbar-wrap shell">
@@ -356,11 +367,26 @@
           var response = await fetch(ajaxAction, {
             method: 'POST',
             headers: { 'Accept': 'application/json' },
+            referrerPolicy: 'no-referrer-when-downgrade',
             body: formData,
           });
 
           if (!response.ok) {
             setStatus('Could not send. Please try again in a moment.');
+            return;
+          }
+
+          var result = null;
+          try {
+            result = await response.json();
+          } catch (e) {
+            result = null;
+          }
+
+          var success = result && (result.success === true || result.success === 'true');
+          if (!success) {
+            var message = (result && result.message) ? String(result.message) : 'Could not send. Please try again.';
+            setStatus(message);
             return;
           }
 
