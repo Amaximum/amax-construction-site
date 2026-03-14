@@ -814,6 +814,24 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       text-align: center;
+      min-width: 0;
+    }
+
+    /* Allow CTA grid children to shrink (prevents right-side clipping) */
+    .cta > * { min-width: 0; }
+
+    /* Long emails (no spaces) must not overflow the island on small screens */
+    .contact-box .btn {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .contact-box .btn.btn-secondary {
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      line-height: 1.2;
     }
 
     .contact-box strong { display: block; margin-bottom: 8px; }
