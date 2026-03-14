@@ -56,6 +56,7 @@
           <input type="hidden" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_replyto" value="">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-row">
             <div class="form-group">
@@ -193,6 +194,35 @@
       if (consultDateInput) {
         consultDateInput.setAttribute('min', new Date().toISOString().split('T')[0]);
       }
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var form = document.getElementById('bookingForm');
+      if (!form) return;
+
+      form.addEventListener('submit', function (e) {
+        var emailInput = document.getElementById('clientEmail');
+        var replyToInput = form.querySelector('input[name="_replyto"]');
+        if (replyToInput && emailInput && emailInput.value) {
+          replyToInput.value = emailInput.value;
+        }
+
+        var fileInput = document.getElementById('projectFiles');
+        if (!fileInput || !fileInput.files || !fileInput.files.length) return;
+
+        var maxBytes = 10 * 1024 * 1024;
+        var totalBytes = 0;
+        for (var i = 0; i < fileInput.files.length; i++) {
+          totalBytes += fileInput.files[i].size || 0;
+        }
+
+        if (totalBytes > maxBytes) {
+          e.preventDefault();
+          alert('Attachments are too large. Please keep total upload size under 10MB (or send without attachments).');
+        }
+      });
     })();
   </script>
 
