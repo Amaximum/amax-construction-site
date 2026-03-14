@@ -55,7 +55,6 @@
           <input type="hidden" name="_subject" value="New BOOK NOW request">
           <input type="hidden" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_replyto" value="">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-row">
@@ -125,7 +124,7 @@
           <div class="form-group">
             <label for="projectFiles">Attach Photos or Documents</label>
             <input type="file" id="projectFiles" name="attachment" multiple accept="image/*,.pdf,.doc,.docx">
-            <small style="color: var(--muted); font-size: 13px; margin-top: 4px; display:block;">
+            <small id="attachmentHelp" style="color: var(--muted); font-size: 13px; margin-top: 4px; display:block;" aria-live="polite">
               You can attach photos of the project site, plans, or inspiration images (max total upload size 10MB)
             </small>
           </div>
@@ -192,7 +191,9 @@
     (function () {
       var consultDateInput = document.getElementById('consultDate');
       if (consultDateInput) {
-        consultDateInput.setAttribute('min', new Date().toISOString().split('T')[0]);
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        consultDateInput.setAttribute('min', now.toISOString().split('T')[0]);
       }
     })();
   </script>
@@ -202,6 +203,45 @@
       var form = document.getElementById('bookingForm');
       if (!form) return;
 
+      var fileInput = document.getElementById('projectFiles');
+      var attachmentHelp = document.getElementById('attachmentHelp');
+      var submitButton = form.querySelector('button[type="submit"]');
+      var maxBytes = 10 * 1024 * 1024;
+
+      function getTotalAttachmentBytes() {
+        if (!fileInput || !fileInput.files || !fileInput.files.length) return 0;
+        var totalBytes = 0;
+        for (var i = 0; i < fileInput.files.length; i++) {
+          totalBytes += fileInput.files[i].size || 0;
+        }
+        return totalBytes;
+      }
+
+      function updateAttachmentUi() {
+        if (!attachmentHelp || !submitButton) return;
+
+        var totalBytes = getTotalAttachmentBytes();
+        if (!totalBytes) {
+          submitButton.disabled = false;
+          attachmentHelp.textContent = 'You can attach photos of the project site, plans, or inspiration images (max total upload size 10MB)';
+          return;
+        }
+
+        var totalMb = totalBytes / (1024 * 1024);
+        if (totalBytes > maxBytes) {
+          submitButton.disabled = true;
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB. Please keep total under 10MB (or submit without attachments).';
+        } else {
+          submitButton.disabled = false;
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB (max 10MB).';
+        }
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', updateAttachmentUi);
+        updateAttachmentUi();
+      }
+
       form.addEventListener('submit', function (e) {
         var emailInput = document.getElementById('clientEmail');
         var replyToInput = form.querySelector('input[name="_replyto"]');
@@ -209,17 +249,10 @@
           replyToInput.value = emailInput.value;
         }
 
-        var fileInput = document.getElementById('projectFiles');
-        if (!fileInput || !fileInput.files || !fileInput.files.length) return;
-
-        var maxBytes = 10 * 1024 * 1024;
-        var totalBytes = 0;
-        for (var i = 0; i < fileInput.files.length; i++) {
-          totalBytes += fileInput.files[i].size || 0;
-        }
-
+        var totalBytes = getTotalAttachmentBytes();
         if (totalBytes > maxBytes) {
           e.preventDefault();
+          updateAttachmentUi();
           alert('Attachments are too large. Please keep total upload size under 10MB (or send without attachments).');
         }
       });

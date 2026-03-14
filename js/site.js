@@ -13,6 +13,49 @@
     });
   }
 
+  function initRevealOnScroll() {
+    var nodes = document.querySelectorAll('.reveal');
+    if (!nodes || !nodes.length) return;
+
+    var hasIntersectionObserver = false;
+    try {
+      hasIntersectionObserver = typeof window.IntersectionObserver !== 'undefined';
+    } catch (e) {
+      hasIntersectionObserver = false;
+    }
+
+    if (!hasIntersectionObserver) {
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].classList.add('in-view');
+      }
+      return;
+    }
+
+    var revealObserver = new IntersectionObserver(
+      function (entries) {
+        for (var j = 0; j < entries.length; j++) {
+          var entry = entries[j];
+          if (entry && entry.isIntersecting && entry.target) {
+            entry.target.classList.add('in-view');
+            revealObserver.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12 }
+    );
+
+    for (var k = 0; k < nodes.length; k++) {
+      var node = nodes[k];
+      if (!node) continue;
+      if (node.classList.contains('in-view')) continue;
+
+      if (!node.style.transitionDelay) {
+        node.style.transitionDelay = Math.min(k * 40, 320) + 'ms';
+      }
+      revealObserver.observe(node);
+    }
+  }
+
   function initCardGalleries() {
     var galleries = document.querySelectorAll('.card-gallery');
     if (!galleries || !galleries.length) return;
@@ -71,6 +114,7 @@
   function initSite() {
     bindMobileMenu();
     initCardGalleries();
+    initRevealOnScroll();
   }
 
   if (document.readyState === 'loading') {
