@@ -11,6 +11,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/expert-deck-building-in-aurora/">
   <title>Expert Deck Building in Aurora | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -133,27 +134,6 @@
   <script>
 
 // Mobile menu
-const menuBtn = document.getElementById('menuBtn');
-const siteNav = document.getElementById('siteNav');
-if (menuBtn && siteNav) {
-  menuBtn.addEventListener('click', () => {
-    siteNav.classList.toggle('open');
-  });
-}
-  
-  // Reveal on scroll
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((node, i) => {
-    node.style.transitionDelay = Math.min(i * 40, 320) + 'ms';
-    revealObserver.observe(node);
-  });
 </script>
 <section id="reviews-embed" class="shell">
   <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>

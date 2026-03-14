@@ -11,6 +11,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/blog/">
   <title>Construction & Renovation Blog | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -341,18 +342,6 @@
 </footer>
 
 <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const siteNav = document.getElementById('siteNav');
-  menuBtn.addEventListener('click', () => {
-    const isOpen = siteNav.classList.toggle('open');
-    menuBtn.setAttribute('aria-expanded', String(isOpen));
-  });
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', () => {
-      siteNav.classList.remove('open');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    });
-  });
 
   // Reveal on scroll
   const revealObserver = new IntersectionObserver((entries) => {

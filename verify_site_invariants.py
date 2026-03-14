@@ -34,6 +34,8 @@ REVIEWS_APP_CLASS = "elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"
 BOOKING_DIR = "book-now"
 BOOKING_PAGE = f"{BOOKING_DIR}/index.html"
 
+SITE_JS_RE = re.compile(r"<script[^>]+src=[\"']/js/site\.js[\"'][^>]*>\s*</script>", re.I)
+
 GOOGLE_PLACES_RE = re.compile(r"maps\.googleapis\.com/maps/api/js\?[^\"']*libraries=places", re.I)
 GOOGLE_PLACES_CB_RE = re.compile(r"callback=initAddressAutocomplete", re.I)
 
@@ -133,6 +135,9 @@ def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], 
     warnings: list[Finding] = []
 
     is_booking = rel.lower() == BOOKING_PAGE
+
+    if not SITE_JS_RE.search(html):
+        errors.append(Finding(rel, "Missing global /js/site.js include (mobile menu may not work)"))
 
     ok, reason = has_elfsight_loader_ok(html)
     if not ok:

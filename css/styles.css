@@ -272,12 +272,17 @@
     /* ── Alternating light / dark islands ──────────────── */
     main .island:nth-of-type(even) {
       background: #1a2236 !important;
+      color: #ffffff;
       border-color: rgba(255, 255, 255, 0.07) !important;
       box-shadow:
         0 4px 32px rgba(0, 0, 0, 0.28),
         0 0 0 1px rgba(255, 255, 255, 0.06) inset,
         0 0 90px rgba(79, 140, 255, 0.12),
         0 0 110px rgba(255, 107, 53, 0.10);
+    }
+    main .island:nth-of-type(even) p,
+    main .island:nth-of-type(even) li {
+      color: rgba(255, 255, 255, 0.75);
     }
     main .island:nth-of-type(even) .section-head h2,
     main .island:nth-of-type(even) h2 {
@@ -290,6 +295,7 @@
     main .island:nth-of-type(even) .card {
       background: #ffffff;
       border-color: rgba(255, 255, 255, 0.12);
+      color: var(--text);
     }
     main .island:nth-of-type(even) .card h3 a { color: var(--text); }
     main .island:nth-of-type(even) .card h3 a:hover { color: var(--primary); }

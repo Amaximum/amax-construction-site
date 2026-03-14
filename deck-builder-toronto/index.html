@@ -10,6 +10,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/deck-builder-toronto/">
   <title>Professional Deck Builder Toronto | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
   {
@@ -115,27 +116,6 @@
     f.onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));const s=encodeURIComponent('Deck Building - Toronto');const body=encodeURIComponent(`Toronto Deck Consultation\n\nName: ${d.name}\nPhone: ${d.phone}\nEmail: ${d.email}\nAddress: ${d.address}\nDate: ${d.date}\nTime: ${d.time}\n\nDetails:\n${d.details||'N/A'}`);window.location.href=`mailto:amaximumconstructioncorp@gmail.com?subject=${s}&body=${body}`;alert('Opening email...');f.reset();setTimeout(close,500)};
 
 // Mobile menu
-const menuBtn = document.getElementById('menuBtn');
-const siteNav = document.getElementById('siteNav');
-if (menuBtn && siteNav) {
-  menuBtn.addEventListener('click', () => {
-    siteNav.classList.toggle('open');
-  });
-}
-  
-  // Reveal on scroll
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((node, i) => {
-    node.style.transitionDelay = Math.min(i * 40, 320) + 'ms';
-    revealObserver.observe(node);
-  });
 </script>
 <section id="reviews-embed" class="shell">
   <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>

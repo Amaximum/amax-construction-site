@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plumbing Emergency Guide: What to Do First | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <meta name="description" content="What to do first during a home plumbing emergency — shut-off valves, immediate steps to reduce water damage, and when to call a plumber.">
   <link rel="canonical" href="https://amaximumconstruction.com/blog/plumbing-emergency-guide/">
@@ -206,18 +207,6 @@
 </footer>
 
 <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const siteNav = document.getElementById('siteNav');
-  menuBtn.addEventListener('click', () => {
-    const isOpen = siteNav.classList.toggle('open');
-    menuBtn.setAttribute('aria-expanded', String(isOpen));
-  });
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', () => {
-      siteNav.classList.remove('open');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    });
-  });
 
   // Reveal on scroll
   const revealObserver = new IntersectionObserver((entries) => {

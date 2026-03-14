@@ -13,6 +13,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/locations/toronto/">
   <title>Construction & Renovation Services in Toronto, Ontario | aMaximum</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <!-- LocalBusiness Schema for Toronto -->
   <script type="application/ld+json">
@@ -339,27 +340,6 @@
   </div>
 </footer>
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const siteNav = document.getElementById('siteNav');
-    if (menuBtn && siteNav) {
-      menuBtn.addEventListener('click', () => {
-        siteNav.classList.toggle('open');
-      });
-    }
-  
-  // Reveal on scroll
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((node, i) => {
-    node.style.transitionDelay = Math.min(i * 40, 320) + 'ms';
-    revealObserver.observe(node);
-  });
 </script>
 
 <div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">  <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>

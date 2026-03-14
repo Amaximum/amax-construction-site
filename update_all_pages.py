@@ -15,6 +15,8 @@ CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
 # ensuring the widget divs are present when Elfsight scans the DOM.
 ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" defer></script>'
 
+SITE_JS = '<script src="/js/site.js" defer></script>'
+
 # Elfsight widgets
 ELFSIGHT_REVIEWS_APP_CLASS = 'elfsight-app-b029cad3-6f49-425c-9793-f556870797bb'
 ELFSIGHT_RATING_APP_CLASS = 'elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875'
@@ -197,6 +199,63 @@ RE_AUTOCOMPLETE_INLINE = re.compile(
   re.IGNORECASE,
 )
 
+RE_SITE_JS = re.compile(r'[ \t]*<script\s+src="/js/site\.js"[^>]*></script>\s*\n?', re.IGNORECASE)
+
+RE_SCRIPT_BLOCK = re.compile(r'(<script\b[^>]*>)([\s\S]*?)(</script>)', re.IGNORECASE)
+
+
+def _strip_mobile_menu_js_from_script(script_text: str) -> str:
+  """Remove legacy inline mobile-menu JS snippet from a <script> block.
+
+  Some pages have an inline snippet that binds #menuBtn to toggle .open on #siteNav.
+  If we also include /js/site.js, duplicate listeners can cause double-toggles.
+  We strip only the menu snippet, leaving the rest of the script intact.
+  """
+  lower = script_text.lower()
+  if "getelementbyid('menubtn')" not in lower and 'getelementbyid("menubtn")' not in lower:
+    return script_text
+  if "getelementbyid('sitenav')" not in lower and 'getelementbyid("sitenav")' not in lower:
+    return script_text
+
+  # Find the first occurrence of the menuBtn binding.
+  anchors = [lower.find("getelementbyid('menubtn')"), lower.find('getelementbyid("menubtn")')]
+  anchors = [a for a in anchors if a != -1]
+  if not anchors:
+    return script_text
+  anchor = min(anchors)
+
+  # Start at the beginning of the line containing the anchor.
+  start = script_text.rfind('\n', 0, anchor)
+  start = 0 if start == -1 else start + 1
+
+  # Attempt to remove the surrounding if(...) { ... } block.
+  # We look for an "if" before the anchor, then match braces.
+  if_pos = lower.rfind('if', 0, anchor)
+  if if_pos != -1:
+    brace_open = script_text.find('{', if_pos)
+    if brace_open != -1:
+      depth = 0
+      i = brace_open
+      while i < len(script_text):
+        ch = script_text[i]
+        if ch == '{':
+          depth += 1
+        elif ch == '}':
+          depth -= 1
+          if depth == 0:
+            end = i + 1
+            # consume trailing semicolon/whitespace/newlines
+            while end < len(script_text) and script_text[end] in ' \t;\r\n':
+              end += 1
+            return script_text[:start] + script_text[end:]
+        i += 1
+
+  # Fallback: remove a small window from start through the next blank line.
+  end = script_text.find('\n\n', start)
+  if end == -1:
+    end = len(script_text)
+  return script_text[:start] + script_text[end:]
+
 
 def _button_to_booking_link(match: re.Match) -> str:
   attrs = match.group('attrs')
@@ -302,8 +361,19 @@ def process(filepath):
     if CSS_LINK not in html:
       html = html.replace('</title>', '</title>\n  ' + CSS_LINK, 1)
 
+    # 4a. Insert global site JS (always)
+    html = RE_SITE_JS.sub('', html)
+    if SITE_JS not in html:
+      html = html.replace('</title>', '</title>\n  ' + SITE_JS, 1)
+
     # Always strip Elfsight scripts; we'll re-add only on pages without forms
     html = RE_ELFSIGHT_ANY_SCRIPT.sub('', html)
+
+    # Strip legacy inline mobile-menu snippets to avoid double-toggle once /js/site.js is present.
+    def strip_menu_in_script(m: re.Match) -> str:
+      open_tag, body, close_tag = m.group(1), m.group(2), m.group(3)
+      return open_tag + _strip_mobile_menu_js_from_script(body) + close_tag
+    html = RE_SCRIPT_BLOCK.sub(strip_menu_in_script, html)
 
     # Strip booking modal UI from non-booking pages (form lives on /book-now/)
     if not is_booking_page:

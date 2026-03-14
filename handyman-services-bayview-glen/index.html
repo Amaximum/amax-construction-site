@@ -13,6 +13,7 @@
   <link rel="canonical" href="https://amaximumconstruction.com/handyman-services-bayview-glen/">
   <title>Handyman Services in Bayview Glen | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
 [
@@ -142,40 +143,6 @@
   </div>
 </div>
 <script>
-const menuBtn = document.getElementById('menuBtn');
-const siteNav = document.getElementById('siteNav');
-if (menuBtn && siteNav) {
-  menuBtn.addEventListener('click', () => {
-    const exp = menuBtn.getAttribute('aria-expanded') === 'true';
-    menuBtn.setAttribute('aria-expanded', !exp);
-    siteNav.classList.toggle('open');
-  });
-}
-const m  = document.getElementById('bookingModal');
-const b  = document.getElementById('bookingBtn');
-const x  = document.getElementById('modalClose');
-const ov = document.getElementById('modalOverlay');
-const cc = document.getElementById('cancelBtn');
-const f  = document.getElementById('bookingForm');
-const bd = document.getElementById('bookDate');
-if (bd) bd.min = new Date().toISOString().split('T')[0];
-const openModal  = () => { m.classList.add('active');    document.body.style.overflow = 'hidden'; };
-const closeModal = () => { m.classList.remove('active'); document.body.style.overflow = '';       };
-if (b)  b.addEventListener('click', openModal);
-if (x)  x.addEventListener('click', closeModal);
-if (ov) ov.addEventListener('click', closeModal);
-if (cc) cc.addEventListener('click', closeModal);
-if (f) f.addEventListener('submit', e => {
-  e.preventDefault();
-  const d = Object.fromEntries(new FormData(f));
-  const subj = encodeURIComponent(d.service || document.title);
-  const body = encodeURIComponent(
-    `Name: ${d.name}\nPhone: ${d.phone}\nEmail: ${d.email}\nAddress: ${d.address}\nDate: ${d.date}\nTime: ${d.time}\n\n${d.details || 'N/A'}`
-  );
-  window.location.href = `mailto:amaximumconstructioncorp@gmail.com?subject=${subj}&body=${body}`;
-  f.reset();
-  setTimeout(closeModal, 500);
-});
 
   // Reveal on scroll
   const revealObserver = new IntersectionObserver((entries) => {

@@ -7,6 +7,7 @@
 <link rel="canonical" href="https://amaximumconstruction.com/deck-contractor-burlington/">
 <title>Deck Contractor Burlington | aMaximum Construction</title>
   <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script src="/js/site.js" defer></script>
   <link rel="stylesheet" href="/css/styles.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","name":"aMaximum - Deck Contractor Burlington","url":"https://amaximumconstruction.com/deck-contractor-burlington/","areaServed":{"@type":"City","name":"Burlington","addressRegion":"ON"},"serviceType":"Deck Construction"}
@@ -74,13 +75,6 @@
 const m=document.getElementById('bookingModal'),b=document.getElementById('bookingBtn'),x=document.getElementById('modalClose'),o=document.getElementById('modalOverlay'),c=document.getElementById('c'),f=document.getElementById('bookingForm');document.getElementById('d').min=new Date().toISOString().split('T')[0];b.onclick=()=>{m.classList.add('active');document.body.style.overflow='hidden'};const close=()=>{m.classList.remove('active');document.body.style.overflow=''};x.onclick=close;o.onclick=close;c.onclick=close;f.onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));window.location.href=`mailto:amaximumconstructioncorp@gmail.com?subject=${encodeURIComponent('Deck-Burlington')}&body=${encodeURIComponent(`Burlington Deck\nName: ${d.name}\nPhone: ${d.phone}\nEmail: ${d.email}\nAddress: ${d.address}\nDate: ${d.date}\nTime: ${d.time}\n${d.details||''}`)}`;f.reset();setTimeout(close,500)};
 
 // Mobile menu
-const menuBtn = document.getElementById('menuBtn');
-const siteNav = document.getElementById('siteNav');
-if (menuBtn && siteNav) {
-  menuBtn.addEventListener('click', () => {
-    siteNav.classList.toggle('open');
-  });
-}
 
   // Reveal on scroll
   const revealObserver = new IntersectionObserver((entries) => {
