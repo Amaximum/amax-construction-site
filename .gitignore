@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# Build outputs
+_site/
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
