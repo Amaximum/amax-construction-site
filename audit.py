@@ -17,12 +17,16 @@ class LinkParser(HTMLParser):
     def __init__(self):
         super().__init__()
         self.links = []           # all href values
+        self.nav_links = []       # hrefs inside <nav id="siteNav">
+        self.footer_links = []    # hrefs inside <footer class="site-footer">...
         self.has_doctype = False
         self.has_html_tag = False
         self.has_body_close = False
         self.has_site_nav = False
         self.has_site_footer = False
         self._raw = ""
+        self._in_site_nav = False
+        self._in_site_footer = False
 
     def feed(self, data):
         self._raw = data
@@ -31,23 +35,54 @@ class LinkParser(HTMLParser):
         self.has_doctype = "<!doctype html" in lower
         self.has_html_tag = "<html" in lower
         self.has_body_close = "</body>" in lower
-        self.has_site_nav = 'id="sitenav"' in lower or "id='sitenav'" in lower
-        self.has_site_footer = 'class="site-footer"' in lower or "site-footer" in data
+        # has_site_nav / has_site_footer are detected via parsed tags for precision
         super().feed(data)
 
+    @staticmethod
+    def _attrs_dict(attrs):
+        return {k: v for k, v in attrs}
+
+    @staticmethod
+    def _class_has(class_value: str | None, token: str) -> bool:
+        if not class_value:
+            return False
+        return token in class_value.split()
+
     def handle_starttag(self, tag, attrs):
+        attrs_d = self._attrs_dict(attrs)
+
+        if tag == "nav":
+            if (attrs_d.get("id") or "") == "siteNav":
+                self._in_site_nav = True
+                self.has_site_nav = True
+
+        if tag == "footer":
+            if self._class_has(attrs_d.get("class"), "site-footer"):
+                self._in_site_footer = True
+                self.has_site_footer = True
+
         if tag == "a":
-            for name, val in attrs:
-                if name == "href" and val:
-                    self.links.append(val)
+            val = attrs_d.get("href")
+            if val:
+                self.links.append(val)
+                if self._in_site_nav:
+                    self.nav_links.append(val)
+                if self._in_site_footer:
+                    self.footer_links.append(val)
+
+    def handle_endtag(self, tag):
+        if tag == "nav" and self._in_site_nav:
+            self._in_site_nav = False
+        if tag == "footer" and self._in_site_footer:
+            self._in_site_footer = False
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
-def resolve_path(href: str) -> Path | None:
+def resolve_paths(href: str) -> list[Path] | None:
     """
     Convert a root-relative href to a filesystem Path.
     Returns None if the path should be skipped (anchor, external, mailto).
-    Returns Path to check (may not exist).
+    Returns candidate Paths to check (may not exist).
     """
     if not href.startswith("/"):
         return None
@@ -55,31 +90,36 @@ def resolve_path(href: str) -> Path | None:
         return None  # anchor
     if href.startswith("//") or href.startswith("/http"):
         return None  # protocol-relative or weird
-    # Strip anchor fragment
-    clean = href.split("#")[0].rstrip("/")
-    if not clean or clean == "":
-        # bare "/" → index.html
-        return ROOT / "index.html"
-    # Try as-is + index.html, then as .html
-    candidate_dir = ROOT / clean.lstrip("/") / "index.html"
-    candidate_file = ROOT / (clean.lstrip("/") + ".html")
-    # We return both options; caller checks existence
-    return (candidate_dir, candidate_file)
+    clean = href.split("#")[0].split("?")[0]
+    if clean in ("", "/"):
+        return [ROOT / "index.html"]
+
+    # ".../" should map to ".../index.html"
+    if clean.endswith("/"):
+        return [ROOT / clean.lstrip("/") / "index.html"]
+
+    path_part = clean.lstrip("/")
+    suffix = Path(path_part).suffix.lower()
+
+    # If the URL already points to a file (e.g. "/foo/bar.html"), check it as-is.
+    if suffix:
+        return [ROOT / path_part]
+
+    # Otherwise, allow both "dir/index.html" and "file.html" forms.
+    return [
+        ROOT / path_part / "index.html",
+        ROOT / (path_part + ".html"),
+    ]
 
 def link_exists(href: str) -> tuple[bool, str]:
     """Return (exists, resolved_path_str)."""
-    result = resolve_path(href)
-    if result is None:
+    candidates = resolve_paths(href)
+    if candidates is None:
         return (True, "skipped")
-    if isinstance(result, Path):
-        # bare "/"
-        return (result.exists(), str(result))
-    dir_path, file_path = result
-    if dir_path.exists():
-        return (True, str(dir_path))
-    if file_path.exists():
-        return (True, str(file_path))
-    return (False, f"{dir_path} OR {file_path}")
+    for p in candidates:
+        if p.exists():
+            return (True, str(p))
+    return (False, " OR ".join(str(p) for p in candidates))
 
 def collect_html_files():
     return sorted(ROOT.rglob("*.html"))
@@ -95,25 +135,6 @@ NAV_LINKS = [
     "/#contact",    # skip
 ]
 
-# ── FOOTER expected links ─────────────────────────────────────────────────────
-
-FOOTER_SERVICE_LINKS = [
-    "/deck-builder-toronto/",
-    "/deck-builder-markham/",
-    "/deck-builder-richmond-hill/",
-    "/deck-builder-vaughan/",
-    "/deck-builder-mississauga/",
-    "/services/handyman-plumbing.html",
-]
-
-FOOTER_AREA_LINKS = [
-    "/locations/",
-    "/locations/markham/",
-    "/locations/richmond-hill/",
-    "/locations/vaughan/",
-    "/locations/mississauga/",
-]
-
 # ── MAIN AUDIT ────────────────────────────────────────────────────────────────
 
 def audit():
@@ -125,7 +146,7 @@ def audit():
     structural_issues = []          # (path, list_of_issues)
     all_broken_links = defaultdict(list)  # href → [page, page, ...]
     nav_issues = defaultdict(list)  # href → [page, page, ...]
-    footer_issues = defaultdict(list)
+    footer_broken = defaultdict(list)  # href → [page, page, ...]
     homepage_broken = []
     total_internal_links = 0
 
@@ -175,21 +196,18 @@ def audit():
         for nav_href in NAV_LINKS:
             if nav_href.startswith("/#"):
                 continue
-            if nav_href not in parser.links:
+            if nav_href not in parser.nav_links:
                 nav_issues[nav_href].append(str(rel))
 
-        # ── Footer link audit ─────────────────────────────────────────────
-        for fl in FOOTER_SERVICE_LINKS + FOOTER_AREA_LINKS:
-            exists, _ = link_exists(fl)
+        # ── Footer link audit (actual footer links used on the page) ─────
+        for href in parser.footer_links:
+            if not href.startswith("/") or href.startswith("//"):
+                continue
+            if href.startswith("/#"):
+                continue
+            exists, _ = link_exists(href)
             if not exists:
-                footer_issues[fl].append("DESTINATION_MISSING")
-
-    # ── Check footer link destinations once ──────────────────────────────
-    footer_dest_broken = []
-    for fl in FOOTER_SERVICE_LINKS + FOOTER_AREA_LINKS:
-        exists, _ = link_exists(fl)
-        if not exists:
-            footer_dest_broken.append(fl)
+                footer_broken[href].append(str(rel))
 
     # ── Homepage specific ─────────────────────────────────────────────────
     homepage = ROOT / "index.html"
@@ -261,11 +279,16 @@ def audit():
         print("    None — all homepage links resolve correctly!")
 
     print(f"\n[7] FOOTER LINK DESTINATIONS:")
-    if footer_dest_broken:
-        for fl in footer_dest_broken:
-            print(f"    BROKEN: {fl}")
+    if footer_broken:
+        broken_sorted = sorted(footer_broken.items(), key=lambda x: -len(x[1]))
+        for href, pages in broken_sorted:
+            print(f"    BROKEN: {href}  (referenced on {len(pages)} page(s))")
+            for p in pages[:10]:
+                print(f"      {p}")
+            if len(pages) > 10:
+                print(f"      ... and {len(pages)-10} more")
     else:
-        print("    All footer link destinations exist!")
+        print("    None — all footer link destinations resolve correctly!")
 
     print("\n" + "=" * 70)
     print("END OF REPORT")

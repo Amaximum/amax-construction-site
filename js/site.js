@@ -1,4 +1,12 @@
 (function () {
+  try {
+    if (document && document.documentElement) {
+      document.documentElement.classList.add('js');
+    }
+  } catch (e) {
+    // no-op
+  }
+
   function bindMobileMenu() {
     var menuBtn = document.getElementById('menuBtn');
     var siteNav = document.getElementById('siteNav');
