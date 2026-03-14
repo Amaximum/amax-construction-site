@@ -1,0 +1,16 @@
+{
+  "name": "amax-construction-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "audit": "python audit.py",
+    "verify": "python verify_site_invariants.py",
+    "wrap:dry": "node tools/wrap-site.mjs --dry-run",
+    "wrap:write": "node tools/wrap-site.mjs --write"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "globby": "^14.1.0"
+  }
+}

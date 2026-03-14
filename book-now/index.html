@@ -51,12 +51,15 @@
         <h2>Schedule Your Consultation</h2>
         <p class="muted">Fill out the form below and we’ll contact you to confirm your appointment.</p>
 
-        <form id="bookingForm" class="booking-form" action="https://formsubmit.co/amaximumconstructioncorp@gmail.com" method="POST" enctype="multipart/form-data">
+        <form id="bookingForm" class="booking-form" action="https://formsubmit.co/amaximumconstructioncorp@gmail.com" method="POST" enctype="multipart/form-data" novalidate>
           <input type="hidden" name="_subject" value="New BOOK NOW request">
           <input type="hidden" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_replyto" value="">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p id="formError" class="form-error" role="alert" aria-live="polite" hidden>
+            Please fill in all required fields.
+          </p>
           <div class="form-row">
             <div class="form-group">
               <label for="clientName">Full Name *</label>
@@ -206,7 +209,56 @@
       var fileInput = document.getElementById('projectFiles');
       var attachmentHelp = document.getElementById('attachmentHelp');
       var submitButton = form.querySelector('button[type="submit"]');
+      var formError = document.getElementById('formError');
       var maxBytes = 10 * 1024 * 1024;
+
+      function clearValidationUi() {
+        if (formError) formError.hidden = true;
+        var fields = form.querySelectorAll('.is-invalid');
+        for (var i = 0; i < fields.length; i++) {
+          fields[i].classList.remove('is-invalid');
+          fields[i].removeAttribute('aria-invalid');
+        }
+      }
+
+      function validateRequiredFields() {
+        clearValidationUi();
+
+        var requiredSelectors = [
+          '#clientName',
+          '#clientPhone',
+          '#clientEmail',
+          '#clientAddress',
+          '#serviceType',
+          '#consultDate',
+          '#timeSlot'
+        ];
+
+        var firstInvalid = null;
+        for (var i = 0; i < requiredSelectors.length; i++) {
+          var el = document.querySelector(requiredSelectors[i]);
+          if (!el) continue;
+
+          var value = (el.value || '').trim();
+          if (!value) {
+            el.classList.add('is-invalid');
+            el.setAttribute('aria-invalid', 'true');
+            if (!firstInvalid) firstInvalid = el;
+          }
+        }
+
+        if (firstInvalid) {
+          if (formError) formError.hidden = false;
+          try {
+            firstInvalid.focus({ preventScroll: true });
+          } catch (e) {
+            firstInvalid.focus();
+          }
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return false;
+        }
+        return true;
+      }
 
       function getTotalAttachmentBytes() {
         if (!fileInput || !fileInput.files || !fileInput.files.length) return 0;
@@ -242,7 +294,22 @@
         updateAttachmentUi();
       }
 
+      form.addEventListener('input', function (e) {
+        var target = e.target;
+        if (!target || !target.classList) return;
+        if (target.classList.contains('is-invalid') && (target.value || '').trim()) {
+          target.classList.remove('is-invalid');
+          target.removeAttribute('aria-invalid');
+          if (formError) formError.hidden = true;
+        }
+      }, true);
+
       form.addEventListener('submit', function (e) {
+        if (!validateRequiredFields()) {
+          e.preventDefault();
+          return;
+        }
+
         var emailInput = document.getElementById('clientEmail');
         var replyToInput = form.querySelector('input[name="_replyto"]');
         if (replyToInput && emailInput && emailInput.value) {
