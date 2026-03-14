@@ -25,6 +25,31 @@
       menuBtn.setAttribute('aria-expanded', 'false');
     }
 
+    // Close menu on page scroll (common mobile UX), but don't close if the scroll
+    // gesture starts inside the menu itself.
+    var lastPointerDownInNav = false;
+    function recordPointerDownTarget(e) {
+      try {
+        var t = e && e.target;
+        lastPointerDownInNav = !!(t && (siteNav.contains(t) || menuBtn.contains(t)));
+      } catch (err) {
+        lastPointerDownInNav = false;
+      }
+    }
+
+    document.addEventListener('touchstart', recordPointerDownTarget, { passive: true });
+    document.addEventListener('mousedown', recordPointerDownTarget);
+
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (!siteNav.classList.contains('open')) return;
+        if (lastPointerDownInNav) return;
+        closeMenu();
+      },
+      { passive: true }
+    );
+
     // Close menu when navigating to an in-page anchor.
     siteNav.addEventListener('click', function (e) {
       var el = e && e.target;
