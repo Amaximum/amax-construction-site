@@ -55,11 +55,13 @@
           <input type="hidden" name="_subject" value="New BOOK NOW request">
           <input type="hidden" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
           <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_replyto" value="">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
           <p id="formError" class="form-error" role="alert" aria-live="polite" hidden>
             Please fill in all required fields.
           </p>
+          <p id="formSubmitStatus" class="form-status" aria-live="polite" hidden></p>
           <div class="form-row">
             <div class="form-group">
               <label for="clientName">Full Name *</label>
@@ -304,9 +306,24 @@
         }
       }, true);
 
-      form.addEventListener('submit', function (e) {
+      function setStatus(text) {
+        if (!formSubmitStatus) return;
+        if (!text) {
+          formSubmitStatus.hidden = true;
+          formSubmitStatus.textContent = '';
+          return;
+        }
+        formSubmitStatus.hidden = false;
+        formSubmitStatus.textContent = text;
+      }
+
+      var formSubmitStatus = document.getElementById('formSubmitStatus');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        setStatus('');
+
         if (!validateRequiredFields()) {
-          e.preventDefault();
           return;
         }
 
@@ -318,9 +335,43 @@
 
         var totalBytes = getTotalAttachmentBytes();
         if (totalBytes > maxBytes) {
-          e.preventDefault();
           updateAttachmentUi();
           alert('Attachments are too large. Please keep total upload size under 10MB (or send without attachments).');
+          return;
+        }
+
+        if (submitButton) submitButton.disabled = true;
+        setStatus('Sending…');
+
+        try {
+          var action = form.getAttribute('action') || '';
+          var ajaxAction = action.replace('https://formsubmit.co/', 'https://formsubmit.co/ajax/');
+          if (!ajaxAction || ajaxAction === action) {
+            // Fallback to normal POST if something is off.
+            form.submit();
+            return;
+          }
+
+          var formData = new FormData(form);
+          var response = await fetch(ajaxAction, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: formData,
+          });
+
+          if (!response.ok) {
+            setStatus('Could not send. Please try again in a moment.');
+            return;
+          }
+
+          // Only redirect after FormSubmit confirms acceptance.
+          var nextInput = form.querySelector('input[name="_next"]');
+          var nextUrl = (nextInput && nextInput.value) ? nextInput.value : '/thank-you-page/';
+          window.location.href = nextUrl;
+        } catch (err) {
+          setStatus('Could not send due to a network error. Please try again.');
+        } finally {
+          if (submitButton) submitButton.disabled = false;
         }
       });
     })();
