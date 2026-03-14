@@ -15,7 +15,9 @@ CSS_LINK = '<link rel="stylesheet" href="/css/styles.css">'
 # ensuring the widget divs are present when Elfsight scans the DOM.
 ELFSIGHT_SCRIPT = '<script src="https://static.elfsight.com/platform/platform.js" defer></script>'
 
-SITE_JS = '<script src="/js/site.js" defer></script>'
+# Cache-bust so browsers reliably fetch latest JS changes.
+SITE_JS_VERSION = '20260314-1'
+SITE_JS = f'<script src="/js/site.js?v={SITE_JS_VERSION}" defer></script>'
 
 # Elfsight widgets
 ELFSIGHT_REVIEWS_APP_CLASS = 'elfsight-app-b029cad3-6f49-425c-9793-f556870797bb'
@@ -210,7 +212,7 @@ RE_AUTOCOMPLETE_INLINE = re.compile(
   re.IGNORECASE,
 )
 
-RE_SITE_JS = re.compile(r'[ \t]*<script\s+src="/js/site\.js"[^>]*></script>\s*\n?', re.IGNORECASE)
+RE_SITE_JS = re.compile(r'[ \t]*<script\s+src="/js/site\.js(?:\?[^\"]*)?"[^>]*></script>\s*\n?', re.IGNORECASE)
 
 RE_SCRIPT_BLOCK = re.compile(r'(<script\b[^>]*>)([\s\S]*?)(</script>)', re.IGNORECASE)
 

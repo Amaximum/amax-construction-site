@@ -90,30 +90,38 @@
     widget.style.transformOrigin = 'bottom right';
     widget.style.transform = 'scale(0.9)';
 
+    // Drag handle MUST sit above the Elfsight iframe.
+    // We render it in <body> and keep it aligned with the widget.
+    var handleEl = null;
     function ensureHandle() {
-      var handle = document.getElementById('rating-widget-handle');
-      if (handle) return handle;
-
-      handle = document.createElement('div');
-      handle.id = 'rating-widget-handle';
-      handle.setAttribute('aria-hidden', 'true');
-      handle.style.position = 'absolute';
-      handle.style.left = '0';
-      handle.style.right = '0';
-      handle.style.top = '0';
-      handle.style.height = '22px';
-      handle.style.cursor = 'move';
-      handle.style.touchAction = 'none';
-      handle.style.background = 'transparent';
-      handle.style.zIndex = '10000';
-
-      // Ensure the wrapper is a positioning context for the handle.
-      // (It is fixed already, but this keeps behavior consistent.)
-      if (!widget.style.position) {
-        widget.style.position = 'fixed';
+      if (handleEl && handleEl.parentNode) return handleEl;
+      var existing = document.getElementById('rating-widget-handle');
+      if (existing) {
+        handleEl = existing;
+        return handleEl;
       }
-      widget.appendChild(handle);
-      return handle;
+
+      handleEl = document.createElement('div');
+      handleEl.id = 'rating-widget-handle';
+      handleEl.setAttribute('aria-hidden', 'true');
+      handleEl.style.position = 'fixed';
+      handleEl.style.height = '22px';
+      handleEl.style.cursor = 'move';
+      handleEl.style.touchAction = 'none';
+      handleEl.style.background = 'transparent';
+      // Above everything, including iframes.
+      handleEl.style.zIndex = '2147483647';
+      document.body.appendChild(handleEl);
+      return handleEl;
+    }
+
+    function syncHandle() {
+      var h = ensureHandle();
+      if (!h) return;
+      var r = widget.getBoundingClientRect();
+      h.style.left = r.left + 'px';
+      h.style.top = r.top + 'px';
+      h.style.width = r.width + 'px';
     }
 
     function clamp(val, min, max) {
@@ -146,6 +154,8 @@
       widget.style.bottom = 'auto';
       widget.style.left = nextLeft + 'px';
       widget.style.top = nextTop + 'px';
+
+      syncHandle();
 
       return { left: nextLeft, top: nextTop };
     }
@@ -182,7 +192,7 @@
       savePosition(initial);
     })();
 
-    var handleEl = ensureHandle();
+    var handle = ensureHandle();
     var dragging = false;
     var moved = false;
     var startPoint = { x: 0, y: 0 };
@@ -240,16 +250,16 @@
     }
 
     if (hasPointer) {
-      handleEl.addEventListener('pointerdown', onDown);
+      handle.addEventListener('pointerdown', onDown);
       window.addEventListener('pointermove', onMove);
       window.addEventListener('pointerup', onUp);
       window.addEventListener('pointercancel', onUp);
     } else {
-      handleEl.addEventListener('mousedown', onDown);
+      handle.addEventListener('mousedown', onDown);
       window.addEventListener('mousemove', onMove);
       window.addEventListener('mouseup', onUp);
 
-      handleEl.addEventListener('touchstart', onDown, { passive: false });
+      handle.addEventListener('touchstart', onDown, { passive: false });
       window.addEventListener('touchmove', onMove, { passive: false });
       window.addEventListener('touchend', onUp);
       window.addEventListener('touchcancel', onUp);
@@ -264,6 +274,10 @@
       },
       { passive: true }
     );
+
+    // Keep handle aligned if the widget size changes after Elfsight loads.
+    window.setTimeout(syncHandle, 800);
+    window.setTimeout(syncHandle, 2000);
   }
 
   function initRevealOnScroll() {

@@ -34,7 +34,7 @@ REVIEWS_APP_CLASS = "elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"
 BOOKING_DIR = "book-now"
 BOOKING_PAGE = f"{BOOKING_DIR}/index.html"
 
-SITE_JS_RE = re.compile(r"<script[^>]+src=[\"']/js/site\.js[\"'][^>]*>\s*</script>", re.I)
+SITE_JS_RE = re.compile(r"<script[^>]+src=[\"']/js/site\.js(?:\?[^\"']*)?[\"'][^>]*>\s*</script>", re.I)
 
 GOOGLE_PLACES_RE = re.compile(r"maps\.googleapis\.com/maps/api/js\?[^\"']*libraries=places", re.I)
 GOOGLE_PLACES_CB_RE = re.compile(r"callback=initAddressAutocomplete", re.I)
