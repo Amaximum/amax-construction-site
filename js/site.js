@@ -25,16 +25,20 @@
       menuBtn.setAttribute('aria-expanded', 'false');
     }
 
+    function isInNavOrButton(target) {
+      try {
+        return !!(target && (siteNav.contains(target) || menuBtn.contains(target)));
+      } catch (err) {
+        return false;
+      }
+    }
+
     // Close menu on page scroll (common mobile UX), but don't close if the scroll
     // gesture starts inside the menu itself.
     var lastPointerDownInNav = false;
     function recordPointerDownTarget(e) {
-      try {
-        var t = e && e.target;
-        lastPointerDownInNav = !!(t && (siteNav.contains(t) || menuBtn.contains(t)));
-      } catch (err) {
-        lastPointerDownInNav = false;
-      }
+      var t = e && e.target;
+      lastPointerDownInNav = isInNavOrButton(t);
     }
 
     document.addEventListener('touchstart', recordPointerDownTarget, { passive: true });
@@ -50,15 +54,21 @@
       { passive: true }
     );
 
-    // Close menu when navigating to an in-page anchor.
+    // Close menu when clicking/tapping outside the menu/button.
+    document.addEventListener('click', function (e) {
+      if (!siteNav.classList.contains('open')) return;
+      var t = e && e.target;
+      if (isInNavOrButton(t)) return;
+      closeMenu();
+    });
+
+    // Close menu when selecting any link within the menu.
     siteNav.addEventListener('click', function (e) {
+      if (!siteNav.classList.contains('open')) return;
       var el = e && e.target;
       while (el && el !== siteNav) {
         if (el.tagName && String(el.tagName).toLowerCase() === 'a') {
-          var href = el.getAttribute('href') || '';
-          if (href && href.charAt(0) === '#') {
-            closeMenu();
-          }
+          closeMenu();
           break;
         }
         el = el.parentNode;
