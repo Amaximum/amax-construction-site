@@ -76,6 +76,189 @@
     });
   }
 
+  function bindDraggableRatingWidget() {
+    var widget = document.getElementById('rating-widget');
+    if (!widget) return;
+    if (widget.getAttribute('data-draggable-bound') === '1') return;
+    widget.setAttribute('data-draggable-bound', '1');
+
+    var storageKey = 'amax_rating_widget_pos_v1';
+
+    function ensureHandle() {
+      var handle = document.getElementById('rating-widget-handle');
+      if (handle) return handle;
+
+      handle = document.createElement('div');
+      handle.id = 'rating-widget-handle';
+      handle.setAttribute('aria-hidden', 'true');
+      handle.style.position = 'absolute';
+      handle.style.left = '0';
+      handle.style.right = '0';
+      handle.style.top = '0';
+      handle.style.height = '22px';
+      handle.style.cursor = 'move';
+      handle.style.touchAction = 'none';
+      handle.style.background = 'transparent';
+      handle.style.zIndex = '10000';
+
+      // Ensure the wrapper is a positioning context for the handle.
+      // (It is fixed already, but this keeps behavior consistent.)
+      if (!widget.style.position) {
+        widget.style.position = 'fixed';
+      }
+      widget.appendChild(handle);
+      return handle;
+    }
+
+    function clamp(val, min, max) {
+      if (val < min) return min;
+      if (val > max) return max;
+      return val;
+    }
+
+    function getPoint(e) {
+      if (e && e.touches && e.touches.length) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+      if (e && e.changedTouches && e.changedTouches.length) {
+        return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
+      }
+      return { x: (e && e.clientX) || 0, y: (e && e.clientY) || 0 };
+    }
+
+    function setPosition(left, top) {
+      var rect = widget.getBoundingClientRect();
+      var margin = 8;
+      var maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+      var maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+
+      var nextLeft = clamp(left, margin, maxLeft);
+      var nextTop = clamp(top, margin, maxTop);
+
+      widget.style.right = 'auto';
+      widget.style.bottom = 'auto';
+      widget.style.left = nextLeft + 'px';
+      widget.style.top = nextTop + 'px';
+
+      return { left: nextLeft, top: nextTop };
+    }
+
+    function savePosition(pos) {
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(pos));
+      } catch (e) {
+        // no-op
+      }
+    }
+
+    function loadPosition() {
+      try {
+        var raw = window.localStorage.getItem(storageKey);
+        if (!raw) return null;
+        var obj = JSON.parse(raw);
+        if (!obj || typeof obj.left !== 'number' || typeof obj.top !== 'number') return null;
+        return obj;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Initialize position: use saved, otherwise convert current right/bottom position to left/top.
+    (function initPosition() {
+      var saved = loadPosition();
+      if (saved) {
+        setPosition(saved.left, saved.top);
+        return;
+      }
+      var r = widget.getBoundingClientRect();
+      var initial = setPosition(r.left, r.top);
+      savePosition(initial);
+    })();
+
+    var handleEl = ensureHandle();
+    var dragging = false;
+    var moved = false;
+    var startPoint = { x: 0, y: 0 };
+    var startLeft = 0;
+    var startTop = 0;
+    var threshold = 3;
+
+    function onDown(e) {
+      // Only primary button for mouse.
+      if (e && typeof e.button === 'number' && e.button !== 0) return;
+      dragging = true;
+      moved = false;
+
+      var p = getPoint(e);
+      startPoint = p;
+
+      var rect = widget.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+
+      // Ensure we are in left/top mode before moving.
+      setPosition(startLeft, startTop);
+
+      if (e && e.preventDefault) e.preventDefault();
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      var p = getPoint(e);
+      var dx = p.x - startPoint.x;
+      var dy = p.y - startPoint.y;
+
+      if (!moved) {
+        if (Math.abs(dx) + Math.abs(dy) < threshold) return;
+        moved = true;
+      }
+
+      var next = setPosition(startLeft + dx, startTop + dy);
+      savePosition(next);
+
+      if (e && e.preventDefault) e.preventDefault();
+    }
+
+    function onUp() {
+      dragging = false;
+      moved = false;
+    }
+
+    // Pointer events if available; otherwise fall back to mouse/touch.
+    var hasPointer = false;
+    try {
+      hasPointer = !!window.PointerEvent;
+    } catch (e) {
+      hasPointer = false;
+    }
+
+    if (hasPointer) {
+      handleEl.addEventListener('pointerdown', onDown);
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onUp);
+    } else {
+      handleEl.addEventListener('mousedown', onDown);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+
+      handleEl.addEventListener('touchstart', onDown, { passive: false });
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('touchend', onUp);
+      window.addEventListener('touchcancel', onUp);
+    }
+
+    window.addEventListener(
+      'resize',
+      function () {
+        var rect = widget.getBoundingClientRect();
+        var next = setPosition(rect.left, rect.top);
+        savePosition(next);
+      },
+      { passive: true }
+    );
+  }
+
   function initRevealOnScroll() {
     var nodes = document.querySelectorAll('.reveal');
     if (!nodes || !nodes.length) return;
@@ -176,6 +359,7 @@
 
   function initSite() {
     bindMobileMenu();
+    bindDraggableRatingWidget();
     initCardGalleries();
     initRevealOnScroll();
   }
