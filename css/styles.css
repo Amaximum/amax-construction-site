@@ -746,7 +746,6 @@
       opacity: 1;
       filter: blur(0px);
       transition: opacity 1.4s ease-in-out, filter 1.4s ease-in-out, transform 0s linear;
-      will-change: opacity, filter, transform;
     }
 
     html.js .card-gallery img {
@@ -757,6 +756,11 @@
       opacity: 1;
       filter: blur(0px);
       animation: kenBurns 5s ease-in-out forwards;
+    }
+
+    html.js .card-gallery img.active,
+    html.js .card-gallery img.fading-out {
+      will-change: opacity, filter, transform;
     }
 
     html.js .card-gallery img.fading-out {

@@ -335,6 +335,14 @@
     }
     if (!hasIntersectionObserver) return;
 
+    var marginPx = 800;
+    try {
+      var vh = window.innerHeight || 0;
+      if (vh) marginPx = Math.max(800, Math.round(vh * 2));
+    } catch (e) {
+      marginPx = 800;
+    }
+
     var obs = new IntersectionObserver(
       function (entries) {
         for (var i = 0; i < entries.length; i++) {
@@ -382,7 +390,7 @@
           }
         }
       },
-      { rootMargin: '800px 0px', threshold: 0.01 }
+      { rootMargin: marginPx + 'px 0px', threshold: 0.01 }
     );
 
     for (var g = 0; g < galleries.length; g++) {
@@ -411,6 +419,9 @@
       if (!images || !images.length) continue;
 
       for (var k = 0; k < images.length; k++) {
+        if (images[k] && !images[k].getAttribute('decoding')) {
+          images[k].setAttribute('decoding', 'async');
+        }
         images[k].classList.remove('active');
         images[k].classList.remove('fading-out');
       }
@@ -418,10 +429,23 @@
 
       if (prefersReducedMotion || images.length < 2) continue;
 
-      (function (imgs) {
-        var idx = 0;
-        var intervalMs = 4600;
-        window.setInterval(function () {
+      // On mobile, dozens of always-running timers can slow scrolling/painting.
+      // Rotate images only while the gallery is near/inside the viewport.
+      (function (root, imgs) {
+        root.__amaxGalleryIdx = 0;
+        root.__amaxGalleryTimer = null;
+
+        function step() {
+          if (!root || !imgs || !imgs.length) return;
+          if (!document.body || !document.body.contains(root)) {
+            if (root.__amaxGalleryTimer) {
+              window.clearInterval(root.__amaxGalleryTimer);
+              root.__amaxGalleryTimer = null;
+            }
+            return;
+          }
+
+          var idx = root.__amaxGalleryIdx || 0;
           var current = imgs[idx];
           var nextIdx = (idx + 1) % imgs.length;
           var next = imgs[nextIdx];
@@ -439,9 +463,45 @@
             next.classList.add('active');
           }
 
-          idx = nextIdx;
-        }, intervalMs);
-      })(images);
+          root.__amaxGalleryIdx = nextIdx;
+        }
+
+        function start() {
+          if (root.__amaxGalleryTimer) return;
+          root.__amaxGalleryTimer = window.setInterval(step, 4600);
+        }
+
+        function stop() {
+          if (!root.__amaxGalleryTimer) return;
+          window.clearInterval(root.__amaxGalleryTimer);
+          root.__amaxGalleryTimer = null;
+        }
+
+        var hasIntersectionObserver = false;
+        try {
+          hasIntersectionObserver = typeof window.IntersectionObserver !== 'undefined';
+        } catch (e) {
+          hasIntersectionObserver = false;
+        }
+
+        if (!hasIntersectionObserver) {
+          start();
+          return;
+        }
+
+        var rotObs = new IntersectionObserver(
+          function (entries) {
+            for (var i = 0; i < entries.length; i++) {
+              var entry = entries[i];
+              if (!entry || !entry.target) continue;
+              if (entry.isIntersecting) start();
+              else stop();
+            }
+          },
+          { rootMargin: '200px 0px', threshold: 0.06 }
+        );
+        rotObs.observe(root);
+      })(gallery, images);
     }
   }
 
