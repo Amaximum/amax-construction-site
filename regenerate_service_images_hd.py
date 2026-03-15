@@ -52,6 +52,15 @@ def main() -> int:
         required=True,
         help="Service key prefix used in filenames (e.g. fence -> fence-1.jpg)",
     )
+    ap.add_argument(
+        "--outputs",
+        default="",
+        help=(
+            "Comma-separated output filenames relative to --out-dir. "
+            "If omitted, defaults to '<service>-1.jpg..-4.jpg' and '<service>-user-1.jpg'. "
+            "Example: --outputs deck-1.jpg,deck-2.jpg,deck-3.jpg,deck-4.jpg,deck-user-1.jpg"
+        ),
+    )
     ap.add_argument("--width", type=int, default=1600)
     ap.add_argument("--height", type=int, default=1067)
     ap.add_argument("--quality", type=int, default=84)
@@ -75,14 +84,18 @@ def main() -> int:
     if not originals:
         raise SystemExit(f"No images found in: {src_dir}")
 
-    # Need 5 outputs: service-1..4 and service-user-1
-    targets = [
-        out_dir / f"{service}-1.jpg",
-        out_dir / f"{service}-2.jpg",
-        out_dir / f"{service}-3.jpg",
-        out_dir / f"{service}-4.jpg",
-        out_dir / f"{service}-user-1.jpg",
-    ]
+    outputs = [o.strip() for o in str(args.outputs or "").split(",") if o.strip()]
+    if outputs:
+        targets = [out_dir / o for o in outputs]
+    else:
+        # Default: service-1..4 and service-user-1
+        targets = [
+            out_dir / f"{service}-1.jpg",
+            out_dir / f"{service}-2.jpg",
+            out_dir / f"{service}-3.jpg",
+            out_dir / f"{service}-4.jpg",
+            out_dir / f"{service}-user-1.jpg",
+        ]
 
     # Use as many unique originals as available; repeat if fewer.
     picks = []

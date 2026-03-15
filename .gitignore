@@ -16,3 +16,9 @@ Thumbs.db
 
 # Temp / scratch files
 .tmp_*.html
+
+# Local high-res originals (sources for regenerating web images)
+img/services/*/
+
+# Misc local assets that shouldn't be deployed
+img/services/aMaximum-Construction1-1 (2).png

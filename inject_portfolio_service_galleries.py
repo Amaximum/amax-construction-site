@@ -127,15 +127,28 @@ def main() -> int:
 
     html = PORTFOLIO.read_text(encoding="utf-8")
 
+    section = build_section()
+
     if SECTION_ID in html:
-        print("Portfolio already contains service galleries section; nothing to do.")
+        # Replace existing section to keep in sync with build_spec().
+        pattern = re.compile(
+            rf"(<section\s+id=\"{re.escape(SECTION_ID)}\"\s*>)(.*?)(</section>)",
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        m = pattern.search(html)
+        if not m:
+            print("Portfolio contains marker but section parsing failed; aborting.")
+            return 1
+        html = pattern.sub(section.strip() + "\n", html, count=1)
+        PORTFOLIO.write_text(html, encoding="utf-8")
+        print("=== inject_portfolio_service_galleries ===")
+        print(f"Re-rendered: {PORTFOLIO}")
         return 0
 
     if INSERT_BEFORE not in html:
         raise SystemExit(f"Insert marker not found: {INSERT_BEFORE}")
 
     # Insert inside the <div class="shell"> in <main>.
-    section = build_section()
     html = html.replace(INSERT_BEFORE, section + "      " + INSERT_BEFORE, 1)
 
     PORTFOLIO.write_text(html, encoding="utf-8")

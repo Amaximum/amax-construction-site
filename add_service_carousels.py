@@ -116,7 +116,20 @@ def build_image_list(key: str) -> tuple[list[str], list[Path]]:
         return f"/img/services/{name}"
 
     if key == "deck-railings":
-        # Uses existing SVG covers + one generated.
+        # Prefer real photos when available; otherwise fall back to SVG covers.
+        jpgs = [IMG_DIR / f"deck-railings-{i}.jpg" for i in range(1, 6)]
+        if all(p.exists() for p in jpgs):
+            return (
+                [
+                    web("deck-railings-1.jpg"),
+                    web("deck-railings-2.jpg"),
+                    web("deck-railings-3.jpg"),
+                    web("deck-railings-4.jpg"),
+                    web("deck-railings-5.jpg"),
+                ],
+                ensure,
+            )
+
         ensure_svg(IMG_DIR / "deck-railings-5.svg", "Deck Railings", "Installation & Upgrades")
         return (
             [
