@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Deck railings - wood railing illustration">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.62" stop-color="#eef2f7"/>
+      <stop offset="1" stop-color="#e6eaf0"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff6b35" stop-opacity="0.35"/>
+      <stop offset="0.25" stop-color="#121826" stop-opacity="0.15"/>
+      <stop offset="0.55" stop-color="#ff6b35" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#121826" stop-opacity="0.12"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg)"/>
+
+  <!-- deck surface -->
+  <g stroke="#121826" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M160 560 L1040 560" stroke-width="14"/>
+    <path d="M210 604 L990 604" stroke-width="10" opacity="0.35"/>
+    <path d="M240 646 L960 646" stroke-width="10" opacity="0.25"/>
+  </g>
+
+  <!-- wood railing -->
+  <g stroke="#121826" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- posts -->
+    <path d="M240 560 L240 290" stroke-width="18"/>
+    <path d="M560 560 L560 290" stroke-width="18"/>
+    <path d="M880 560 L880 290" stroke-width="18"/>
+    <path d="M1040 560 L1040 290" stroke-width="18"/>
+
+    <!-- rails -->
+    <path d="M240 300 L1040 300" stroke-width="20"/>
+    <path d="M240 520 L1040 520" stroke-width="14" opacity="0.95"/>
+
+    <!-- balusters -->
+    <g stroke-width="12" opacity="0.9">
+      <path d="M300 520 L300 314"/>
+      <path d="M360 520 L360 314"/>
+      <path d="M420 520 L420 314"/>
+      <path d="M480 520 L480 314"/>
+      <path d="M620 520 L620 314"/>
+      <path d="M680 520 L680 314"/>
+      <path d="M740 520 L740 314"/>
+      <path d="M800 520 L800 314"/>
+      <path d="M940 520 L940 314"/>
+      <path d="M1000 520 L1000 314"/>
+    </g>
+  </g>
+
+  <!-- warm overlay hint -->
+  <path d="M90 710 C 250 610, 430 590, 620 670 C 760 730, 930 760, 1110 660" fill="none" stroke="url(#wood)" stroke-width="70" opacity="0.85"/>
+
+  <!-- subtle label plate -->
+  <g>
+    <rect x="86" y="96" width="420" height="92" rx="18" fill="#ffffff" stroke="#e6eaf0"/>
+    <path d="M120 142 h22" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+    <path d="M162 142 h22" stroke="#4f8cff" stroke-width="10" stroke-linecap="round"/>
+    <text x="208" y="152" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#121826">Wood Railings</text>
+  </g>
+</svg>

@@ -67,6 +67,88 @@
       margin-inline: auto;
     }
 
+    /* Service page carousel (used on services + service+location pages) */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .carousel-track {
+      display: flex;
+      will-change: transform;
+      transition: transform 520ms ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .carousel-track { transition: none; }
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      margin: 0;
+    }
+
+    .carousel-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .carousel-btn {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms ease;
+      white-space: nowrap;
+    }
+
+    .carousel-btn:hover { transform: translateY(-1px); }
+    .carousel-btn:active { transform: translateY(0); }
+
+    .carousel-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .carousel-dot[aria-current="true"] {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
     .topbar-wrap {
       position: sticky;
       top: 10px;
@@ -2103,6 +2185,25 @@ section {
   color: #475569;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.footer-friends {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-friends a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-friends a:hover,
+.footer-friends a:focus-visible {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 @media (max-width: 900px) {

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Deck railings - aluminum railing illustration">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.6" stop-color="#eef2f7"/>
+      <stop offset="1" stop-color="#e6eaf0"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#121826" stop-opacity="0.85"/>
+      <stop offset="0.3" stop-color="#6b7280" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#121826" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#6b7280" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4f8cff" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ff6b35" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="980" cy="210" r="190" fill="url(#accent)" opacity="0.9"/>
+
+  <!-- deck surface -->
+  <g stroke="#121826" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M160 560 L1040 560" stroke-width="14"/>
+    <path d="M210 604 L990 604" stroke-width="10" opacity="0.35"/>
+    <path d="M240 646 L960 646" stroke-width="10" opacity="0.25"/>
+  </g>
+
+  <!-- aluminum railing -->
+  <g stroke="url(#metal)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M220 560 L220 300" stroke-width="16"/>
+    <path d="M520 560 L520 300" stroke-width="16"/>
+    <path d="M820 560 L820 300" stroke-width="16"/>
+    <path d="M1020 560 L1020 300" stroke-width="16"/>
+    <path d="M220 310 L1020 310" stroke-width="18"/>
+    <path d="M220 540 L1020 540" stroke-width="12" opacity="0.9"/>
+
+    <!-- balusters -->
+    <g stroke-width="10" opacity="0.95">
+      <path d="M270 540 L270 322"/>
+      <path d="M320 540 L320 322"/>
+      <path d="M370 540 L370 322"/>
+      <path d="M420 540 L420 322"/>
+      <path d="M470 540 L470 322"/>
+      <path d="M570 540 L570 322"/>
+      <path d="M620 540 L620 322"/>
+      <path d="M670 540 L670 322"/>
+      <path d="M720 540 L720 322"/>
+      <path d="M770 540 L770 322"/>
+      <path d="M870 540 L870 322"/>
+      <path d="M920 540 L920 322"/>
+      <path d="M970 540 L970 322"/>
+    </g>
+  </g>
+
+  <!-- subtle label plate -->
+  <g>
+    <rect x="86" y="96" width="480" height="92" rx="18" fill="#ffffff" stroke="#e6eaf0"/>
+    <path d="M120 142 h22" stroke="#ff6b35" stroke-width="10" stroke-linecap="round"/>
+    <path d="M162 142 h22" stroke="#4f8cff" stroke-width="10" stroke-linecap="round"/>
+    <text x="208" y="152" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#121826">Aluminum Railings</text>
+  </g>
+</svg>
