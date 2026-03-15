@@ -323,6 +323,73 @@
     }
   }
 
+  function preloadCardGalleryImages() {
+    var galleries = document.querySelectorAll('.card-gallery');
+    if (!galleries || !galleries.length) return;
+
+    var hasIntersectionObserver = false;
+    try {
+      hasIntersectionObserver = typeof window.IntersectionObserver !== 'undefined';
+    } catch (e) {
+      hasIntersectionObserver = false;
+    }
+    if (!hasIntersectionObserver) return;
+
+    var obs = new IntersectionObserver(
+      function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          var entry = entries[i];
+          if (!entry || !entry.isIntersecting || !entry.target) continue;
+
+          var gallery = entry.target;
+          obs.unobserve(gallery);
+
+          var imgs = gallery.querySelectorAll('img');
+          if (!imgs || !imgs.length) continue;
+
+          for (var k = 0; k < imgs.length; k++) {
+            var img = imgs[k];
+            if (!img) continue;
+
+            // Hint the browser earlier than the default lazy threshold.
+            try {
+              img.loading = 'eager';
+            } catch (e) {
+              // no-op
+            }
+            img.setAttribute('loading', 'eager');
+
+            if (!img.getAttribute('decoding')) {
+              img.setAttribute('decoding', 'async');
+            }
+
+            // Force a prefetch of the URL so the gallery doesn't appear empty.
+            var src = '';
+            try {
+              src = img.currentSrc || img.getAttribute('src') || '';
+            } catch (e) {
+              src = img.getAttribute('src') || '';
+            }
+
+            if (src) {
+              try {
+                var pre = new Image();
+                pre.src = src;
+              } catch (e) {
+                // no-op
+              }
+            }
+          }
+        }
+      },
+      { rootMargin: '800px 0px', threshold: 0.01 }
+    );
+
+    for (var g = 0; g < galleries.length; g++) {
+      if (galleries[g]) obs.observe(galleries[g]);
+    }
+  }
+
   function initCardGalleries() {
     var galleries = document.querySelectorAll('.card-gallery');
     if (!galleries || !galleries.length) return;
@@ -498,6 +565,7 @@
   function initSite() {
     bindMobileMenu();
     bindDraggableRatingWidget();
+    preloadCardGalleryImages();
     initCardGalleries();
     bindCarousels();
     initRevealOnScroll();
