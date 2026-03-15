@@ -308,7 +308,7 @@
           }
         }
       },
-      { threshold: 0.12 }
+      { rootMargin: '160px 0px', threshold: 0.06 }
     );
 
     for (var k = 0; k < nodes.length; k++) {
@@ -321,6 +321,17 @@
       }
       revealObserver.observe(node);
     }
+
+    // Defensive fallback: on some mobile browsers IntersectionObserver can miss
+    // elements during fast scroll / viewport resize. Ensure content doesn't stay hidden.
+    window.setTimeout(function () {
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        if (!n) continue;
+        if (n.classList.contains('in-view')) continue;
+        n.classList.add('in-view');
+      }
+    }, 3500);
   }
 
   function preloadCardGalleryImages() {

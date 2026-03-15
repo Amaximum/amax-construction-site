@@ -748,7 +748,7 @@
       transition: opacity 1.4s ease-in-out, filter 1.4s ease-in-out, transform 0s linear;
     }
 
-    html.js .card-gallery img {
+    html.js .card-gallery[data-gallery-bound="1"] img {
       opacity: 0;
     }
 
