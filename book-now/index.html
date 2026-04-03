@@ -64,11 +64,23 @@
 
         <form id="bookingForm" class="booking-form" action="https://formsubmit.co/90c40da8a8f9c5a39f286bc057bda13b" method="POST" enctype="multipart/form-data" novalidate>
           <input type="hidden" name="_subject" value="New BOOK NOW request">
-          <input type="hidden" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
+          <input type="hidden" id="nextUrlInput" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
           <input type="hidden" name="_template" value="table">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_replyto" value="">
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <script>
+              // Автоматически подменяем _next на локальный путь, если сайт открыт на localhost
+              (function() {
+                var nextInput = document.getElementById('nextUrlInput');
+                if (nextInput) {
+                  var isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                  if (isLocal) {
+                    nextInput.value = '/thank-you-page/';
+                  }
+                }
+              })();
+            </script>
           <p id="formError" class="form-error" role="alert" aria-live="polite" hidden>
             Please fill in all required fields.
           </p>
@@ -112,6 +124,7 @@
                 <option value="handyman">Handyman</option>
                 <option value="interlocking">Interlocking &amp; Paving</option>
                 <option value="carpentry">Carpentry</option>
+                 <option value="other">Other</option>
               </select>
             </div>
 
@@ -404,7 +417,12 @@
           // Only redirect after FormSubmit confirms acceptance.
           var nextInput = form.querySelector('input[name="_next"]');
           var nextUrl = (nextInput && nextInput.value) ? nextInput.value : '/thank-you-page/';
-          window.location.href = nextUrl;
+          // Принудительный редирект на локальном сайте, даже если FormSubmit не делает редирект
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            window.location.href = '/thank-you-page/';
+          } else {
+            window.location.href = nextUrl;
+          }
         } catch (err) {
           setStatus('Could not send due to a network error. Please try again.');
         } finally {

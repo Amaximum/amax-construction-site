@@ -1158,6 +1158,37 @@ header[role="banner"] {
   position: sticky;
   top: 0;
   z-index: 1000;
+  --button-contrast-bg: #fff;
+  --button-contrast-text: #ff6b35;
+  --button-contrast-shadow: 0 2px 12px rgba(255, 107, 53, 0.18);
+  --text-contrast: #fff;
+  --text-contrast-dark: #23272f;
+}
+/* Контрастная кнопка для ярких фонов */
+.btn-contrast, .btn-contrast:visited {
+  background: var(--button-contrast-bg) !important;
+  color: var(--button-contrast-text) !important;
+  border: 2px solid var(--button-contrast-text) !important;
+  box-shadow: var(--button-contrast-shadow) !important;
+  font-weight: 700 !important;
+  transition: background 0.2s, color 0.2s, border 0.2s !important;
+  outline: none !important;
+}
+.btn-contrast:hover, .btn-contrast:focus {
+  background: var(--button-contrast-text) !important;
+  color: var(--button-contrast-bg) !important;
+  border-color: var(--button-contrast-text) !important;
+  outline: none !important;
+}
+
+/* Контрастный текст для ярких фонов */
+.text-contrast {
+  color: var(--text-contrast) !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.text-contrast-dark {
+  color: var(--text-contrast-dark) !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 nav[role="navigation"] {
