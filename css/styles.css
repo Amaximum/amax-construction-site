@@ -2834,3 +2834,154 @@ section {
 .page-hero .muted {
   color: rgba(255, 255, 255, 0.92) !important;
 }
+
+/* ============================================================
+   SERVICE LOCATIONS SECTION (Hub & Spoke)
+   ============================================================ */
+.service-locations,
+.related-articles {
+  margin: 40px 0;
+}
+
+.service-locations .section-head,
+.related-articles .section-head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.service-locations .section-head h2,
+.related-articles .section-head h2 {
+  font-size: clamp(24px, 4vw, 36px);
+  margin: 0 0 12px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.service-locations .section-head p,
+.related-articles .section-head p {
+  color: var(--muted);
+  font-size: clamp(15px, 2vw, 17px);
+  max-width: 56ch;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Location Cards Grid */
+.location-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.location-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 8px rgba(19, 33, 68, 0.04);
+}
+
+.location-card:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, #ff8855 100%);
+  color: #fff;
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+}
+
+/* Related Articles Cards */
+.related-articles .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.related-articles .card {
+  display: block;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-decoration: none;
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 8px rgba(19, 33, 68, 0.04);
+}
+
+.related-articles .card:hover {
+  border-color: rgba(255, 107, 53, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(19, 33, 68, 0.1);
+}
+
+.related-articles .card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.related-articles .card:hover h3 {
+  color: var(--primary);
+}
+
+/* Service Hub Backlink */
+.service-hub-link {
+  background: linear-gradient(135deg, rgba(79, 140, 255, 0.08) 0%, rgba(255, 107, 53, 0.08) 100%);
+  border: 1px solid rgba(79, 140, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin: 28px 0;
+  text-align: center;
+}
+
+.service-hub-link p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.service-hub-link a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.service-hub-link a:hover {
+  color: var(--primary-strong);
+  text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .location-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .location-card {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  
+  .related-articles .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .location-grid {
+    grid-template-columns: 1fr;
+  }
+}
