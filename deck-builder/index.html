@@ -66,15 +66,9 @@
 </ul>
 </div>
 <div class="cta"><h2>Ready for Your Dream Deck?</h2><a class="btn" href="/book-deck.html">BOOK NOW</a></div>
-<!-- Форма удалена. Кнопка ниже ведёт на уникальную форму бронирования для декинга. -->
 <div class="cta"><a class="btn btn-primary" href="/book-deck.html">Book Now</a></div>
-</form>
-</div>
-</div>
 <script>
-const m=document.getElementById('bookingModal'),b=document.getElementById('bookingBtn'),x=document.getElementById('modalClose'),o=document.getElementById('modalOverlay'),c=document.getElementById('c'),f=document.getElementById('bookingForm');document.getElementById('d').min=new Date().toISOString().split('T')[0];b.onclick=()=>{m.classList.add('active');document.body.style.overflow='hidden'};const close=()=>{m.classList.remove('active');document.body.style.overflow=''};x.onclick=close;o.onclick=close;c.onclick=close;f.onsubmit=async function(e){e.preventDefault();var btn=f.querySelector('button[type="submit"]');if(btn){btn.disabled=true;btn.textContent='Sending…';}try{var fd=new FormData(f);fd.append('_subject','New Booking Request — aMaximum Construction');fd.append('_template','table');fd.append('_captcha','false');var r=await fetch('https://formsubmit.co/ajax/90c40da8a8f9c5a39f286bc057bda13b',{method:'POST',headers:{Accept:'application/json'},body:fd});var j=await r.json();if(j&&(j.success===true||j.success==='true')){f.reset();close();alert('Your request has been sent! We will contact you within 24 hours.');}else{alert('Could not send. Please try again or email us at amaximumconstructioncorp@gmail.com.');}}catch(err){alert('Could not send. Please check your connection and try again.');}finally{if(btn){btn.disabled=false;btn.textContent='Send';}}}
-
-  // Reveal on scroll
+// Reveal on scroll
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -127,7 +121,6 @@ const m=document.getElementById('bookingModal'),b=document.getElementById('booki
     </div>
   </div>
 </section>
-
 
 <section id="related-blogs" class="shell" style="padding:32px 0 0;">
   <h2 style="font-size:1.25rem;font-weight:700;color:#121826;margin-bottom:12px;">Related Blog Posts</h2>

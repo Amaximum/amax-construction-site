@@ -44,7 +44,7 @@
         <h2>Schedule Your Basement Consultation</h2>
         <p class="muted">Fill out the form below and we’ll contact you to confirm your appointment.</p>
 
-        <form id="bookingForm" class="booking-form" action="https://formsubmit.co/90c40da8a8f9c5a39f286bc057bda13b" method="POST" enctype="multipart/form-data" novalidate>
+        <form id="bookingForm" class="booking-form" action="https://formsubmit.co/amaximumconstructioncorp@gmail.com" method="POST" enctype="multipart/form-data" novalidate>
           <input type="hidden" name="service" value="basement">
           <input type="hidden" name="_subject" value="New Basement Booking">
           <input type="hidden" id="nextUrlInput" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
@@ -173,7 +173,172 @@
       </div>
     </div>
   </footer>
-    <script>
+      <script>
+    (function () {
+      var consultDateInput = document.getElementById('consultDate');
+      if (consultDateInput) {
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        consultDateInput.setAttribute('min', now.toISOString().split('T')[0]);
+      }
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var form = document.getElementById('bookingForm');
+      if (!form) return;
+
+      var fileInput = document.getElementById('projectFiles');
+      var attachmentHelp = document.getElementById('attachmentHelp');
+      var submitButton = form.querySelector('button[type="submit"]');
+      var formError = document.getElementById('formError');
+      var formSubmitStatus = document.getElementById('formSubmitStatus');
+      var maxBytes = 10 * 1024 * 1024;
+
+      function clearValidationUi() {
+        if (formError) formError.hidden = true;
+        var fields = form.querySelectorAll('.is-invalid');
+        for (var i = 0; i < fields.length; i++) {
+          fields[i].classList.remove('is-invalid');
+          fields[i].removeAttribute('aria-invalid');
+        }
+      }
+
+      function validateRequiredFields() {
+        clearValidationUi();
+        var requiredSelectors = [
+          '#clientName', '#clientPhone', '#clientEmail',
+          '#clientAddress', '#serviceType', '#consultDate', '#timeSlot'
+        ];
+        var firstInvalid = null;
+        for (var i = 0; i < requiredSelectors.length; i++) {
+          var el = document.querySelector(requiredSelectors[i]);
+          if (!el) continue;
+          if (!(el.value || '').trim()) {
+            el.classList.add('is-invalid');
+            el.setAttribute('aria-invalid', 'true');
+            if (!firstInvalid) firstInvalid = el;
+          }
+        }
+        if (firstInvalid) {
+          if (formError) formError.hidden = false;
+          firstInvalid.focus();
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return false;
+        }
+        return true;
+      }
+
+      function getTotalAttachmentBytes() {
+        if (!fileInput || !fileInput.files || !fileInput.files.length) return 0;
+        var total = 0;
+        for (var i = 0; i < fileInput.files.length; i++) total += fileInput.files[i].size || 0;
+        return total;
+      }
+
+      function updateAttachmentUi() {
+        if (!attachmentHelp || !submitButton) return;
+        var totalBytes = getTotalAttachmentBytes();
+        if (!totalBytes) {
+          submitButton.disabled = false;
+          attachmentHelp.textContent = 'You can attach photos of the project site, plans, or inspiration images (max total upload size 10MB)';
+          return;
+        }
+        var totalMb = totalBytes / (1024 * 1024);
+        if (totalBytes > maxBytes) {
+          submitButton.disabled = true;
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB. Please keep total under 10MB.';
+        } else {
+          submitButton.disabled = false;
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB (max 10MB).';
+        }
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', updateAttachmentUi);
+        updateAttachmentUi();
+      }
+
+      form.addEventListener('input', function (e) {
+        var target = e.target;
+        if (target && target.classList && target.classList.contains('is-invalid') && (target.value || '').trim()) {
+          target.classList.remove('is-invalid');
+          target.removeAttribute('aria-invalid');
+          if (formError) formError.hidden = true;
+        }
+      }, true);
+
+      function setStatus(text) {
+        if (!formSubmitStatus) return;
+        if (!text) { formSubmitStatus.hidden = true; formSubmitStatus.textContent = ''; return; }
+        formSubmitStatus.hidden = false;
+        formSubmitStatus.textContent = text;
+      }
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        setStatus('');
+        if (!validateRequiredFields()) return;
+
+        var emailInput = document.getElementById('clientEmail');
+        var replyToInput = form.querySelector('input[name="_replyto"]');
+        if (replyToInput && emailInput && emailInput.value) replyToInput.value = emailInput.value;
+
+        var totalBytes = getTotalAttachmentBytes();
+        if (totalBytes > maxBytes) {
+          updateAttachmentUi();
+          alert('Attachments are too large. Please keep total upload size under 10MB.');
+          return;
+        }
+
+        if (submitButton) submitButton.disabled = true;
+        setStatus('Sending...');
+
+        try {
+          var action = form.getAttribute('action') || '';
+          var ajaxAction = action.replace('https://formsubmit.co/', 'https://formsubmit.co/ajax/');
+          if (!ajaxAction || ajaxAction === action) {
+            form.submit();
+            return;
+          }
+
+          var formData = new FormData(form);
+          var response = await fetch(ajaxAction, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            referrerPolicy: 'no-referrer-when-downgrade',
+            body: formData,
+          });
+
+          if (!response.ok) {
+            setStatus('Could not send. Please try again in a moment.');
+            return;
+          }
+
+          var result = null;
+          try { result = await response.json(); } catch (e) { result = null; }
+
+          var success = result && (result.success === true || result.success === 'true');
+          if (!success) {
+            var message = (result && result.message) ? String(result.message) : 'Could not send. Please try again.';
+            setStatus(message);
+            return;
+          }
+
+          var nextInput = form.querySelector('input[name="_next"]');
+          var nextUrl = (nextInput && nextInput.value) ? nextInput.value : '/thank-you-page/';
+          window.location.href = nextUrl;
+        } catch (err) {
+          setStatus('Could not send due to a network error. Please try again.');
+        } finally {
+          if (submitButton) submitButton.disabled = false;
+        }
+      });
+    })();
+  </script>
+
+<script>
     function initAddressAutocomplete() {
       const input = document.querySelector('#clientAddress, input[name="address"]');
       if (!input || typeof google === 'undefined' || !google.maps?.places) return;
