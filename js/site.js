@@ -334,6 +334,279 @@
     }, 3500);
   }
 
+  function updateIslandContours() {
+    var islands = document.querySelectorAll('.island:not([style*="background"])');
+    if (!islands || !islands.length) return;
+
+    var isDesktop = false;
+    try {
+      isDesktop = !!(window.matchMedia && window.matchMedia('(min-width: 980px)').matches);
+    } catch (e) {
+      isDesktop = (window.innerWidth || 0) >= 980;
+    }
+
+    function clamp(value, min, max) {
+      if (value < min) return min;
+      if (value > max) return max;
+      return value;
+    }
+
+    var contourPadding = 26;
+
+    var contourSvgSeq = 0;
+
+    function ensureContourSvg(island) {
+      var child = island ? island.firstElementChild : null;
+      while (child) {
+        if (child.classList && child.classList.contains('island-contour-svg')) {
+          return child;
+        }
+        child = child.nextElementSibling;
+      }
+
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      var gradientId = 'amaxContourTop-' + String(contourSvgSeq++);
+      svg.setAttribute('class', 'island-contour-svg');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.innerHTML = '' +
+        '<defs>' +
+          '<linearGradient id="' + gradientId + '" x1="0%" y1="0%" x2="100%" y2="0%">' +
+            '<stop offset="0%" stop-color="#ff6b35" stop-opacity="0" />' +
+            '<stop offset="25%" stop-color="#ff6b35" stop-opacity="0.9" />' +
+            '<stop offset="75%" stop-color="#4f8cff" stop-opacity="0.85" />' +
+            '<stop offset="100%" stop-color="#4f8cff" stop-opacity="0" />' +
+          '</linearGradient>' +
+        '</defs>' +
+        '<path class="island-contour-fill"></path>' +
+        '<path class="island-contour-topline" stroke="url(#' + gradientId + ')"></path>';
+      island.insertBefore(svg, island.firstChild);
+      return svg;
+    }
+
+    function getContourBlocks(island) {
+      var blocks = [];
+      var child = island ? island.firstElementChild : null;
+      while (child) {
+        var tag = child.tagName ? String(child.tagName).toLowerCase() : '';
+        var skip = false;
+        if (child.classList) {
+          skip = child.classList.contains('shine') || child.classList.contains('island-contour-svg');
+        }
+        if (!skip && tag !== 'script' && tag !== 'style') {
+          var rect = child.getBoundingClientRect();
+          if (rect.width > 30 && rect.height > 20) {
+            blocks.push(rect);
+          }
+        }
+        child = child.nextElementSibling;
+      }
+      return blocks;
+    }
+
+    function buildBands(rects, width, height, padding) {
+      var ys = [];
+      for (var i = 0; i < rects.length; i++) {
+        ys.push(Math.max(0, Math.min(height, Math.round(rects[i].top - padding))));
+        ys.push(Math.max(0, Math.min(height, Math.round(rects[i].bottom + padding))));
+      }
+      ys.sort(function (a, b) { return a - b; });
+
+      var uniqueYs = [];
+      for (var j = 0; j < ys.length; j++) {
+        if (!uniqueYs.length || uniqueYs[uniqueYs.length - 1] !== ys[j]) {
+          uniqueYs.push(ys[j]);
+        }
+      }
+
+      var bands = [];
+      for (var k = 0; k < uniqueYs.length - 1; k++) {
+        var top = uniqueYs[k];
+        var bottom = uniqueYs[k + 1];
+        if (bottom - top < 2) continue;
+
+        var hasContent = false;
+        var left = width;
+        var right = 0;
+
+        for (var m = 0; m < rects.length; m++) {
+          var rect = rects[m];
+          if (rect.top < bottom - 1 && rect.bottom > top + 1) {
+            hasContent = true;
+            left = Math.min(left, Math.max(0, rect.left - padding));
+            right = Math.max(right, Math.min(width, rect.right + padding));
+          }
+        }
+
+        if (!hasContent) continue;
+
+        left = Math.max(12, Math.round(left));
+        right = Math.min(width - 12, Math.round(right));
+
+        if (bands.length) {
+          var last = bands[bands.length - 1];
+          if (last.left === left && last.right === right && last.bottom === top) {
+            last.bottom = bottom;
+            continue;
+          }
+        }
+
+        bands.push({ top: top, bottom: bottom, left: left, right: right });
+      }
+
+      return bands;
+    }
+
+    function dedupePoints(points) {
+      var clean = [];
+      for (var i = 0; i < points.length; i++) {
+        var p = points[i];
+        var last = clean.length ? clean[clean.length - 1] : null;
+        if (!last || last.x !== p.x || last.y !== p.y) {
+          clean.push(p);
+        }
+      }
+      return clean;
+    }
+
+    function buildPolygon(bands) {
+      if (!bands.length) return [];
+
+      var leftChain = [{ x: bands[0].left, y: bands[0].top }];
+      for (var i = 1; i < bands.length; i++) {
+        var prev = bands[i - 1];
+        var cur = bands[i];
+        if (prev.left !== cur.left) {
+          leftChain.push({ x: prev.left, y: cur.top });
+          leftChain.push({ x: cur.left, y: cur.top });
+        }
+      }
+      leftChain.push({ x: bands[bands.length - 1].left, y: bands[bands.length - 1].bottom });
+
+      var rightChain = [{ x: bands[bands.length - 1].right, y: bands[bands.length - 1].bottom }];
+      for (var j = bands.length - 1; j > 0; j--) {
+        var current = bands[j];
+        var before = bands[j - 1];
+        if (current.right !== before.right) {
+          rightChain.push({ x: current.right, y: before.bottom });
+          rightChain.push({ x: before.right, y: before.bottom });
+        }
+      }
+      rightChain.push({ x: bands[0].right, y: bands[0].top });
+
+      return dedupePoints(leftChain.concat(rightChain));
+    }
+
+    function buildRoundedPath(points, radius) {
+      if (!points || points.length < 3) return '';
+
+      var d = '';
+      var count = points.length;
+
+      for (var i = 0; i < count; i++) {
+        var prev = points[(i - 1 + count) % count];
+        var curr = points[i];
+        var next = points[(i + 1) % count];
+
+        var inDx = curr.x - prev.x;
+        var inDy = curr.y - prev.y;
+        var outDx = next.x - curr.x;
+        var outDy = next.y - curr.y;
+
+        var inLen = Math.sqrt(inDx * inDx + inDy * inDy) || 1;
+        var outLen = Math.sqrt(outDx * outDx + outDy * outDy) || 1;
+        var r = Math.min(radius, inLen / 2, outLen / 2);
+
+        var start = {
+          x: curr.x - (inDx / inLen) * r,
+          y: curr.y - (inDy / inLen) * r
+        };
+        var end = {
+          x: curr.x + (outDx / outLen) * r,
+          y: curr.y + (outDy / outLen) * r
+        };
+
+        if (i === 0) {
+          d += 'M ' + start.x + ' ' + start.y;
+        } else {
+          d += ' L ' + start.x + ' ' + start.y;
+        }
+        d += ' Q ' + curr.x + ' ' + curr.y + ' ' + end.x + ' ' + end.y;
+      }
+
+      d += ' Z';
+      return d;
+    }
+
+    for (var i = 0; i < islands.length; i++) {
+      var island = islands[i];
+      if (!island) continue;
+      var svg = ensureContourSvg(island);
+      island.classList.remove('island-contour', 'island-contour-alt');
+      if (svg) {
+        svg.style.display = 'none';
+      }
+
+      if (!isDesktop) continue;
+
+      var blocks = getContourBlocks(island);
+      if (!blocks || !blocks.length) continue;
+
+      var islandRect = island.getBoundingClientRect();
+      var relRects = [];
+      for (var n = 0; n < blocks.length; n++) {
+        relRects.push({
+          left: Math.round(blocks[n].left - islandRect.left),
+          top: Math.round(blocks[n].top - islandRect.top),
+          right: Math.round(blocks[n].right - islandRect.left),
+          bottom: Math.round(blocks[n].bottom - islandRect.top)
+        });
+      }
+
+      var bands = buildBands(relRects, Math.round(islandRect.width), Math.round(islandRect.height), contourPadding);
+      if (!bands.length) continue;
+
+      var points = buildPolygon(bands);
+      if (!points.length) continue;
+
+      var d = buildRoundedPath(points, 22);
+      if (!d) continue;
+
+      svg.setAttribute('viewBox', '0 0 ' + Math.round(islandRect.width) + ' ' + Math.round(islandRect.height));
+      svg.setAttribute('width', Math.round(islandRect.width));
+      svg.setAttribute('height', Math.round(islandRect.height));
+
+      var fillPath = svg.querySelector('.island-contour-fill');
+      var topLine = svg.querySelector('.island-contour-topline');
+      if (!fillPath || !topLine) continue;
+
+      fillPath.setAttribute('d', d);
+      topLine.setAttribute('d', 'M ' + bands[0].left + ' ' + bands[0].top + ' L ' + bands[0].right + ' ' + bands[0].top);
+
+      svg.style.display = 'block';
+      island.classList.add('island-contour');
+      if ((i + 1) % 2 === 0) {
+        island.classList.add('island-contour-alt');
+      }
+    }
+  }
+
+  var islandContourRaf = 0;
+  function scheduleIslandContourUpdate() {
+    if (islandContourRaf) {
+      try {
+        window.cancelAnimationFrame(islandContourRaf);
+      } catch (e) {
+        islandContourRaf = 0;
+      }
+    }
+
+    islandContourRaf = window.requestAnimationFrame(function () {
+      islandContourRaf = 0;
+      updateIslandContours();
+    });
+  }
+
   function preloadCardGalleryImages() {
     var galleries = document.querySelectorAll('.card-gallery');
     if (!galleries || !galleries.length) return;
@@ -640,6 +913,21 @@
     initCardGalleries();
     bindCarousels();
     initRevealOnScroll();
+    updateIslandContours();
+    window.setTimeout(scheduleIslandContourUpdate, 60);
+    window.setTimeout(scheduleIslandContourUpdate, 260);
+    window.setTimeout(scheduleIslandContourUpdate, 900);
+
+    try {
+      if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+        document.fonts.ready.then(scheduleIslandContourUpdate);
+      }
+    } catch (e) {
+      // no-op
+    }
+
+    window.addEventListener('resize', scheduleIslandContourUpdate, { passive: true });
+    window.addEventListener('load', scheduleIslandContourUpdate, { once: true });
   }
 
   if (document.readyState === 'loading') {

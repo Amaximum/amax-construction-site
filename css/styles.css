@@ -374,6 +374,22 @@
     main .island:nth-of-type(even) > p {
       color: rgba(255, 255, 255, 0.65);
     }
+
+    /* Alternating section-head alignment: odd = left, even = right */
+    main .island:nth-of-type(odd) .section-head {
+      align-items: flex-start;
+      text-align: left;
+    }
+    main .island:nth-of-type(even) .section-head {
+      align-items: flex-end;
+      text-align: right;
+    }
+    /* Keep locations/articles centered always */
+    main .service-locations .section-head,
+    main .related-articles .section-head {
+      align-items: center !important;
+      text-align: center !important;
+    }
     main .island:nth-of-type(even) .card {
       background: #ffffff;
       border-color: rgba(255, 255, 255, 0.12);
@@ -392,7 +408,7 @@
     main .island:nth-of-type(even) .cards .card {
       flex: 0 1 calc(25% - 11px);
       min-width: 220px;
-      height: fit-content;
+      align-self: start;
     }
     main .island:nth-of-type(even) .faq-item summary { color: #ffffff; }
     main .island:nth-of-type(even) .faq-item p { color: rgba(255,255,255,0.7); }
@@ -468,6 +484,164 @@
     .island:hover .shine {
       opacity: 1;
       animation: shineSweep 1.25s ease;
+    }
+
+    .island-contour-svg {
+      display: none;
+    }
+
+    @media (min-width: 980px) {
+      .island[aria-label="Why choose us"],
+      .island#service-types,
+      .island#how-it-works {
+        width: min(980px, calc(100% - 32px));
+        margin-inline: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+        grid-template-areas: "head cards";
+        align-items: start;
+        column-gap: clamp(20px, 3vw, 34px);
+        row-gap: 18px;
+      }
+
+      .island[aria-label="Why choose us"] .section-head,
+      .island#service-types .section-head,
+      .island#how-it-works .section-head {
+        grid-area: head;
+        min-width: 0;
+        margin-bottom: 0;
+      }
+
+      .island[aria-label="Why choose us"] .cards,
+      .island#service-types .cards,
+      .island#how-it-works .cards {
+        grid-area: cards;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-self: start;
+      }
+
+      .island[aria-label="Why choose us"] .section-head,
+      .island#how-it-works .section-head {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .island#service-types {
+        grid-template-columns: minmax(360px, 0.92fr) minmax(0, 1.08fr);
+        grid-template-areas: "cards head";
+      }
+
+      .island#service-types .section-head {
+        align-items: flex-end;
+        text-align: right;
+      }
+
+      .island.island-contour {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        filter: none;
+        overflow: visible;
+      }
+
+      .island.island-contour::before,
+      .island.island-contour::after {
+        opacity: 0;
+      }
+
+      .island.island-contour .shine {
+        display: none;
+      }
+
+      .island.island-contour > *:not(.island-contour-svg):not(.shine) {
+        position: relative;
+        z-index: 2;
+      }
+
+      .island.island-contour .island-contour-svg {
+        display: block;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        pointer-events: none;
+        z-index: 1;
+        filter:
+          drop-shadow(0 12px 40px rgba(19, 33, 68, 0.08))
+          drop-shadow(0 0 90px rgba(79, 140, 255, 0.16))
+          drop-shadow(0 0 110px rgba(255, 107, 53, 0.14));
+      }
+
+      .island.island-contour .island-contour-fill {
+        fill: #ffffff;
+        stroke: #edf1f7;
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .island.island-contour.island-contour-alt .island-contour-fill {
+        fill: #f4f7fc;
+        stroke: #e4e9f2;
+      }
+
+      .island.island-contour,
+      main .island.island-contour:nth-of-type(even) {
+        color: var(--text);
+      }
+
+      .island.island-contour h1,
+      .island.island-contour h2,
+      .island.island-contour h3,
+      .island.island-contour h4,
+      .island.island-contour summary,
+      .island.island-contour label,
+      main .island.island-contour:nth-of-type(even) .section-head h2,
+      main .island.island-contour:nth-of-type(even) h2 {
+        color: var(--text);
+      }
+
+      .island.island-contour p,
+      .island.island-contour li,
+      .island.island-contour small,
+      .island.island-contour .muted,
+      .island.island-contour .form-note,
+      .island.island-contour .booking-form small,
+      main .island.island-contour:nth-of-type(even) p,
+      main .island.island-contour:nth-of-type(even) li,
+      main .island.island-contour:nth-of-type(even) .section-head p,
+      main .island.island-contour:nth-of-type(even) > p {
+        color: var(--muted);
+      }
+
+      .island.island-contour h3 a,
+      main .island.island-contour:nth-of-type(even) .card h3 a {
+        color: var(--text);
+      }
+
+      .island.island-contour h3 a:hover,
+      main .island.island-contour:nth-of-type(even) .card h3 a:hover {
+        color: var(--primary);
+      }
+
+      .island.island-contour .island-contour-topline {
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .island.island-contour:hover {
+        box-shadow: none;
+        filter: none;
+      }
+
+      .island.island-contour:hover .island-contour-svg {
+        filter:
+          drop-shadow(0 20px 52px rgba(19, 33, 68, 0.14))
+          drop-shadow(0 0 160px rgba(79, 140, 255, 0.42))
+          drop-shadow(0 0 210px rgba(255, 107, 53, 0.5));
+      }
     }
 
     main .island:nth-of-type(1) { animation: floatA 19s ease-in-out infinite; }
@@ -625,9 +799,9 @@
 
     .section-head {
       display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 16px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
       margin-bottom: 18px;
     }
 
@@ -640,7 +814,7 @@
     .section-head p {
       margin: 0;
       color: var(--muted);
-      max-width: 56ch;
+      max-width: 72ch;
     }
 
     .cards {
@@ -648,6 +822,7 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
       align-items: start;
+      grid-auto-rows: auto;
     }
 
     /* Generic grid layout for card sections */
@@ -671,7 +846,15 @@
       animation: cardBreath 7s ease-in-out infinite;
       display: flex;
       flex-direction: column;
+      align-self: start;
+      justify-content: flex-start;
     }
+
+    /* Organic asymmetric corners — different per card, no content clipping */
+    .cards > .card:nth-child(4n+1) { border-radius: var(--radius-lg); }
+    .cards > .card:nth-child(4n+2) { border-radius: var(--radius-lg); }
+    .cards > .card:nth-child(4n+3) { border-radius: var(--radius-lg); }
+    .cards > .card:nth-child(4n+4) { border-radius: var(--radius-lg); }
 
     .card::before {
       content: "";
@@ -807,13 +990,15 @@
       border: 1px solid #ffe3d7;
       font-size: 21px;
       margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .card h3 {
-      margin: 0 0 8px;
-      font-size: 19px;
+      margin: 0 0 6px;
+      font-size: 17px;
       font-weight: 600;
       letter-spacing: -0.01em;
+      line-height: 1.3;
     }
 
     .card h3 a {
@@ -2848,6 +3033,7 @@ section {
 .service-locations .section-head,
 .related-articles .section-head {
   text-align: center;
+  align-items: center;
   margin-bottom: 28px;
 }
 
