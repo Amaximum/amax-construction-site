@@ -321,6 +321,48 @@
       cursor: pointer;
     }
 
+      .mobile-topbar-actions {
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .mobile-topbar-action {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        box-shadow: 0 10px 22px rgba(19, 33, 68, 0.18);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+        flex: 0 0 40px;
+      }
+
+      .mobile-topbar-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(19, 33, 68, 0.22);
+        filter: saturate(1.05);
+      }
+
+      .mobile-topbar-action:active {
+        transform: translateY(0);
+      }
+
+      .mobile-topbar-action span {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .mobile-topbar-action-call {
+        background: linear-gradient(180deg, #ef4444, #dc2626);
+      }
+
+      .mobile-topbar-action-whatsapp {
+        background: linear-gradient(180deg, #22c55e, #16a34a);
+      }
+
     .island {
       margin-top: 18px;
       width: min(var(--max), calc(100% - 32px));
@@ -1236,6 +1278,8 @@
 
     @media (max-width: 760px) {
       .menu-btn { display: inline-flex; align-items: center; justify-content: center; }
+      .mobile-topbar-actions { display: inline-flex; }
+      .topbar-right { gap: 8px; }
       .theme-switch {
         position: absolute;
         top: 74px;
@@ -1309,6 +1353,13 @@
 
     @media (max-width: 560px) {
       .shell { width: min(var(--max), calc(100% - 20px)); }
+      .mobile-topbar-actions { gap: 6px; }
+      .mobile-topbar-action {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+      }
+      .mobile-topbar-action span { font-size: 16px; }
       .card {
         flex-basis: 100%;
         max-width: 100%;
@@ -2371,6 +2422,7 @@ section {
 
 .footer-email:hover { color: var(--primary-strong); }
 
+.footer-col h3,
 .footer-col h4 {
   color: #e2e8f0;
   font-size: 12px;

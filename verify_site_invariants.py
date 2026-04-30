@@ -7,6 +7,7 @@ This script is meant to "lock in" the expected global behaviors:
 - Reviews list embed exists on every page except the booking page, and is placed before FAQ.
 - BOOK NOW CTAs link to /book-now/.
 - Google Places Autocomplete is loaded only on /book-now/.
+- Each page has exactly one H1, and heading levels follow a valid SEO hierarchy.
 
 Exit code:
 - 0: all checks pass
@@ -74,6 +75,39 @@ class AnchorTextParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         if self._in_a and data:
             self._a_text_parts.append(data)
+
+
+class HeadingParser(HTMLParser):
+    """Collect headings in document order with their text content."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._level: int | None = None
+        self._text_parts: list[str] = []
+        self.headings: list[tuple[int, str]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        del attrs
+        tag = tag.lower()
+        if len(tag) == 2 and tag.startswith("h") and tag[1].isdigit():
+            level = int(tag[1])
+            if 1 <= level <= 6:
+                self._level = level
+                self._text_parts = []
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if self._level is None:
+            return
+        if tag == f"h{self._level}":
+            text = " ".join("".join(self._text_parts).split())
+            self.headings.append((self._level, text))
+            self._level = None
+            self._text_parts = []
+
+    def handle_data(self, data: str) -> None:
+        if self._level is not None and data:
+            self._text_parts.append(data)
 
 
 @dataclass(frozen=True)
@@ -188,6 +222,34 @@ def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], 
     for href, _ in book_now_anchors:
         if href != "/book-now/":
             errors.append(Finding(rel, f"BOOK NOW anchor href must be /book-now/ (found {href!r})"))
+
+    heading_parser = HeadingParser()
+    try:
+        heading_parser.feed(html)
+    except Exception:
+        warnings.append(Finding(rel, "HTML parse warning while scanning headings"))
+    else:
+        headings = heading_parser.headings
+        if not headings:
+            errors.append(Finding(rel, "Missing page heading structure (no H1-H6 tags found)"))
+        else:
+            h1_count = sum(1 for level, _ in headings if level == 1)
+            if h1_count != 1:
+                errors.append(Finding(rel, f"Expected exactly 1 H1 heading, found {h1_count}"))
+
+            first_level, first_text = headings[0]
+            if first_level != 1:
+                label = first_text or "(empty heading)"
+                errors.append(Finding(rel, f"First heading must be H1 (found H{first_level}: {label!r})"))
+
+            previous_level = first_level
+            for level, text in headings[1:]:
+                if level > previous_level + 1:
+                    label = text or "(empty heading)"
+                    errors.append(
+                        Finding(rel, f"Heading hierarchy skips from H{previous_level} to H{level} at {label!r}")
+                    )
+                previous_level = level
 
     # Google Places Autocomplete should only be on booking page
     has_places = bool(GOOGLE_PLACES_RE.search(html) or GOOGLE_PLACES_CB_RE.search(html))

@@ -7,6 +7,41 @@
     // no-op
   }
 
+  function createMobileTopbarAction(href, className, label) {
+    var link = document.createElement('a');
+    var icon = document.createElement('span');
+
+    link.href = href;
+    link.className = 'mobile-topbar-action ' + className;
+    link.setAttribute('aria-label', label);
+    link.setAttribute('title', label);
+
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '\u260E';
+    link.appendChild(icon);
+
+    return link;
+  }
+
+  function ensureMobileHeaderActions() {
+    var menuBtn = document.getElementById('menuBtn');
+    if (!menuBtn || !menuBtn.parentNode) return;
+
+    var topbarRight = menuBtn.parentNode;
+    if (topbarRight.querySelector('.mobile-topbar-actions')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'mobile-topbar-actions';
+    wrap.setAttribute('aria-label', 'Quick contact actions');
+
+    wrap.appendChild(createMobileTopbarAction('tel:+14165793576', 'mobile-topbar-action-call', 'Call aMaximum Construction'));
+    wrap.appendChild(
+      createMobileTopbarAction('https://wa.me/14165793576', 'mobile-topbar-action-whatsapp', 'Open WhatsApp chat with aMaximum Construction')
+    );
+
+    topbarRight.insertBefore(wrap, menuBtn);
+  }
+
   function bindMobileMenu() {
     var menuBtn = document.getElementById('menuBtn');
     var siteNav = document.getElementById('siteNav');
@@ -22,7 +57,6 @@
 
     function closeMenu() {
       siteNav.classList.remove('open');
-      menuBtn.setAttribute('aria-expanded', 'false');
     }
 
     function isInNavOrButton(target) {
@@ -907,6 +941,7 @@
   }
 
   function initSite() {
+    ensureMobileHeaderActions();
     bindMobileMenu();
     bindDraggableRatingWidget();
     preloadCardGalleryImages();
