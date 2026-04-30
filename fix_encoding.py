@@ -10,8 +10,8 @@ fixes = [
     ('â€™', "'"),
     ('â€œ', '"'),
     ('â€\x9d', '"'),
-    ('â€"', '—'),
-    ('â€"', '–'),
+    ('â€”', '—'),
+    ('â€“', '–'),
     ('Â ', ' '),
 ]
 
@@ -19,6 +19,7 @@ forms = sorted(root.glob('book-*.html'))
 for f in forms:
     content = f.read_text(encoding='utf-8', errors='replace')
     original = content
+    content = content.lstrip('\ufeff')
     for bad, good in fixes:
         content = content.replace(bad, good)
     if content != original:
