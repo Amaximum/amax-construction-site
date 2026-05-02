@@ -46,7 +46,7 @@ SERVICE_LOCATIONS = {
         ("/deck-contractor-markham/", "Markham"),
         ("/deck-contractor-vaughan/", "Vaughan"),
         ("/deck-contractor-woodbridge/", "Woodbridge"),
-        ("/deck-contractor-richmond-hill/", "Richmond Hill"),
+        ("/deck-builder-in-richmond-hill/", "Richmond Hill"),
         ("/deck-contractor-aurora/", "Aurora"),
         ("/deck-contractor-newmarket/", "Newmarket"),
         ("/deck-contractor-bradford/", "Bradford"),
