@@ -62,7 +62,7 @@ SERVICES = {
         "hub": "/deck-builder/",
         "name": "Deck Building",
         "spokes": [
-            ("/deck-contractor-toronto/", "Toronto"),
+            ("/deck-builder-toronto/", "Toronto"),
             ("/deck-contractor-north-york/", "North York"),
             ("/deck-contractor-east-york/", "East York"),
             ("/deck-contractor-scarborough/", "Scarborough"),
@@ -72,7 +72,7 @@ SERVICES = {
             ("/deck-contractor-woodbridge/", "Woodbridge"),
             ("/deck-builder-in-richmond-hill/", "Richmond Hill"),
             ("/deck-contractor-aurora/", "Aurora"),
-            ("/deck-contractor-newmarket/", "Newmarket"),
+            ("/deck-builder-newmarket/", "Newmarket"),
             ("/deck-contractor-bradford/", "Bradford"),
             ("/deck-contractor-burlington/", "Burlington"),
             ("/deck-contractor-concord/", "Concord"),

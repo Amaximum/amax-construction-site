@@ -38,7 +38,7 @@ SERVICE_LOCATIONS = {
         ("/bathrooms-renovation-in-north-york/", "North York"),
     ],
     "deck-builder": [
-        ("/deck-contractor-toronto/", "Toronto"),
+        ("/deck-builder-toronto/", "Toronto"),
         ("/deck-contractor-north-york/", "North York"),
         ("/deck-contractor-east-york/", "East York"),
         ("/deck-contractor-scarborough/", "Scarborough"),
@@ -48,7 +48,7 @@ SERVICE_LOCATIONS = {
         ("/deck-contractor-woodbridge/", "Woodbridge"),
         ("/deck-builder-in-richmond-hill/", "Richmond Hill"),
         ("/deck-contractor-aurora/", "Aurora"),
-        ("/deck-contractor-newmarket/", "Newmarket"),
+        ("/deck-builder-newmarket/", "Newmarket"),
         ("/deck-contractor-bradford/", "Bradford"),
         ("/deck-contractor-burlington/", "Burlington"),
         ("/deck-contractor-concord/", "Concord"),
