@@ -8,8 +8,44 @@
 <link rel="canonical" href="https://amaximumconstruction.com/deck-builder-in-richmond-hill/">
 <link rel="alternate" hreflang="en-CA" href="https://amaximumconstruction.com/deck-builder-in-richmond-hill/">
 <link rel="alternate" hreflang="x-default" href="https://amaximumconstruction.com/deck-builder-in-richmond-hill/">
+<link rel="preload" as="image" href="/img/services/deck-1.jpg" fetchpriority="high">
+<link rel="preconnect" href="https://static.elfsight.com" crossorigin>
+<link rel="dns-prefetch" href="https://static.elfsight.com">
 <title>Deck Builder in Richmond Hill, ON | aMaximum Construction</title>
-  <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <script>
+  // Lazy-load Elfsight platform.js to reduce TBT/LCP. Loads on first user
+  // interaction, when a widget enters viewport, or after 5s idle fallback.
+  (function(){
+    var loaded = false;
+    function load(){
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.src = 'https://static.elfsight.com/platform/platform.js';
+      s.defer = true;
+      document.head.appendChild(s);
+      cleanup();
+    }
+    function cleanup(){
+      ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+        window.removeEventListener(e, load, {passive:true});
+      });
+    }
+    ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+      window.addEventListener(e, load, {passive:true, once:true});
+    });
+    if ('IntersectionObserver' in window) {
+      document.addEventListener('DOMContentLoaded', function(){
+        var targets = document.querySelectorAll('[class*="elfsight-app-"]');
+        if (!targets.length) return;
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(en){ if (en.isIntersecting){ load(); io.disconnect(); } });
+        }, {rootMargin: '300px'});
+        targets.forEach(function(t){ io.observe(t); });
+      });
+    }
+    setTimeout(load, 5000);
+  })();
+  </script>
   <script src="/js/site.js?v=20260429n" defer></script>
   <link rel="stylesheet" href="/css/styles.css?v=20260429n">
 <script type="application/ld+json">
@@ -161,7 +197,7 @@
   <section id="service-gallery" class="shell" style="padding:24px 0 0;" aria-label="Richmond Hill deck builders project gallery">
     <div class="carousel" data-carousel data-carousel-total="8">
       <div class="carousel-track" data-carousel-track>
-        <figure class="carousel-slide"><img src="/img/services/deck-1.jpg" alt="Custom deck builder in Richmond Hill - composite deck project" loading="lazy" decoding="async"></figure>
+        <figure class="carousel-slide"><img src="/img/services/deck-1.jpg" alt="Custom deck builder in Richmond Hill - composite deck project" fetchpriority="high" decoding="async"></figure>
         <figure class="carousel-slide"><img src="/img/services/deck-2.jpg" alt="Richmond Hill deck builders - multi-level backyard deck" loading="lazy" decoding="async"></figure>
         <figure class="carousel-slide"><img src="/img/services/deck-3.jpg" alt="Deck builder Richmond Hill - pressure treated wood deck" loading="lazy" decoding="async"></figure>
         <figure class="carousel-slide"><img src="/img/services/deck-4.jpg" alt="Richmond Hill deck contractor - cedar deck with railings" loading="lazy" decoding="async"></figure>
