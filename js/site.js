@@ -857,10 +857,6 @@
       var total = slides.length;
       var index = 0;
       var timer = null;
-      // Manual autoplay: do not start timer until user interacts or scrolls.
-      // Used for above-the-fold hero carousels to avoid LCP regressions.
-      var autoplayMode = root.getAttribute('data-carousel-autoplay') || 'auto';
-      var autoplayUnlocked = autoplayMode !== 'manual';
 
       function setIndex(next) {
         index = clamp(next, 0, total - 1);
@@ -910,15 +906,8 @@
 
       function start() {
         if (prefersReducedMotion) return;
-        if (!autoplayUnlocked) return;
         if (timer) return;
         timer = window.setInterval(next, 5200);
-      }
-
-      function unlockAutoplay() {
-        if (autoplayUnlocked) return;
-        autoplayUnlocked = true;
-        start();
       }
 
       if (prevBtn) {
@@ -943,21 +932,7 @@
 
       buildDots();
       setIndex(0);
-      if (autoplayUnlocked) {
-        start();
-      } else {
-        // Wake autoplay on first user activity anywhere in the page.
-        var wakeEvents = ['scroll', 'touchstart', 'mousemove', 'keydown', 'click'];
-        var wake = function () {
-          wakeEvents.forEach(function (ev) {
-            window.removeEventListener(ev, wake);
-          });
-          unlockAutoplay();
-        };
-        wakeEvents.forEach(function (ev) {
-          window.addEventListener(ev, wake, { passive: true, once: true });
-        });
-      }
+      start();
     }
 
     for (var i = 0; i < carousels.length; i++) {
