@@ -12,7 +12,42 @@
   <meta property="og:site_name" content="aMaximum Construction">
   <link rel="canonical" href="https://amaximumconstruction.com/book-now/">
   <title>BOOK NOW | aMaximum Construction</title>
-  <script src="https://static.elfsight.com/platform/platform.js" defer></script>
+  <link rel="preconnect" href="https://static.elfsight.com" crossorigin>
+<link rel="dns-prefetch" href="https://static.elfsight.com">
+<script>
+// Lazy-load Elfsight platform.js to reduce TBT/LCP. Loads on first user
+// interaction, when a widget enters viewport, or after 5s idle fallback.
+(function(){
+  var loaded = false;
+  function load(){
+    if (loaded) return; loaded = true;
+    var s = document.createElement('script');
+    s.src = 'https://static.elfsight.com/platform/platform.js';
+    s.defer = true;
+    document.head.appendChild(s);
+    cleanup();
+  }
+  function cleanup(){
+    ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+      window.removeEventListener(e, load, {passive:true});
+    });
+  }
+  ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+    window.addEventListener(e, load, {passive:true, once:true});
+  });
+  if ('IntersectionObserver' in window) {
+    document.addEventListener('DOMContentLoaded', function(){
+      var targets = document.querySelectorAll('[class*="elfsight-app-"]');
+      if (!targets.length) return;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if (en.isIntersecting){ load(); io.disconnect(); } });
+      }, {rootMargin: '300px'});
+      targets.forEach(function(t){ io.observe(t); });
+    });
+  }
+  setTimeout(load, 5000);
+})();
+</script>
   <script src="/js/site.js?v=20260429n" defer></script>
   <link rel="stylesheet" href="/css/styles.css?v=20260429n">
 <link rel="icon" href="/img/logo.png" type="image/png">
