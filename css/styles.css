@@ -2135,6 +2135,35 @@ section {
 }
 
 /* ============================================================
+   GALLERY CTA — adaptive contrast against background
+   ============================================================ */
+.gallery-cta { padding: 16px 0 8px; text-align: center; }
+.gallery-cta .btn-primary {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+/* When CTA sits on the orange hero background — invert to white pill */
+.page-hero .gallery-cta .btn-primary,
+.hero .gallery-cta .btn-primary,
+.hero-service .gallery-cta .btn-primary {
+  background: #fff;
+  color: var(--primary, #ff6b00);
+  border: 1px solid #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+.page-hero .gallery-cta .btn-primary:hover,
+.hero .gallery-cta .btn-primary:hover,
+.hero-service .gallery-cta .btn-primary:hover {
+  background: #fff7f1;
+  color: var(--primary-strong, #e8521a);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
    CONTENT BOX (sub-pages) — island design language
    ============================================================ */
 .content {
