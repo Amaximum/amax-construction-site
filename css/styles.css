@@ -3401,7 +3401,9 @@ section {
 .suppliers-track { display: inline-flex; gap: 14px; padding-block: 8px; white-space: nowrap; animation: suppliersScroll 38s linear infinite; will-change: transform; }
 .suppliers-marquee:hover .suppliers-track { animation-play-state: paused; }
 .supplier-pill { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid rgba(15,23,42,0.08); border-radius: 999px; background: linear-gradient(135deg, #ffffff 0%, #f6f8fb 100%); font-weight: 600; font-size: 15px; color: #1a2332; box-shadow: 0 2px 10px rgba(15,23,42,0.05); white-space: nowrap; user-select: none; }
-.supplier-pill .supplier-icon { font-size: 18px; line-height: 1; }
+.supplier-pill .supplier-icon { width: 20px; height: 20px; flex-shrink: 0; display: inline-block; vertical-align: middle; }
+svg.supplier-icon path, svg.supplier-icon circle { transition: transform .2s ease; }
+.supplier-pill:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,23,42,0.10); }
 @keyframes suppliersScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .suppliers-track { animation: none; } }
-@media (max-width: 640px) { .suppliers-strip { padding: 20px 14px; } .supplier-pill { font-size: 13px; padding: 8px 14px; } .supplier-pill .supplier-icon { font-size: 15px; } .suppliers-track { gap: 10px; animation-duration: 30s; } }
+@media (max-width: 640px) { .suppliers-strip { padding: 20px 14px; } .supplier-pill { font-size: 13px; padding: 8px 14px; } .supplier-pill .supplier-icon { width: 16px; height: 16px; } .suppliers-track { gap: 10px; animation-duration: 30s; } }
