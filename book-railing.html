@@ -299,7 +299,7 @@
         try {
           var action = form.getAttribute('action') || '';
           var ajaxAction = action;
-          if (!ajaxAction || ajaxAction === action) {
+          if (!ajaxAction) {
             form.submit();
             return;
           }

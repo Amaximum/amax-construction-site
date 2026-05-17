@@ -417,7 +417,7 @@
         try {
           var action = form.getAttribute('action') || '';
           var ajaxAction = action;
-          if (!ajaxAction || ajaxAction === action) {
+          if (!ajaxAction) {
             // Fallback to normal POST if something is off.
             form.submit();
             return;
