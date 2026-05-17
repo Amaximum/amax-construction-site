@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -45,7 +45,7 @@
         <h2>Schedule Your Handyman Consultation</h2>
         <p class="muted">Fill out the form below and we'll contact you to confirm your appointment.</p>
 
-        <form id="bookingForm" class="booking-form" action="https://formsubmit.co/90c40da8a8f9c5a39f286bc057bda13b" method="POST" enctype="multipart/form-data" novalidate>
+        <form id="bookingForm" class="booking-form" action="https://amax-forms.vercel.app/api/booking" method="POST" enctype="multipart/form-data" novalidate>
           <input type="hidden" name="service" value="handyman">
           <input type="hidden" name="_subject" value="New Handyman Booking">
           <input type="hidden" id="nextUrlInput" name="_next" value="https://amaximumconstruction.com/thank-you-page/">
@@ -298,7 +298,7 @@
 
         try {
           var action = form.getAttribute('action') || '';
-          var ajaxAction = action.replace('https://formsubmit.co/', 'https://formsubmit.co/ajax/');
+          var ajaxAction = action;
           if (!ajaxAction || ajaxAction === action) {
             form.submit();
             return;
