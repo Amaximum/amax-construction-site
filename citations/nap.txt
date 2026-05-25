@@ -1,0 +1,32 @@
+CANONICAL NAP — use this exact text on every directory, social profile, and citation source.
+=============================================================================================
+
+Business name:   aMaximum Construction
+Address line 1:  23 Cardico Drive
+City:            Gormley
+Province:        Ontario (ON)
+Postal code:     L4A 2G5
+Country:         Canada
+Phone:           (289) 819-4777
+Phone (tel:):    +1-289-819-4777
+Email:           care@amaximumconstruction.com
+Website:         https://amaximumconstruction.com
+Founded:         2010
+Service area:    Toronto and the Greater Toronto Area (GTA)
+
+Hours of operation:
+  Monday      08:00 – 18:00
+  Tuesday     08:00 – 18:00
+  Wednesday   08:00 – 18:00
+  Thursday    08:00 – 18:00
+  Friday      08:00 – 18:00
+  Saturday    09:00 – 16:00
+  Sunday      Closed
+
+Primary category:  General Contractor
+Secondary:         Home Renovation, Bathroom Remodeler, Basement Contractor, Deck Builder,
+                   Fence Contractor, Landscape Contractor, Painter, Electrician,
+                   Plumber, Carpenter, Excavating Contractor, Demolition Contractor
+
+Single-line format (for citation forms that accept one field):
+aMaximum Construction, 23 Cardico Drive, Gormley, ON L4A 2G5 — (289) 819-4777
