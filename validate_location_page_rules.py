@@ -18,6 +18,20 @@ def count_matches(pattern: str, text: str, flags: int = 0) -> int:
     return len(re.findall(pattern, text, flags))
 
 
+def meta_value(html: str, key: str, attr: str = "name") -> str | None:
+    # Matches both orders:
+    # <meta name="x" content="..."> and <meta content="..." name="x">
+    p1 = rf'<meta\s+[^>]*{attr}=["\']{re.escape(key)}["\'][^>]*content=["\']([^"\']+)["\']'
+    p2 = rf'<meta\s+[^>]*content=["\']([^"\']+)["\'][^>]*{attr}=["\']{re.escape(key)}["\']'
+    m = re.search(p1, html, flags=re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    m = re.search(p2, html, flags=re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    return None
+
+
 def check_heading_hierarchy(html: str) -> tuple[bool, str]:
     heads = re.findall(r"<h([1-6])[^>]*>", html, flags=re.IGNORECASE)
     if not heads:
@@ -77,7 +91,7 @@ def audit_page(page_path: Path) -> list[tuple[str, bool, str]]:
     title_len_ok = bool(title and 35 <= len(re.sub(r"\s+", " ", title)) <= 70)
     results.append(("Page Title", title_len_ok, f"Title is {len(title or '')} chars: \"{title or ''}\""))
 
-    meta_desc = find_first(r'<meta\s+name=["\']description["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+    meta_desc = meta_value(html, "description", attr="name")
     desc_len_ok = bool(meta_desc and 110 <= len(meta_desc) <= 170)
     results.append(("Meta Description", desc_len_ok, f"Meta description is {len(meta_desc or '')} chars."))
 
@@ -97,10 +111,13 @@ def audit_page(page_path: Path) -> list[tuple[str, bool, str]]:
     results.append(("Image Alt Text", len(missing_alt) == 0, f"All {len(imgs)} images have alt text." if not missing_alt else f"{len(missing_alt)} images missing alt."))
 
     og_required = ["og:type", "og:title", "og:description", "og:url", "og:image"]
-    og_ok = all(re.search(rf'<meta\s+property=["\']{re.escape(k)}["\']', html, flags=re.IGNORECASE) for k in og_required)
+    og_ok = all(
+        re.search(rf'<meta\s+[^>]*property=["\']{re.escape(k)}["\']', html, flags=re.IGNORECASE)
+        for k in og_required
+    )
     results.append(("Open Graph Tags", og_ok, "All core Open Graph tags present." if og_ok else "Missing one or more OG tags."))
 
-    tw = find_first(r'<meta\s+name=["\']twitter:card["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+    tw = meta_value(html, "twitter:card", attr="name")
     results.append(("Twitter Card", bool(tw), f"Twitter card type: {tw or 'missing'}"))
 
     schema_types = extract_schema_types(html)
@@ -116,7 +133,7 @@ def audit_page(page_path: Path) -> list[tuple[str, bool, str]]:
     sitemap_ok = sitemap.exists()
     results.append(("XML Sitemap", sitemap_ok, "sitemap.xml found." if sitemap_ok else "sitemap.xml missing."))
 
-    robots_meta = find_first(r'<meta\s+name=["\']robots["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+    robots_meta = meta_value(html, "robots", attr="name")
     robots_meta_ok = bool(robots_meta and "index" in robots_meta.lower() and "follow" in robots_meta.lower())
     results.append(("Robots Meta Tag", robots_meta_ok, f"Robots meta: \"{robots_meta or 'missing'}\""))
 
@@ -126,7 +143,7 @@ def audit_page(page_path: Path) -> list[tuple[str, bool, str]]:
     llms_link = re.search(r'<link\s+[^>]*href=["\']https://www\.amaximumconstruction\.com/llms\.txt["\']', html, re.IGNORECASE)
     results.append(("llms.txt Discovery Link", bool(llms_link), "HTML head links to llms.txt." if llms_link else "llms.txt head link missing."))
 
-    viewport = find_first(r'<meta\s+name=["\']viewport["\']\s+content=["\']([^"\']+)["\']', html, re.IGNORECASE)
+    viewport = meta_value(html, "viewport", attr="name")
     results.append(("Viewport Meta", bool(viewport), f"Viewport tag found: {viewport or 'missing'}"))
 
     lang = find_first(r"<html[^>]*\slang=[\"']([^\"']+)[\"']", html, re.IGNORECASE)
