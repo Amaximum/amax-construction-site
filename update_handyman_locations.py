@@ -528,6 +528,46 @@ def render_details_faq(pairs: list[tuple[str, str]]) -> str:
     return "\n".join(out)
 
 
+def keyword_cluster(c: dict) -> list[str]:
+    """Return a 20-keyword local SEO cluster for the given city page."""
+    city = c["city"]
+    terms = [
+        f"handyman services in {city}",
+        f"{city} handyman service",
+        f"licensed handyman {city}",
+        f"insured handyman {city}",
+        f"same-day handyman {city}",
+        f"home repair {city}",
+        f"residential handyman {city}",
+        f"drywall repair {city}",
+        f"door repair {city}",
+        f"window repair {city}",
+        f"minor plumbing {city}",
+        f"electrical handyman {city}",
+        f"painting handyman {city}",
+        f"TV mounting {city}",
+        f"furniture assembly {city}",
+        f"caulking services {city}",
+        f"weatherstripping {city} homes",
+        f"deck repair {city}",
+        f"fence repair {city}",
+        f"handyman quote {city}",
+    ]
+    if city == "Toronto":
+        terms[-1] = "GTA handyman company"
+    return terms
+
+
+def keyword_cluster_paragraph(c: dict) -> str:
+    """Render keyword cluster with all keywords in bold, as requested."""
+    terms = keyword_cluster(c)
+    joined = ", ".join([f"<strong>{t}</strong>" for t in terms])
+    return (
+        "<p><strong>Local keyword cluster we cover in real jobs:</strong> "
+        f"{joined}.</p>"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Per-page updaters
 # ---------------------------------------------------------------------------
@@ -535,7 +575,8 @@ def render_details_faq(pairs: list[tuple[str, str]]) -> str:
 def update_head(html: str, c: dict) -> str:
     """Update <title>, meta description, OG/Twitter title+desc. Schema FAQPage too."""
     city = c["city"]
-    new_title = c["title"]
+    # Rule: title must include the current H1 copy.
+    new_title = f"{c['h1']} | aMaximum Construction"
     new_desc = c["meta_desc"]
 
     html = re.sub(
@@ -615,9 +656,10 @@ def update_cat_a(slug: str, c: dict) -> bool:
         f"written estimate, and a clean finish — no half-done projects, no surprise "
         f"add-ons.</p>"
     )
+    intro_kw = keyword_cluster_paragraph(c)
     out = re.sub(
-        r'(<h2>Reliable Handyman Services in [^<]+</h2>\s*</div>\s*<div style="padding:0 24px 16px;">\s*)<p>.*?</p>',
-        lambda m: m.group(1) + intro_new,
+        r'(<h2>Reliable Handyman Services in [^<]+</h2>\s*</div>\s*<div style="padding:0 24px 16px;">\s*).*?(\s*</div>\s*</section>)',
+        lambda m: m.group(1) + intro_new + "\n    " + intro_kw + m.group(2),
         out, count=1, flags=re.DOTALL,
     )
 
@@ -726,9 +768,10 @@ def update_cat_b(slug: str, c: dict) -> bool:
         f"crew shows up insured, brings the tools and materials, and finishes the "
         f"list cleanly — no half-done items, no surprise charges.</p>"
     )
+    intro_kw = keyword_cluster_paragraph(c)
     out = re.sub(
-        r'(<h2>Reliable Handyman Services in [^<]+</h2>\s*</div>\s*<div style="padding:0 24px 16px;">\s*)<p>.*?</p>',
-        lambda m: m.group(1) + intro_new,
+        r'(<h2>Reliable Handyman Services in [^<]+</h2>\s*</div>\s*<div style="padding:0 24px 16px;">\s*).*?(\s*</div>\s*</section>)',
+        lambda m: m.group(1) + intro_new + "\n    " + intro_kw + m.group(2),
         out, count=1, flags=re.DOTALL,
     )
 
@@ -810,10 +853,18 @@ def update_cat_c(slug: str, c: dict) -> bool:
 
     out = update_head(out, c)
 
-    # H1 stays as-is. No structural changes — only text within sections that
-    # do NOT carry internal links is light-touched. Toronto already reads as
-    # a generic GTA hub; we leave card body text untouched to preserve the
-    # painting link and avoid disturbing the unique card layout.
+    # H1 stays as-is. Keep structure, links, and layout unchanged.
+    hero_intro = (
+        "<p>aMaximum Construction provides reliable handyman services across "
+        "Toronto and the GTA. From minor repairs to multi-room updates — no "
+        "job is too small.</p>"
+    )
+    hero_kw = keyword_cluster_paragraph(c)
+    out = re.sub(
+        r'(<h1>Handyman Services in Toronto &amp; GTA</h1>\s*)<p>.*?</p>',
+        lambda m: m.group(1) + hero_intro + "\n" + hero_kw,
+        out, count=1, flags=re.DOTALL,
+    )
 
     if out == src:
         print(f"  [skip] {slug} — no changes")
