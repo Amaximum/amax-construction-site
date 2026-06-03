@@ -73,3 +73,38 @@ c:/Users/maxim/Desktop/amax-Construction-site/.venv/Scripts/python.exe .\validat
 ```
 
 A page is acceptable only if summary is PASS.
+
+## 7) ETALON-Based Keyword Rollout Workflow (PERMANENT RULE)
+
+Это правило закоммичено в git, поэтому доступно с ЛЮБОГО компьютера
+пользователя после `git pull`.
+
+### Что просит пользователь (дословно)
+"Я даю тебе ЭТАЛОН страницу, на которую ты опираешься, и прописываешь все
+остальные location по этому services, собирая keywords."
+
+### Процедура
+1. Пользователь указывает ОДИН сервис + ОДНУ location-страницу как ЭТАЛОН
+   (reference). Эталон = логика/модель структуры, НЕ шаблон для копипаста.
+2. Для КАЖДОЙ остальной location-страницы того же сервиса:
+   - Собрать ровно **20 keywords**, разбитых на: **Primary / Secondary /
+     Supporting**.
+   - Вписать естественно в контент (no stuffing, no повтор).
+   - Все 20 keywords выделить **bold** где требуется.
+   - Адаптировать под локальный контекст (тип жилья, район, климат, intent).
+3. Соблюдать ВСЕ правила разделов 1–4 выше (структура, internal links,
+   anchor text, формы, CTA, галереи, review-виджеты, service cards не
+   трогать; контент каждой локации уникален; title включает H1).
+4. Прогнать `validate_location_page_rules.py` — страница принимается
+   только при summary PASS.
+
+### Уже выполнено (git history)
+- Handyman locations — 20-keyword clusters + title-h1 (888258c0, 58c2d1f6)
+- Deck locations — keyword clusters + title-h1 (b3304c51)
+- Fence locations — master rules, КРОМЕ Richmond Hill (5ebdb6a6)
+- Plumbing locations — rollout (632c389d)
+
+### Ещё НЕ сделано (кандидаты на продолжение)
+basement-renovation, carpenter-services, demolition, general-contractor,
+home-renovation, interlocking-stone, electrical, excavation, painting,
+canopy, deck-railing, christmas-lights.
