@@ -89,16 +89,15 @@ SERVICES: list[dict] = [
         'hub_dir': 'deck-builder',
         'label': 'Deck Building',
         'book_url': '/book-deck.html',
+        # Real location-style slugs only. The action-style slugs (custom-decks-,
+        # amazing-decks-in-, expert-deck-building-in-, wood-deck-repair-in-,
+        # building-a-deck-in-, building-a-small-deck-in-, is-it-cheaper-...)
+        # are blog articles, not location pages, and must fall through to
+        # classify_blog so they appear under Related Articles rather than the
+        # "Services in Your Area" locations grid.
         'location_patterns': [
             r'^deck-builder-(?:in-)?(?P<city>[a-z][a-z0-9-]+)$',
             r'^deck-contractor-(?:in-)?(?P<city>[a-z][a-z0-9-]+)$',
-            r'^custom-decks-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^amazing-decks-in-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^expert-deck-building-in-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^wood-deck-repair-in-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^building-a-deck-in-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^building-a-small-deck-in-(?P<city>[a-z][a-z0-9-]+)$',
-            r'^is-it-cheaper-to-build-your-own-deck-(?P<city>[a-z][a-z0-9-]+)$',
         ],
         'blog_keywords': ['deck', 'trex', 'rainescape'],
         'blog_excludes': ['railing', 'privacy-screen-deck'],
