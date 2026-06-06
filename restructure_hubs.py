@@ -336,6 +336,15 @@ RELATED_BLOGS_SECTION_RE = re.compile(
     r'<section\b[^>]*\bid="related-blogs"[^>]*>.*?</section>\s*',
     re.DOTALL | re.IGNORECASE,
 )
+# Legacy section IDs that may still exist on hub pages from earlier passes.
+# These must be removed from hubs because:
+#   - "service-areas" is the old name for "locations" (causes duplicate cities)
+#   - "related-blogs" is reserved for location pages only
+#   - "articles" is the old name for "related-articles"
+LEGACY_HUB_SECTIONS_RE = re.compile(
+    r'<section\b[^>]*\bid="(service-areas|related-blogs|articles)"[^>]*>.*?</section>\s*',
+    re.DOTALL | re.IGNORECASE,
+)
 SERVICE_LINKS_SECTION_RE = re.compile(
     r'<section\b[^>]*\bid="service-links"[^>]*>.*?</section>\s*',
     re.DOTALL | re.IGNORECASE,
@@ -375,22 +384,23 @@ def extract_title(html: str) -> str:
     return 'Untitled'
 
 
-def classify_dir(dirname: str) -> tuple[str | None, str | None, str | None]:
-    """Return (kind, service_hub_dir, city_slug) for a top-level dir.
-    kind in {'hub','location','blog',None}"""
+def classify_dir(dirname: str) -> tuple[str | None, str | None, str | None, int | None]:
+    """Return (kind, service_hub_dir, city_slug, pattern_idx) for a top-level dir.
+    kind in {'hub','location','blog',None}. pattern_idx is the 0-based index of the
+    matching location pattern (lower = preferred canonical URL for that city)."""
     if dirname in HUB_DIRS:
-        return ('hub', dirname, None)
+        return ('hub', dirname, None, None)
 
     # Try every service's location patterns.
     for svc in SERVICES:
-        for pat in svc['location_patterns']:
+        for idx, pat in enumerate(svc['location_patterns']):
             m = re.match(pat, dirname)
             if not m:
                 continue
             city = m.group('city')
             if city in CITIES:
-                return ('location', svc['hub_dir'], city)
-    return (None, None, None)
+                return ('location', svc['hub_dir'], city, idx)
+    return (None, None, None, None)
 
 
 def classify_blog(dirname: str, html: str) -> tuple[str | None, str | None]:
@@ -602,12 +612,12 @@ def main(argv: list[str]) -> int:
             unclassified.append(name + ' (duplicate-hub, ignored)')
             continue
 
-        kind, hub_dir, city = classify_dir(name)
+        kind, hub_dir, city, pat_idx = classify_dir(name)
         if kind == 'hub':
             continue
         if kind == 'location':
-            assert hub_dir and city
-            locations[hub_dir].append((f'/{name}/', city, CITIES[city]))
+            assert hub_dir and city and pat_idx is not None
+            locations[hub_dir].append((f'/{name}/', city, CITIES[city], pat_idx))
             continue
 
         try:
@@ -655,7 +665,7 @@ def main(argv: list[str]) -> int:
     all_location_urls: set[str] = {
         url
         for arr in locations.values()
-        for (url, _c, _n) in arr
+        for (url, _c, _n, _pi) in arr
     }
 
     # 4) Process each hub.
@@ -679,8 +689,15 @@ def main(argv: list[str]) -> int:
             print(f'\n[!] HUB MISSING: /{hub_dir}/')
             continue
 
-        loc_pairs_raw = sorted(set((u, slug, name) for (u, slug, name) in locations[hub_dir]))
-        loc_pairs = [(u, name) for (u, _slug, name) in
+        # Dedupe by city slug — keep the URL whose pattern matched earliest
+        # in this hub's location_patterns list (lower idx = canonical).
+        by_city: dict[str, tuple[str, str, str, int]] = {}
+        for (u, slug, name, pat_idx) in locations[hub_dir]:
+            cur = by_city.get(slug)
+            if cur is None or pat_idx < cur[3]:
+                by_city[slug] = (u, slug, name, pat_idx)
+        loc_pairs_raw = sorted(by_city.values())
+        loc_pairs = [(u, name) for (u, _slug, name, _pi) in
                      sorted(loc_pairs_raw, key=lambda t: t[2].lower())]
         general_blog_pairs = blogs_general_by_hub[hub_dir][:args.max_related]
 
@@ -688,6 +705,16 @@ def main(argv: list[str]) -> int:
         original_html = html
 
         print(f'\n--- /{hub_dir}/   "{label}"')
+
+        # Strip legacy hub-page sections that pre-date our canonical IDs:
+        #   id="service-areas"   = old name for the locations grid
+        #   id="related-blogs"   = belongs only on location pages, never on hubs
+        #   id="articles"        = old name for the related-articles block
+        legacy_hits = LEGACY_HUB_SECTIONS_RE.findall(html)
+        if legacy_hits:
+            html = LEGACY_HUB_SECTIONS_RE.sub('', html)
+            print(f'  [LEGACY] removed {len(legacy_hits)} stale section(s): '
+                  + ', '.join(sorted(set(legacy_hits))))
 
         # CTA fix
         new_html, cta_findings = fix_cta_to_book(html, all_location_urls, book_url)
@@ -758,8 +785,16 @@ def main(argv: list[str]) -> int:
         for svc in SERVICES:
             hub_dir = svc['hub_dir']
             label = svc['label']
-            for (loc_url, city_slug, city_name) in sorted(locations[hub_dir],
-                                                          key=lambda t: t[2].lower()):
+            # Dedupe by city: each city appears once per hub on the location
+            # iteration too, so we only generate one related-blogs section per
+            # canonical location page.
+            _by_city: dict[str, tuple[str, str, str, int]] = {}
+            for (u, slug, name, pi) in locations[hub_dir]:
+                cur = _by_city.get(slug)
+                if cur is None or pi < cur[3]:
+                    _by_city[slug] = (u, slug, name, pi)
+            for (loc_url, city_slug, city_name, _pi) in sorted(_by_city.values(),
+                                                                key=lambda t: t[2].lower()):
                 page = ROOT / loc_url.strip('/') / 'index.html'
                 if not page.exists():
                     continue
@@ -812,11 +847,15 @@ def main(argv: list[str]) -> int:
             city_url = None
             if city_slug:
                 # Find a location page of this hub for this city.
-                for (u, slug, cname) in locations[hub_dir]:
-                    if slug == city_slug:
+                # Prefer the URL whose pattern matched earliest (canonical).
+                _best_pi = None
+                for (u, slug, cname, pi) in locations[hub_dir]:
+                    if slug != city_slug:
+                        continue
+                    if _best_pi is None or pi < _best_pi:
                         city_label = cname
                         city_url = u
-                        break
+                        _best_pi = pi
                 if not city_label:
                     city_label = CITIES.get(city_slug)
 

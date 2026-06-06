@@ -45,7 +45,7 @@ def page_priority(url: str) -> tuple[str, str]:
 
     # Top-level slug — try to classify as location.
     if '/' not in name:
-        kind, _hub, _city = rh.classify_dir(name)
+        kind, _hub, _city, _pi = rh.classify_dir(name)
         if kind == 'location':
             return ('0.8', 'monthly')
         # treat the rest as blog-ish content
