@@ -82,3 +82,15 @@ A fully rewritten blog ALSO adds an `FAQPage` schema + visible FAQ (rule 0.4).
 - Sync first (`git fetch` / `git pull --ff-only`) per repo workflow rule.
 - Rewrite in batches; after each batch run `_list_old_blogs.py` to confirm the
   blog moved to NEW format, then `git add -A && git commit && git push`.
+
+## 6. VALIDATION & PROGRESS TRACKING
+- Per-article QA: `python _blog_qa2.py <slug>` — checks JSON-LD @types, H2 ids
+  vs TOC anchors, mojibake, body word count, book CTA href, title length, and
+  the flags (key-takeaways / toc / author-block / sources / callouts).
+- The per-blog → correct `/book-<service>.html` mapping + the full checklist of
+  which blogs are done vs remaining lives in `BLOG_REWRITE_PROGRESS.md`
+  (keep it updated as blogs are completed).
+- **Banned AI-filler phrases** (QA flags these — never use): "In this article",
+  "Let's dive in", "In conclusion", "It's important to note", "Stay tuned",
+  "navigate the complexities", "delve into", "in today's fast-paced",
+  "Whether you're a homeowner", "When it comes to".
