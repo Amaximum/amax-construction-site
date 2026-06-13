@@ -1,4 +1,9 @@
-"""List blogs by format. Old = missing lede / key-takeaways / HowTo."""
+"""List blogs by format. Old = missing lede / key-takeaways / HowTo.
+
+Service/location pages (Service or LocalBusiness schema without Article/
+BlogPosting) are excluded so only real blog articles are classified.
+"""
+import re
 from pathlib import Path
 
 root = Path('.')
@@ -10,6 +15,12 @@ for p in sorted(root.glob('*/index.html')):
         continue
     text = p.read_text(encoding='utf-8', errors='ignore')
     if 'class="blog-hero"' not in text:
+        continue
+    types = set(re.findall(r'"@type"\s*:\s*"([A-Za-z]+)"', text))
+    is_blog = bool(types & {'Article', 'BlogPosting'})
+    is_service = bool(types & {'Service', 'LocalBusiness'}) and not is_blog
+    if is_service:
+        # Service/location page, not a blog article — skip.
         continue
     has_lede = 'class="lede"' in text
     has_kt = 'key-takeaways' in text
