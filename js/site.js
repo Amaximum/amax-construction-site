@@ -25,9 +25,9 @@ if (topbarRight.querySelector('.mobile-topbar-actions')) return;
 var wrap = document.createElement('div');
 wrap.className = 'mobile-topbar-actions';
 wrap.setAttribute('aria-label', 'Quick contact actions');
-wrap.appendChild(createMobileTopbarAction('tel:+14165793576', 'mobile-topbar-action-call', 'Call aMaximum Construction'));
+wrap.appendChild(createMobileTopbarAction('tel:+12898194777', 'mobile-topbar-action-call', 'Call aMaximum Construction'));
 wrap.appendChild(
-createMobileTopbarAction('https://wa.me/14165793576', 'mobile-topbar-action-whatsapp', 'Open WhatsApp chat with aMaximum Construction')
+createMobileTopbarAction('https://wa.me/12898194777', 'mobile-topbar-action-whatsapp', 'Open WhatsApp chat with aMaximum Construction')
 );
 topbarRight.insertBefore(wrap, menuBtn);
 }
