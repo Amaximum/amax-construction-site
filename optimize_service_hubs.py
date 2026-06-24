@@ -588,7 +588,7 @@ def build_schema(slug, info):
       "@type": "LocalBusiness",
       "name": "aMaximum Construction",
       "url": "{url}",
-      "telephone": "+16479678555",
+      "telephone": "+12898194777",
       "email": "{EMAIL}",
       "address": {{
         "@type": "PostalAddress",
