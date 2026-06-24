@@ -13,7 +13,7 @@ from pathlib import Path
 root = Path('.')
 
 PHONE = "(647) 967-8555"
-EMAIL = "info@amaximumconstruction.com"
+EMAIL = "care@amaximumconstruction.com"
 DOMAIN = "https://amaximumconstruction.com"
 
 # ─── Per-service data ─────────────────────────────────────────────────────────
