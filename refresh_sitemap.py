@@ -24,7 +24,7 @@ if __name__ == '__main__':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
 ROOT = Path(__file__).resolve().parent
-SITE = 'https://www.amaximumconstruction.com'
+SITE = 'https://amaximumconstruction.com'
 
 import site_audit  # reuse discovery + indexability logic
 import restructure_hubs as rh  # reuse hub list + classifier

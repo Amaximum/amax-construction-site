@@ -40,13 +40,13 @@ def build_breadcrumb_schema(page_name: str, canonical: str) -> str:
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://www.amaximumconstruction.com/",
+                "item": "https://amaximumconstruction.com/",
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Services",
-                "item": "https://www.amaximumconstruction.com/#services",
+                "item": "https://amaximumconstruction.com/#services",
             },
             {
                 "@type": "ListItem",

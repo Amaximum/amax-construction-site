@@ -23,7 +23,7 @@ if __name__ == '__main__':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
 ROOT = Path(__file__).resolve().parent
-SITE = 'https://www.amaximumconstruction.com'
+SITE = 'https://amaximumconstruction.com'
 
 # Pages that are intentionally non-indexable (forms, thank-you pages, drafts).
 NOINDEX_OK = {
