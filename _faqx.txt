@@ -1,0 +1,44 @@
+﻿Pages with FAQ schema         : 281
+Distinct FAQ question-sets    : 261
+Shared-across-pages groups    : 6
+Pages sharing a FAQ with others: 26
+
+=== SHARED FAQ GROUPS (same Q-set on multiple URLs) ===
+
+[6 pages] first Q: "how much does a canopy cost in toronto?..."
+    canopy/index.html
+    canopy-installation-in-markham/index.html
+    canopy-installation-in-newmarket/index.html
+    canopy-installation-in-richmond-hill/index.html
+    canopy-installation-in-toronto/index.html
+    canopy-installation-in-vaughan/index.html
+
+[6 pages] first Q: "how much does excavation cost in toronto?..."
+    excavation-services/index.html
+    excavation-services-in-markham/index.html
+    excavation-services-in-newmarket/index.html
+    excavation-services-in-richmond-hill/index.html
+    excavation-services-in-toronto/index.html
+    excavation-services-in-vaughan/index.html
+
+[6 pages] first Q: "how much does interior painting cost in toronto?..."
+    handyman-painting-services/index.html
+    painting-services-in-markham/index.html
+    painting-services-in-newmarket/index.html
+    painting-services-in-richmond-hill/index.html
+    painting-services-in-toronto/index.html
+    painting-services-in-vaughan/index.html
+
+[4 pages] first Q: "amaximum construction..."
+    general-contractor-services/index.html
+    general-contractor-services-near-me/index.html
+    renovation-service/index.html
+    renovation-services-in-toronto-gta/index.html
+
+[2 pages] first Q: "amaximum construction..."
+    basement-bathroom-renovation-richmond-hill/index.html
+    bathroom-renovation-richmond-hill/index.html
+
+[2 pages] first Q: "how much does a plumber cost in toronto?..."
+    handyman-plumbing-services/index.html
+    plumbing-services-in-toronto/index.html
