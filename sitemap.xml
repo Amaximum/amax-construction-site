@@ -1483,18 +1483,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.amaximumconstruction.com/interlocking-stone-services-in-north-york/</loc>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-07-06</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.amaximumconstruction.com/interlocking-stone-services-in-richmond-hill/</loc>
-    <changefreq>monthly</changefreq>
-    <lastmod>2026-07-06</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.amaximumconstruction.com/interlocking-stone-services-in-scarborough/</loc>
     <changefreq>monthly</changefreq>
     <lastmod>2026-07-06</lastmod>
@@ -2062,6 +2050,18 @@
     <loc>https://www.amaximumconstruction.com/your-guide-to-choose-landscaping-services-in-toronto/</loc>
     <changefreq>monthly</changefreq>
     <lastmod>2026-07-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.amaximumconstruction.com/interlocking-stone-services-north-york/</loc>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.amaximumconstruction.com/interlock-paving-contractor-richmond-hill/</loc>
+    <changefreq>monthly</changefreq>
+    <lastmod>2026-08-28</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

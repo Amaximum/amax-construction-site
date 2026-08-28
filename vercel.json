@@ -16,23 +16,23 @@
       "permanent": true
     },
     {
-      "source": "/interlocking-stone-services-north-york",
-      "destination": "/interlocking-stone-services-in-north-york/",
+      "source": "/interlocking-stone-services-in-north-york",
+      "destination": "/interlocking-stone-services-north-york/",
       "permanent": true
     },
     {
-      "source": "/interlocking-stone-services-north-york/",
-      "destination": "/interlocking-stone-services-in-north-york/",
+      "source": "/interlocking-stone-services-in-north-york/",
+      "destination": "/interlocking-stone-services-north-york/",
       "permanent": true
     },
     {
-      "source": "/interlock-paving-contractor-richmond-hill",
-      "destination": "/interlocking-stone-services-in-richmond-hill/",
+      "source": "/interlocking-stone-services-in-richmond-hill",
+      "destination": "/interlock-paving-contractor-richmond-hill/",
       "permanent": true
     },
     {
-      "source": "/interlock-paving-contractor-richmond-hill/",
-      "destination": "/interlocking-stone-services-in-richmond-hill/",
+      "source": "/interlocking-stone-services-in-richmond-hill/",
+      "destination": "/interlock-paving-contractor-richmond-hill/",
       "permanent": true
     }
   ]
