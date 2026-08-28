@@ -1,0 +1,39 @@
+{
+  "redirects": [
+    {
+      "source": "/services/handyman-plumbing.html",
+      "destination": "/handyman-plumbing-services/",
+      "permanent": true
+    },
+    {
+      "source": "/services/handyman-plumbing",
+      "destination": "/handyman-plumbing-services/",
+      "permanent": true
+    },
+    {
+      "source": "/services/handyman-plumbing/",
+      "destination": "/handyman-plumbing-services/",
+      "permanent": true
+    },
+    {
+      "source": "/interlocking-stone-services-north-york",
+      "destination": "/interlocking-stone-services-in-north-york/",
+      "permanent": true
+    },
+    {
+      "source": "/interlocking-stone-services-north-york/",
+      "destination": "/interlocking-stone-services-in-north-york/",
+      "permanent": true
+    },
+    {
+      "source": "/interlock-paving-contractor-richmond-hill",
+      "destination": "/interlocking-stone-services-in-richmond-hill/",
+      "permanent": true
+    },
+    {
+      "source": "/interlock-paving-contractor-richmond-hill/",
+      "destination": "/interlocking-stone-services-in-richmond-hill/",
+      "permanent": true
+    }
+  ]
+}
