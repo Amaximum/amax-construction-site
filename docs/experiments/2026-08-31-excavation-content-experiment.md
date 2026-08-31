@@ -50,3 +50,32 @@ Keep the existing H1/title/meta/canonical/schema/FAQ implementation, page sectio
 ## Follow-up Checkpoints
 
 Compare GSC at 14, 28, and 56 days after release against this baseline: clicks, impressions, CTR, average position, ranking-query count, query distribution, and location-page visibility. Account for normal GSC delay and seasonality.
+
+## Existing Content Discovery and Internal Links
+
+The full site inventory contains 382 existing HTML pages. Candidate content was evaluated by topic and 16-month GSC page/query performance. The only link added in this phase is from `/backyard-demolition-services-landscaper/` to `/excavation-services/` in an existing FAQ about removal of old footings and concrete. Its anchor, `excavation services`, describes the next step when broader digging or grade work is needed; the article retains its demolition/site-clearing intent.
+
+| URL | GSC clicks | GSC impressions | Classification | Decision |
+| --- | ---: | ---: | --- | --- |
+| /backyard-demolition-services-landscaper/ | 0 | 143 | STRONG_SUPPORT | Add one contextual link; query theme is demolition and site clearing services. |
+| /paving-company/ | 0 | 889 | WEAK_RELATIONSHIP | No change; ranking query mix is asphalt paving rather than excavation. |
+| /your-guide-to-choose-landscaping-services-in-toronto/ | 0 | 1 | WEAK_RELATIONSHIP | No change. |
+| /construction-project-in-the-winter/ | 0 | 1 | WEAK_RELATIONSHIP | No change. |
+| /expensive-parts-basement-renovation/ | 0 | 10 | RELEVANT_SUPPORT | No change; no natural existing sentence requires an excavation link. |
+| /ultimate-guide-finding-best-fence-contractor/ | 0 | 0 | WEAK_RELATIONSHIP | No change. |
+
+No existing blog was rewritten. No article is confirmed to cannibalize the commercial Excavation hub.
+
+## Off-Page Baseline and Opportunities
+
+DataForSEO cannot return a page-level backlink count for the primary target through the available summary endpoint. Domain baseline for `amaximumconstruction.com`: 453 backlinks, 101 referring domains and 431 referring pages. Competitor domain samples: New Era Excavation (20 referring domains), Trihill (41), LNF Contracting (42), Shorecon (59), ISA Co. Excavation (72), and Absolute Construction (80).
+
+| Platform | Type | Free | Target | Status | Reason |
+| --- | --- | --- | --- | --- | --- |
+| HomeStars excavation specialist directory | Contractor profile | Unknown | /excavation-services/ | OWNER_ACTION_REQUIRED | Ranking Toronto directory; professional registration and profile verification required. |
+| Toronto Construction Network | Local construction directory | Unknown | /excavation-services/ | OWNER_ACTION_REQUIRED | Relevant GTA directory with an Add Your Business workflow; requires business representation. |
+| Vaughan Chamber directory | Chamber member listing | No/unknown | /excavation-services-in-vaughan/ | OWNER_ACTION_REQUIRED | Legitimate Vaughan-specific listing, but membership is required. |
+| OntarioContractors.com | Ontario contractor directory | No | /excavation-services/ | EXCLUDED | The published registration price is $60/year; no paid links are purchased in this experiment. |
+| OGCA/TCA directories | Industry association membership | No/unknown | /excavation-services/ | OWNER_ACTION_REQUIRED | Relevant only if the business elects to join and can substantiate membership. |
+
+No backlink, citation, submission, account, review, or paid placement was created. No spam or automated directory activity was performed.
