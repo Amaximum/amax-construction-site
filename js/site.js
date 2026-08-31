@@ -13,7 +13,8 @@ link.className = 'mobile-topbar-action ' + className;
 link.setAttribute('aria-label', label);
 link.setAttribute('title', label);
 icon.setAttribute('aria-hidden', 'true');
-icon.textContent = '\u260E';
+icon.textContent = className === 'mobile-topbar-action-whatsapp' ? 'WhatsApp' : '\u260E';
+if (className === 'mobile-topbar-action-whatsapp') icon.className = 'whatsapp-icon';
 link.appendChild(icon);
 return link;
 }
@@ -30,6 +31,34 @@ wrap.appendChild(
     createMobileTopbarAction('https://wa.me/14165793576', 'mobile-topbar-action-whatsapp', 'Open WhatsApp chat with aMaximum Construction')
 );
 topbarRight.insertBefore(wrap, menuBtn);
+}
+function initMobileFooterAccordions() {
+var footerColumns = document.querySelectorAll('.site-footer .footer-col:not(.footer-brand)');
+if (!footerColumns.length) return;
+var mobileQuery = window.matchMedia('(max-width: 560px)');
+var accordions = [];
+for (var i = 0; i < footerColumns.length; i++) {
+var column = footerColumns[i];
+var heading = column.querySelector(':scope > h3, :scope > h4');
+var list = column.querySelector(':scope > ul');
+if (!heading || !list) continue;
+var details = document.createElement('details');
+var summary = document.createElement('summary');
+summary.textContent = heading.textContent;
+details.className = 'footer-accordion';
+details.appendChild(summary);
+details.appendChild(list);
+heading.remove();
+column.appendChild(details);
+accordions.push(details);
+}
+function syncFooterAccordions() {
+for (var i = 0; i < accordions.length; i++) {
+accordions[i].open = !mobileQuery.matches;
+}
+}
+syncFooterAccordions();
+mobileQuery.addEventListener('change', syncFooterAccordions);
 }
 function bindMobileMenu() {
 var menuBtn = document.getElementById('menuBtn');
@@ -518,6 +547,69 @@ islandContourRaf = 0;
 updateIslandContours();
 });
 }
+var islandGeometryObserver = null;
+function observeIslandGeometryChanges() {
+var hasResizeObserver = false;
+try {
+hasResizeObserver = typeof window.ResizeObserver !== 'undefined';
+} catch (e) {
+hasResizeObserver = false;
+}
+if (!hasResizeObserver) return;
+if (!islandGeometryObserver) {
+islandGeometryObserver = new ResizeObserver(function () {
+scheduleIslandContourUpdate();
+});
+}
+islandGeometryObserver.observe(document.documentElement);
+var islands = document.querySelectorAll('.island');
+for (var i = 0; i < islands.length; i++) {
+islandGeometryObserver.observe(islands[i]);
+}
+}
+function watchIslandImagesForLateLoad() {
+var images = document.querySelectorAll('.island img');
+for (var i = 0; i < images.length; i++) {
+var img = images[i];
+if (!img || img.complete) continue;
+img.addEventListener('load', scheduleIslandContourUpdate, { once: true });
+img.addEventListener('error', scheduleIslandContourUpdate, { once: true });
+}
+}
+function watchIslandGeometryUntilSettled() {
+var islands = document.querySelectorAll('.island:not([style*="background"])');
+if (!islands || !islands.length) return;
+var deadline = Date.now() + 6000;
+function widthsSnapshot() {
+var widths = [];
+for (var i = 0; i < islands.length; i++) {
+widths.push(Math.round(islands[i].getBoundingClientRect().width));
+}
+return widths;
+}
+function sameWidths(a, b) {
+if (!a || !b || a.length !== b.length) return false;
+for (var i = 0; i < a.length; i++) {
+if (a[i] !== b[i]) return false;
+}
+return true;
+}
+var lastWidths = widthsSnapshot();
+var stableStreak = 0;
+function tick() {
+var currentWidths = widthsSnapshot();
+if (sameWidths(currentWidths, lastWidths)) {
+stableStreak++;
+} else {
+stableStreak = 0;
+lastWidths = currentWidths;
+scheduleIslandContourUpdate();
+}
+if (stableStreak >= 2 || Date.now() >= deadline) return;
+window.setTimeout(tick, 300);
+}
+window.setTimeout(tick, 300);
+}
 function preloadCardGalleryImages() {
 var galleries = document.querySelectorAll('.card-gallery');
 if (!galleries || !galleries.length) return;
@@ -767,6 +859,7 @@ initCarousel(carousels[i]);
 }
 function initSite() {
 ensureMobileHeaderActions();
+initMobileFooterAccordions();
 bindMobileMenu();
 bindDraggableRatingWidget();
 preloadCardGalleryImages();
@@ -774,9 +867,13 @@ initCardGalleries();
 bindCarousels();
 initRevealOnScroll();
 updateIslandContours();
+observeIslandGeometryChanges();
+watchIslandImagesForLateLoad();
+watchIslandGeometryUntilSettled();
 window.setTimeout(scheduleIslandContourUpdate, 60);
 window.setTimeout(scheduleIslandContourUpdate, 260);
 window.setTimeout(scheduleIslandContourUpdate, 900);
+window.setTimeout(scheduleIslandContourUpdate, 2500);
 try {
 if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
 document.fonts.ready.then(scheduleIslandContourUpdate);
