@@ -25,3 +25,5 @@ img/services/*/
 
 # Misc local assets that shouldn't be deployed
 img/services/aMaximum-Construction1-1 (2).png
+.vercel
+.env*.local
