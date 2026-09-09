@@ -851,7 +851,17 @@ root.addEventListener('focusin', stop);
 root.addEventListener('focusout', start);
 buildDots();
 setIndex(0);
+// Autoplay only once visible; otherwise every slide image downloads on load.
+if ('IntersectionObserver' in window) {
+var visibilityObserver = new IntersectionObserver(function (entries) {
+for (var e = 0; e < entries.length; e++) {
+if (entries[e].isIntersecting) start(); else stop();
+}
+}, { rootMargin: '100px' });
+visibilityObserver.observe(root);
+} else {
 start();
+}
 }
 for (var i = 0; i < carousels.length; i++) {
 initCarousel(carousels[i]);
