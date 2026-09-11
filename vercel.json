@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/general-contractor",
+      "destination": "/general-contractor-services/",
+      "permanent": true
+    },
+    {
+      "source": "/general-contractor/",
+      "destination": "/general-contractor-services/",
+      "permanent": true
+    },
+    {
       "source": "/services/handyman-plumbing.html",
       "destination": "/handyman-plumbing-services/",
       "permanent": true
