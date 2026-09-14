@@ -25,9 +25,9 @@ for sub in ("book-now", "thank-you-page", "sitemap"):
 # URLs (relative paths) to strip from sitemap.
 strip_urls: set[str] = set()
 for sub in ("book-now", "thank-you-page", "sitemap"):
-    strip_urls.add(f"https://amaximumconstruction.com/{sub}/")
+    strip_urls.add(f"https://www.amaximumconstruction.com/{sub}/")
 for f in ROOT.glob("book-*.html"):
-    strip_urls.add(f"https://amaximumconstruction.com/{f.name}")
+    strip_urls.add(f"https://www.amaximumconstruction.com/{f.name}")
 
 
 ROBOTS_RE = re.compile(r'<meta\s+name="robots"\s+content="[^"]*"\s*/?>', re.I)

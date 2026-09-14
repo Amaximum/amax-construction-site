@@ -475,7 +475,7 @@ def build_hub_page(
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://amaximumconstruction.com/"}},
+        {{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.amaximumconstruction.com/"}},
         {{"@type": "ListItem", "position": 2, "name": "{html_escape(service_title)}", "item": "{canonical}"}}
       ]
     }}

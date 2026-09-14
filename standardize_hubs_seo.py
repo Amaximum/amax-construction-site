@@ -269,7 +269,7 @@ def update_hub(slug: str, cfg: dict) -> tuple[bool, list[str]]:
         return (
             m.group(1)
             + '{"@type": "ListItem", "position": 2, "name": "Services", '
-              '"item": "https://amaximumconstruction.com/#services"},\n        '
+              '"item": "https://www.amaximumconstruction.com/#services"},\n        '
             + '{"@type": "ListItem", "position": 3, "name": "'
             + crumb_attr
             + '", "item": "' + m.group(5) + '"}'

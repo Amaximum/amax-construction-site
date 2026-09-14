@@ -14,7 +14,7 @@ ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
 
 sitemap_urls = []
 for url in root.findall('sm:url/sm:loc', ns):
-    path = url.text.replace('https://amaximumconstruction.com/', '').strip('/')
+    path = url.text.replace('https://www.amaximumconstruction.com/', '').strip('/')
     if path:
         sitemap_urls.append(path)
 

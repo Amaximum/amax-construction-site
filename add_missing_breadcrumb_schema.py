@@ -8,14 +8,26 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 
 TARGETS = [
-    "deck-builder-gta/index.html",
-    "deck-builder-schomberg/index.html",
-    "deck-builder-toronto/index.html",
-    "deck-contractor-bradford/index.html",
-    "deck-contractor-burlington/index.html",
-    "deck-contractor-hamilton/index.html",
-    "deck-contractor-scarborough/index.html",
-    "deck-contractor-woodbridge/index.html",
+    "amaximum-deck-builder-blog/index.html",
+    "best-decking-materials-outdoor-decks/index.html",
+    "building-a-small-deck-in-toronto/index.html",
+    "client-testimonials/index.html",
+    "company-policy-of-amaximum-construction/index.html",
+    "deck-contractor-king-city/index.html",
+    "deck-maintenance-in-markhams-variable-climate/index.html",
+    "deck-railing-builder-richmond-hill/index.html",
+    "deck-railing-installer-east-york/index.html",
+    "expert-deck-building-in-aurora/index.html",
+    "fence-installer-aurora/index.html",
+    "how-to-repair-wood-decks-2/index.html",
+    "our-work-process/index.html",
+    "privacy-screen-deck/index.html",
+    "privacy-screen-installation-in-north-york/index.html",
+    "starting-deck-boards-installation/index.html",
+    "trex-rainescape-system-toronto/index.html",
+    "what-is-a-good-price-for-a-deck-in-toronto/index.html",
+    "what-we-do/index.html",
+    "why-choose-us/index.html",
 ]
 
 
@@ -40,13 +52,13 @@ def build_breadcrumb_schema(page_name: str, canonical: str) -> str:
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://amaximumconstruction.com/",
+                "item": "https://www.amaximumconstruction.com/",
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Services",
-                "item": "https://amaximumconstruction.com/#services",
+                "item": "https://www.amaximumconstruction.com/#services",
             },
             {
                 "@type": "ListItem",

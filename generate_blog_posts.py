@@ -94,8 +94,8 @@ if (menuBtn && siteNav) {
 </script>"""
 
 def make_schema(slug, title, date_published, description):
-    canonical = f"https://amaximumconstruction.com/{slug}/"
-    return f"""<script type="application/ld+json">
+      canonical = f"https://www.amaximumconstruction.com/{slug}/"
+      return f"""<script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@graph": [
@@ -108,7 +108,7 @@ def make_schema(slug, title, date_published, description):
       "publisher": {{
         "@type": "Organization",
         "name": "aMaximum Construction",
-        "logo": {{"@type": "ImageObject", "url": "https://amaximumconstruction.com/img/logo.png"}}
+                        "logo": {{"@type": "ImageObject", "url": "https://www.amaximumconstruction.com/img/logo.png"}}
       }},
       "description": "{description}",
       "url": "{canonical}"
@@ -116,8 +116,8 @@ def make_schema(slug, title, date_published, description):
     {{
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://amaximumconstruction.com/"}},
-        {{"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://amaximumconstruction.com/blog/"}},
+                        {{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.amaximumconstruction.com/"}},
+                        {{"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.amaximumconstruction.com/blog/"}},
         {{"@type": "ListItem", "position": 3, "name": "{title}", "item": "{canonical}"}}
       ]
     }}
@@ -126,9 +126,9 @@ def make_schema(slug, title, date_published, description):
 </script>"""
 
 def build_page(slug, title, category, date_published, read_time, description, body_html, cta_url, cta_label):
-    canonical = f"https://amaximumconstruction.com/{slug}/"
-    schema = make_schema(slug, title, date_published, description)
-    return f"""<!DOCTYPE html>
+      canonical = f"https://www.amaximumconstruction.com/{slug}/"
+      schema = make_schema(slug, title, date_published, description)
+      return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

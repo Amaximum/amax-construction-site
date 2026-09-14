@@ -1,4 +1,4 @@
-import os, re
+import json, os, re
 from collections import Counter
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SKIP = {'.git','node_modules','.venv','__pycache__'}
@@ -13,6 +13,14 @@ def walk_html():
 # sitemap URLs
 sm = open(os.path.join(ROOT,'sitemap.xml'),encoding='utf-8',errors='replace').read() if os.path.exists(os.path.join(ROOT,'sitemap.xml')) else ''
 sitemap_urls = set(re.findall(r'<loc>\s*(.*?)\s*</loc>', sm))
+
+vercel_path = os.path.join(ROOT, 'vercel.json')
+vercel_config = json.loads(open(vercel_path, encoding='utf-8').read()) if os.path.exists(vercel_path) else {}
+redirect_sources = {
+    rule['source'].rstrip('/') or '/'
+    for rule in vercel_config.get('redirects', [])
+    if rule.get('permanent') and rule.get('source')
+}
 
 def url_to_relpath(u):
     u = u.split('#')[0].split('?')[0]
@@ -46,7 +54,15 @@ def expected_url(rel):
         path = rel[:-len('index.html')]
     else:
         path = rel
-    return 'https://amaximumconstruction.com/' + path
+    return 'https://www.amaximumconstruction.com/' + path
+
+def own_path(rel):
+    rel = rel.replace(os.sep, '/')
+    if rel == 'index.html':
+        return '/'
+    if rel.endswith('/index.html'):
+        return '/' + rel[:-len('index.html')].rstrip('/')
+    return '/' + rel
 
 for p in walk_html():
     raw = open(p,encoding='utf-8',errors='replace').read()
@@ -54,6 +70,7 @@ for p in walk_html():
     rel = os.path.relpath(p, ROOT)
     relu = rel.replace(os.sep,'/')
     noindex = 'noindex' in low
+    redirected = own_path(rel) in redirect_sources
 
     # lang
     if not re.search(r'<html[^>]*\blang=', raw, re.I):
@@ -69,7 +86,7 @@ for p in walk_html():
     mc = re.search(r'<link[^>]+rel=["\']canonical["\'][^>]*href=["\'](.*?)["\']', raw, re.I)
     if mc:
         can = mc.group(1).strip()
-        if '://www.amaximumconstruction.com' in can or can.startswith('http://'):
+        if '://amaximumconstruction.com' in can or can.startswith('http://'):
             problems['canonical_non_www'].append(f'{relu} -> {can}')
         # self-reference check for index.html pages
         exp = expected_url(rel)
@@ -80,21 +97,20 @@ for p in walk_html():
             if cn.lower() != en.lower():
                 problems['canonical_not_self'].append(f'{relu} -> {can} (exp {exp})')
 
-    # sitemap membership
-    in_sm = False
-    if mc:
-        can = mc.group(1).strip()
-        in_sm = can in sitemap_urls or can.rstrip('/') + '/' in sitemap_urls or can.rstrip('/') in sitemap_urls
+    # Sitemap membership is based on this file's public URL, not its canonical
+    # target. Redirected/noindex duplicates often canonicalize to an indexed URL.
+    own_url = expected_url(rel)
+    in_sm = own_url in sitemap_urls or own_url.rstrip('/') + '/' in sitemap_urls or own_url.rstrip('/') in sitemap_urls
     if noindex and in_sm:
         problems['noindex_in_sitemap'].append(relu)
-    if (not noindex) and (not in_sm) and relu != 'services/service-template.html':
+    if (not noindex) and (not redirected) and (not in_sm) and relu != 'services/service-template.html':
         problems['indexed_not_in_sitemap'].append(relu)
 
     # schema
     if 'application/ld+json' not in low:
         if not noindex:
             problems['no_schema'].append(relu)
-    if 'breadcrumblist' not in low and not noindex and relu not in ('index.html',):
+    if 'breadcrumblist' not in low and not noindex and not redirected and relu not in ('index.html', 'services/service-template.html'):
         problems['no_breadcrumb_schema'].append(relu)
 
     # h1 count
@@ -110,7 +126,7 @@ for p in walk_html():
             break
 
     # duplicate title/desc (indexed only)
-    if not noindex:
+    if not noindex and not redirected:
         mt = re.search(r'<title[^>]*>(.*?)</title>', raw, re.I|re.S)
         if mt:
             t = mt.group(1).strip()
