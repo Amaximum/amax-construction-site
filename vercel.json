@@ -1,6 +1,36 @@
 {
   "redirects": [
     {
+      "source": "/deck-contractor-stouffville",
+      "destination": "/deck-builder/",
+      "permanent": true
+    },
+    {
+      "source": "/deck-contractor-stouffville/",
+      "destination": "/deck-builder/",
+      "permanent": true
+    },
+    {
+      "source": "/general-contracto",
+      "destination": "/general-contractor-services/",
+      "permanent": true
+    },
+    {
+      "source": "/general-contracto/",
+      "destination": "/general-contractor-services/",
+      "permanent": true
+    },
+    {
+      "source": "/html-sitemap",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/html-sitemap/",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
       "source": "/general-contractor",
       "destination": "/general-contractor-services/",
       "permanent": true
