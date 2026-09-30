@@ -1,0 +1,254 @@
+{
+  "hub_links_to_gc": [
+    [
+      "/general-contractor-services-near-me/",
+      "General Contractor Near Me"
+    ],
+    [
+      "/general-contractor-in-aurora/",
+      "Aurora"
+    ],
+    [
+      "/general-contractor-in-east-york/",
+      "East York"
+    ],
+    [
+      "/general-contractor-in-etobicoke/",
+      "Etobicoke"
+    ],
+    [
+      "/general-contractor-in-king-city/",
+      "King City"
+    ],
+    [
+      "/general-contractor-in-markham/",
+      "Markham"
+    ],
+    [
+      "/general-contractor-in-newmarket/",
+      "Newmarket"
+    ],
+    [
+      "/general-contractor-in-nobleton/",
+      "Nobleton"
+    ],
+    [
+      "/general-contractor-in-north-york/",
+      "North York"
+    ],
+    [
+      "/general-contractor-in-richmond-hill/",
+      "Richmond Hill"
+    ],
+    [
+      "/general-contractor-in-scarborough/",
+      "Scarborough"
+    ],
+    [
+      "/general-contractor-in-toronto/",
+      "Toronto"
+    ],
+    [
+      "/general-contractor-in-vaughan/",
+      "Vaughan"
+    ],
+    [
+      "/general-contractor-in-whitchurch-stouffville/",
+      "Whitchurch-Stouffville"
+    ],
+    [
+      "/general-contractor-in-woodbridge/",
+      "Woodbridge"
+    ],
+    [
+      "/general-contractor-services/",
+      "General Contractor"
+    ]
+  ],
+  "hub_links_to_locations": [
+    [
+      "/locations/",
+      "Locations"
+    ],
+    [
+      "/locations/toronto/",
+      "Toronto"
+    ],
+    [
+      "/locations/markham/",
+      "Markham"
+    ],
+    [
+      "/locations/richmond-hill/",
+      "Richmond Hill"
+    ],
+    [
+      "/locations/vaughan/",
+      "Vaughan"
+    ],
+    [
+      "/locations/newmarket/",
+      "Newmarket"
+    ],
+    [
+      "/locations/",
+      "All Locations &rarr;"
+    ]
+  ],
+  "city_pages": [
+    {
+      "city": "aurora",
+      "path": "/general-contractor-in-aurora/",
+      "title": "General Contractor in Aurora | aMaximum Construction",
+      "h1": "General Contractor in Aurora",
+      "words": 1346,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.45
+    },
+    {
+      "city": "east-york",
+      "path": "/general-contractor-in-east-york/",
+      "title": "General Contractor in East York | aMaximum Construction",
+      "h1": "General Contractor in East York",
+      "words": 1387,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "etobicoke",
+      "path": "/general-contractor-in-etobicoke/",
+      "title": "General Contractor in Etobicoke | aMaximum Construction",
+      "h1": "General Contractor in Etobicoke",
+      "words": 1347,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "king-city",
+      "path": "/general-contractor-in-king-city/",
+      "title": "General Contractor in King City | aMaximum Construction",
+      "h1": "General Contractor in King City",
+      "words": 1207,
+      "city_mentions": 32,
+      "links_total": 54,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.46
+    },
+    {
+      "city": "markham",
+      "path": "/general-contractor-in-markham/",
+      "title": "General Contractor in Markham | aMaximum Construction",
+      "h1": "General Contractor in Markham",
+      "words": 1345,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "newmarket",
+      "path": "/general-contractor-in-newmarket/",
+      "title": "General Contractor in Newmarket | aMaximum Construction",
+      "h1": "General Contractor in Newmarket",
+      "words": 1345,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "nobleton",
+      "path": "/general-contractor-in-nobleton/",
+      "title": "General Contractor in Nobleton | aMaximum Construction",
+      "h1": "General Contractor in Nobleton",
+      "words": 1208,
+      "city_mentions": 15,
+      "links_total": 54,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.45
+    },
+    {
+      "city": "north-york",
+      "path": "/general-contractor-in-north-york/",
+      "title": "General Contractor in North York | aMaximum Construction",
+      "h1": "General Contractor in North York",
+      "words": 1387,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "richmond-hill",
+      "path": "/general-contractor-in-richmond-hill/",
+      "title": "General Contractor in Richmond Hill | aMaximum Construction",
+      "h1": "General Contractor in Richmond Hill",
+      "words": 1385,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.45
+    },
+    {
+      "city": "scarborough",
+      "path": "/general-contractor-in-scarborough/",
+      "title": "General Contractor in Scarborough | aMaximum Construction",
+      "h1": "General Contractor in Scarborough",
+      "words": 1346,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "toronto",
+      "path": "/general-contractor-in-toronto/",
+      "title": "General Contractor in Toronto &amp; GTA | aMaximum Construction",
+      "h1": "General Contractor in Toronto &amp; GTA",
+      "words": 740,
+      "city_mentions": 12,
+      "links_total": 65,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.56
+    },
+    {
+      "city": "vaughan",
+      "path": "/general-contractor-in-vaughan/",
+      "title": "General Contractor in Vaughan | aMaximum Construction",
+      "h1": "General Contractor in Vaughan",
+      "words": 1342,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    },
+    {
+      "city": "whitchurch-stouffville",
+      "path": "/general-contractor-in-whitchurch-stouffville/",
+      "title": "General Contractor in Whitchurch-Stouffville | aMaximum Construction",
+      "h1": "General Contractor in Whitchurch-Stouffville",
+      "words": 1161,
+      "city_mentions": 0,
+      "links_total": 54,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.46
+    },
+    {
+      "city": "woodbridge",
+      "path": "/general-contractor-in-woodbridge/",
+      "title": "General Contractor in Woodbridge | aMaximum Construction",
+      "h1": "General Contractor in Woodbridge",
+      "words": 1348,
+      "city_mentions": 43,
+      "links_total": 57,
+      "links_to_hub": 2,
+      "same_as_hub_ratio": 0.44
+    }
+  ]
+}
