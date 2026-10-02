@@ -58,6 +58,6 @@ Our in-house and certified trade teams cover the complete project lifecycle: des
 
 We service the full GTA footprint: Toronto, North York, Etobicoke, Scarborough, Vaughan, Markham, Richmond Hill, Aurora, Newmarket, Stouffville, Mississauga, Brampton, Oakville, Burlington, Hamilton, Pickering, Ajax, Whitby and Oshawa. Every client receives a dedicated project manager, a written schedule with milestone dates, transparent pricing, and a workmanship warranty in addition to the manufacturer warranties on installed materials.
 
-Call (289) 819-4777 or email care@amaximumconstruction.com for a free in-home consultation and quote.
+Call (416) 579-3576 or email care@amaximumconstruction.com for a free in-home consultation and quote.
 ```
 *~1490 chars*

@@ -12,7 +12,7 @@ from pathlib import Path
 
 root = Path('.')
 
-PHONE = "(647) 967-8555"
+PHONE = "(416) 579-3576"
 EMAIL = "care@amaximumconstruction.com"
 DOMAIN = "https://amaximumconstruction.com"
 
@@ -20,7 +20,7 @@ DOMAIN = "https://amaximumconstruction.com"
 SERVICES = {
     'deck-builder': {
         'title': 'Custom Deck Builder in Toronto & GTA | aMaximum',
-        'desc': 'Licensed deck builders serving Toronto & GTA. Custom decks, composite & pressure-treated. Fixed quotes, permit-managed. Call (647) 967-8555.',
+        'desc': 'Licensed deck builders serving Toronto & GTA. Custom decks, composite & pressure-treated. Fixed quotes, permit-managed. Call (416) 579-3576.',
         'h1': 'Custom Deck Builder in Toronto & GTA',
         'hero_p': 'aMaximum Construction designs and builds beautiful, durable decks across Toronto, Markham, Richmond Hill, Vaughan & all of the GTA. Licensed, insured, and permit-managed.',
         'book': '/book-deck.html',
@@ -51,7 +51,7 @@ SERVICES = {
     },
     'deck-railings': {
         'title': 'Deck Railings Toronto & GTA | Glass, Aluminum, Wood',
-        'desc': 'Deck railing installation in Toronto & GTA. Glass, aluminum, cable & wood railings. Licensed contractors, free quotes. Call (647) 967-8555.',
+        'desc': 'Deck railing installation in Toronto & GTA. Glass, aluminum, cable & wood railings. Licensed contractors, free quotes. Call (416) 579-3576.',
         'h1': 'Deck Railing Installation in Toronto & GTA',
         'hero_p': 'aMaximum Construction installs safe, beautiful deck railings across Toronto and the GTA. Glass, aluminum, cable, and wood — code-compliant and built to last.',
         'book': '/book-railing.html',
@@ -82,7 +82,7 @@ SERVICES = {
     },
     'fence-contractor-in-toronto': {
         'title': 'Fence Contractor Toronto & GTA | Wood, Vinyl, Chain Link',
-        'desc': 'Licensed fence contractor in Toronto & GTA. Wood, vinyl, aluminum & chain link fences. Free quotes, permit-managed. Call (647) 967-8555.',
+        'desc': 'Licensed fence contractor in Toronto & GTA. Wood, vinyl, aluminum & chain link fences. Free quotes, permit-managed. Call (416) 579-3576.',
         'h1': 'Fence Installation in Toronto & GTA',
         'hero_p': 'aMaximum Construction installs privacy fences, picket fences, vinyl, and chain link across Toronto and the GTA. Licensed, insured, and permit-managed.',
         'book': '/book-fence.html',
@@ -113,7 +113,7 @@ SERVICES = {
     },
     'bathroom-renovation': {
         'title': 'Bathroom Renovation Toronto & GTA | Licensed Contractors',
-        'desc': 'Licensed bathroom renovation contractors in Toronto & GTA. Full renos, tile, plumbing & vanity. Fixed quotes, 5-star rated. Call (647) 967-8555.',
+        'desc': 'Licensed bathroom renovation contractors in Toronto & GTA. Full renos, tile, plumbing & vanity. Fixed quotes, 5-star rated. Call (416) 579-3576.',
         'h1': 'Bathroom Renovation in Toronto & GTA',
         'hero_p': 'aMaximum Construction delivers full bathroom renovations across Toronto and the GTA — on time, on budget, and with a written workmanship warranty.',
         'book': '/book-bathroom.html',
@@ -144,7 +144,7 @@ SERVICES = {
     },
     'basement-renovation-service-in-toronto': {
         'title': 'Basement Renovation Toronto & GTA | Licensed Contractors',
-        'desc': 'Licensed basement renovation contractors in Toronto & GTA. Finishing, waterproofing, in-law suites. Fixed quotes, permit-managed. Call (647) 967-8555.',
+        'desc': 'Licensed basement renovation contractors in Toronto & GTA. Finishing, waterproofing, in-law suites. Fixed quotes, permit-managed. Call (416) 579-3576.',
         'h1': 'Basement Renovation in Toronto & GTA',
         'hero_p': 'aMaximum Construction transforms unfinished basements into living spaces, in-law suites, and rental units across Toronto and the GTA. Licensed, insured, permit-managed.',
         'book': '/book-basement.html',
@@ -175,7 +175,7 @@ SERVICES = {
     },
     'handyman-plumbing-services': {
         'title': 'Plumbing Services Toronto & GTA | Licensed Plumbers',
-        'desc': 'Licensed plumbers in Toronto & GTA. Drain cleaning, pipe repair, fixture install & leak detection. Fast response. Call (647) 967-8555.',
+        'desc': 'Licensed plumbers in Toronto & GTA. Drain cleaning, pipe repair, fixture install & leak detection. Fast response. Call (416) 579-3576.',
         'h1': 'Plumbing Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides licensed plumbing services across Toronto and the GTA — from drain cleaning to full pipe replacement. Fast, reliable, and guaranteed.',
         'book': '/book-plumbing.html',
@@ -198,7 +198,7 @@ SERVICES = {
         ],
         'faq': [
             ('How much does a plumber cost in Toronto?', 'Plumbing service calls start around $150–$300 for diagnostics. Drain cleaning runs $250–$600. Pipe repairs vary by scope. We provide upfront quotes before any work.'),
-            ('Do you offer emergency plumbing?', 'Yes — we offer priority service for urgent plumbing issues. Call (647) 967-8555 for urgent requests.'),
+            ('Do you offer emergency plumbing?', 'Yes — we offer priority service for urgent plumbing issues. Call (416) 579-3576 for urgent requests.'),
             ('Are your plumbers licensed in Ontario?', 'Yes — all our plumbers hold a valid Ontario Certificate of Qualification (306A) and are fully insured.'),
             ('How do I know if I have a hidden leak?', 'Signs include unexplained high water bills, damp drywall, mold smell, or water stains on ceilings. We use moisture meters and camera inspection to locate leaks.'),
             ('Can you fix the plumbing during a renovation?', 'Absolutely — we coordinate plumbing rough-in and finishing with your renovation schedule. All work is permit-managed.'),
@@ -206,7 +206,7 @@ SERVICES = {
     },
     'canopy': {
         'title': 'Canopy & Awning Installation Toronto & GTA | aMaximum',
-        'desc': 'Canopy, pergola & awning installation in Toronto & GTA. Custom patio covers, carports & shade structures. Free quotes. Call (647) 967-8555.',
+        'desc': 'Canopy, pergola & awning installation in Toronto & GTA. Custom patio covers, carports & shade structures. Free quotes. Call (416) 579-3576.',
         'h1': 'Canopy & Awning Installation in Toronto & GTA',
         'hero_p': 'aMaximum Construction designs and installs custom canopies, pergolas, and awnings across Toronto and the GTA. Protect your outdoor space from sun, rain, and weather year-round.',
         'book': '/book-canopy.html',
@@ -237,7 +237,7 @@ SERVICES = {
     },
     'landscaping-services-toronto': {
         'title': 'Landscaping Services Toronto & GTA | aMaximum Construction',
-        'desc': 'Professional landscaping in Toronto & GTA. Lawn design, sod, garden beds, trees & cleanup. Licensed contractors. Free quotes. Call (647) 967-8555.',
+        'desc': 'Professional landscaping in Toronto & GTA. Lawn design, sod, garden beds, trees & cleanup. Licensed contractors. Free quotes. Call (416) 579-3576.',
         'h1': 'Landscaping Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction delivers complete landscaping services across Toronto and the GTA — from sod and garden design to full yard transformations. Licensed, insured, and guaranteed.',
         'book': '/book-landscaping.html',
@@ -268,7 +268,7 @@ SERVICES = {
     },
     'general-contractor-in-toronto': {
         'title': 'General Contractor Toronto & GTA | Licensed & Insured',
-        'desc': 'Licensed general contractor in Toronto & GTA. Full home renovations, additions, permit management. Fixed quotes. Call (647) 967-8555.',
+        'desc': 'Licensed general contractor in Toronto & GTA. Full home renovations, additions, permit management. Fixed quotes. Call (416) 579-3576.',
         'h1': 'General Contractor in Toronto & GTA',
         'hero_p': 'aMaximum Construction is a licensed general contractor serving Toronto and the GTA since 2018. We manage full renovations, additions, and complex multi-trade projects — one contract, one point of contact.',
         'book': '/book-contractor.html',
@@ -299,7 +299,7 @@ SERVICES = {
     },
     'handyman-service-in-toronto': {
         'title': 'Handyman Service Toronto & GTA | Reliable & Licensed',
-        'desc': 'Professional handyman services in Toronto & GTA. Drywall, assembly, repairs, painting & more. Fixed quotes. Call (647) 967-8555.',
+        'desc': 'Professional handyman services in Toronto & GTA. Drywall, assembly, repairs, painting & more. Fixed quotes. Call (416) 579-3576.',
         'h1': 'Handyman Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides reliable handyman services across Toronto and the GTA. From minor repairs to multi-room updates — no job is too small.',
         'book': '/book-handy.html',
@@ -325,12 +325,12 @@ SERVICES = {
             ('Do you have a minimum charge?', 'We have a minimum service call of $150. Most jobs are quoted at a fixed price.'),
             ('Are your handymen licensed and insured?', 'Yes — all our handymen are insured and our company carries $2M liability insurance and WSIB coverage.'),
             ('Can you do multiple small jobs in one visit?', 'Absolutely — our handymen can tackle a list of small tasks in a single visit, making it efficient and cost-effective.'),
-            ('How quickly can you come?', 'We typically schedule within 2–5 business days. For urgent requests, call us directly at (647) 967-8555.'),
+            ('How quickly can you come?', 'We typically schedule within 2–5 business days. For urgent requests, call us directly at (416) 579-3576.'),
         ],
     },
     'interlocking-paver-services': {
         'title': 'Interlocking & Paving Toronto & GTA | Licensed Contractors',
-        'desc': 'Interlocking stone and paving services in Toronto & GTA. Driveways, patios, walkways & retaining walls. Fixed quotes. Call (647) 967-8555.',
+        'desc': 'Interlocking stone and paving services in Toronto & GTA. Driveways, patios, walkways & retaining walls. Fixed quotes. Call (416) 579-3576.',
         'h1': 'Interlocking & Paving Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction installs interlocking stone driveways, patios, and walkways across Toronto and the GTA. Proper base preparation, clean edges, and long-lasting results.',
         'book': '/book-interlock.html',
@@ -361,7 +361,7 @@ SERVICES = {
     },
     'carpenter-services': {
         'title': 'Carpentry Services Toronto & GTA | Custom & Finish Work',
-        'desc': 'Licensed carpenters in Toronto & GTA. Custom cabinetry, trim, built-ins, doors & stairs. Quality craftsmanship. Free quotes. Call (647) 967-8555.',
+        'desc': 'Licensed carpenters in Toronto & GTA. Custom cabinetry, trim, built-ins, doors & stairs. Quality craftsmanship. Free quotes. Call (416) 579-3576.',
         'h1': 'Carpentry Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides finish and rough carpentry services across Toronto and the GTA. From custom built-ins to trim and staircase work — quality craftsmanship guaranteed.',
         'book': '/book-carpentry.html',
@@ -392,7 +392,7 @@ SERVICES = {
     },
     'electrical-handyman-services': {
         'title': 'Electrical Handyman Toronto & GTA | Licensed Electricians',
-        'desc': 'Licensed electrical services in Toronto & GTA. Panel upgrades, outlets, lighting, EV chargers. Fully insured. Free quotes. Call (647) 967-8555.',
+        'desc': 'Licensed electrical services in Toronto & GTA. Panel upgrades, outlets, lighting, EV chargers. Fully insured. Free quotes. Call (416) 579-3576.',
         'h1': 'Electrical Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides licensed electrical services across Toronto and the GTA. Panel upgrades, EV charger installation, lighting, and renovation rough-in — all to Ontario Electrical Safety Code.',
         'book': '/book-electrical.html',
@@ -423,7 +423,7 @@ SERVICES = {
     },
     'handyman-painting-services': {
         'title': 'Painting Services Toronto & GTA | Interior & Exterior',
-        'desc': 'Professional painting services in Toronto & GTA. Interior, exterior, cabinet painting & deck staining. Fixed quotes. Call (647) 967-8555.',
+        'desc': 'Professional painting services in Toronto & GTA. Interior, exterior, cabinet painting & deck staining. Fixed quotes. Call (416) 579-3576.',
         'h1': 'Painting Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction delivers professional painting services across Toronto and the GTA. Interior, exterior, cabinet painting, and deck staining — clean work, crisp lines, and lasting results.',
         'book': '/book-painting.html',
@@ -454,7 +454,7 @@ SERVICES = {
     },
     'demolition-services': {
         'title': 'Demolition Services Toronto & GTA | Licensed & Insured',
-        'desc': 'Licensed demolition services in Toronto & GTA. Interior demo, deck removal, structure demo & debris removal. Free quotes. Call (647) 967-8555.',
+        'desc': 'Licensed demolition services in Toronto & GTA. Interior demo, deck removal, structure demo & debris removal. Free quotes. Call (416) 579-3576.',
         'h1': 'Demolition Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides safe, licensed demolition services across Toronto and the GTA. Interior strip-outs, deck removal, shed demolition, and full structure removal — permit-managed and fully insured.',
         'book': '/book-demolition.html',
@@ -485,7 +485,7 @@ SERVICES = {
     },
     'excavation-services': {
         'title': 'Excavation Services Toronto & GTA | Licensed Contractors',
-        'desc': 'Licensed excavation services in Toronto & GTA. Foundation dig, grading, trenching & pool excavation. Free quotes. Call (647) 967-8555.',
+        'desc': 'Licensed excavation services in Toronto & GTA. Foundation dig, grading, trenching & pool excavation. Free quotes. Call (416) 579-3576.',
         'h1': 'Excavation Services in Toronto & GTA',
         'hero_p': 'aMaximum Construction provides licensed excavation services across Toronto and the GTA. Foundation excavation, grading, trenching, and pool digs — precise, safe, and fully insured.',
         'book': '/book-excavation.html',
@@ -516,7 +516,7 @@ SERVICES = {
     },
     'home-renovation': {
         'title': 'Home Renovation Toronto & GTA | Licensed Contractors',
-        'desc': 'Licensed home renovation contractors in Toronto & GTA. Kitchen, full-home, additions. Fixed quotes, permit-managed, 5-star rated. Call (647) 967-8555.',
+        'desc': 'Licensed home renovation contractors in Toronto & GTA. Kitchen, full-home, additions. Fixed quotes, permit-managed, 5-star rated. Call (416) 579-3576.',
         'h1': 'Home Renovation in Toronto & GTA',
         'hero_p': 'aMaximum Construction delivers full-scale home renovations across Toronto and the GTA. Kitchen remodels, open-concept conversions, full-home renovations — one contractor, one contract.',
         'book': '/book-renovation.html',
@@ -547,7 +547,7 @@ SERVICES = {
     },
     'christmas-lights-installation-toronto-gta': {
         'title': 'Christmas Lights Installation Toronto & GTA | aMaximum',
-        'desc': 'Professional Christmas lights installation in Toronto & GTA. Rooflines, trees, commercial displays. Takedown included. Free quotes. Call (647) 967-8555.',
+        'desc': 'Professional Christmas lights installation in Toronto & GTA. Rooflines, trees, commercial displays. Takedown included. Free quotes. Call (416) 579-3576.',
         'h1': 'Christmas Lights Installation in Toronto & GTA',
         'hero_p': 'aMaximum Construction installs professional Christmas and holiday lighting across Toronto and the GTA. Rooflines, trees, pathways, and commercial displays — installed safely and removed after the season.',
         'book': '/book-christmas.html',
@@ -588,7 +588,7 @@ def build_schema(slug, info):
       "@type": "LocalBusiness",
       "name": "aMaximum Construction",
       "url": "{url}",
-      "telephone": "+12898194777",
+    "telephone": "+14165793576",
       "email": "{EMAIL}",
       "address": {{
         "@type": "PostalAddress",

@@ -23,12 +23,12 @@ CITY_BY_SLUG = {
 }
 
 PHONE_BY_CITY = {
-    "Markham": "(289) 819-4777",
+    "Markham": "(416) 579-3576",
 }
 
 
 def phone_for_city(city: str) -> str:
-    return PHONE_BY_CITY.get(city, "(647) 967-8555")
+    return PHONE_BY_CITY.get(city, "(416) 579-3576")
 
 
 def keywords(city: str) -> list[str]:

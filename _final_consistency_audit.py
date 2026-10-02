@@ -14,7 +14,7 @@ def rel(p): return os.path.relpath(p, ROOT)
 
 issues = {
     'old_phone_416': [],     # 4165793576 appearing as a CALL/tel (not whatsapp)
-    'old_phone_647': [],     # 6479678555 anywhere
+    'old_phone_647': [],     # old alternate business phone anywhere
     'bad_email': [],         # emails not in allowed list
     'double_amp': [],        # &amp;amp;
     'old_jsver': [],         # site.js?v not 20260624a
@@ -43,7 +43,7 @@ for f in html_files:
     # phone: 416 old line used as a CALL (tel:) is wrong; whatsapp is allowed
     for m in re.finditer(r'tel:\+?1?416\s*579\s*3576', raw):
         issues['old_phone_416'].append(r); break
-    if re.search(r'647\s*[\-.]?\s*967\s*[\-.]?\s*8555|16479678555', raw):
+    if re.search(r'289\s*[\-.]?\s*819\s*[\-.]?\s*4777|12898194777|647\s*[\-.]?\s*967\s*[\-.]?\s*8555|16479678555', raw):
         issues['old_phone_647'].append(r)
 
     for em in set(email_re.findall(raw)):
