@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/main/trusted-local-handyman-services",
+      "destination": "/handyman-services/",
+      "permanent": true
+    },
+    {
+      "source": "/main/trusted-local-handyman-services/:path*",
+      "destination": "/handyman-services/",
+      "permanent": true
+    },
+    {
       "source": "/deck-contractor-stouffville",
       "destination": "/deck-builder/",
       "permanent": true
