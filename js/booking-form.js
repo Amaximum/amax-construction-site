@@ -1,6 +1,6 @@
 (function () {
   var MAX_FILES = 10;
-  var MAX_TOTAL_SIZE = 20 * 1024 * 1024;
+  var MAX_TOTAL_SIZE = 30 * 1024 * 1024;
   var allowedTypes = {
     jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
     heic: 'image/heic', heif: 'image/heif', pdf: 'application/pdf'
@@ -91,7 +91,7 @@
       if (phone && (!/^[0-9+().\s-]+$/.test(phone.value) || !(digits.length === 10 || (digits.length === 11 && digits.indexOf('1') === 0)))) return fail(phone, 'Please enter a valid phone number.');
       if (selectedFiles.length > MAX_FILES) return fail(fileInput, 'You can attach up to 10 files.');
       var total = selectedFiles.reduce(function (sum, file) { return sum + file.size; }, 0);
-      if (total > MAX_TOTAL_SIZE) return fail(fileInput, 'Attachments must total 20 MB or less.');
+      if (total > MAX_TOTAL_SIZE) return fail(fileInput, 'Attachments must total 30 MiB or less.');
       if (selectedFiles.some(function (file) { return !validFile(file); })) return fail(fileInput, 'Only JPG, JPEG, PNG, WEBP, HEIC, HEIF, and PDF files are allowed.');
       return true;
     }

@@ -135,7 +135,7 @@
             <label for="projectFiles">Attach Photos or Documents</label>
             <input type="file" id="projectFiles" name="attachment" multiple accept="image/*,.pdf,.doc,.docx">
             <small id="attachmentHelp" style="color: var(--muted); font-size: 13px; margin-top: 4px; display:block;" aria-live="polite">
-              You can attach photos of the project site, plans, or inspiration images (max total upload size 10MB)
+              You can attach photos of the project site, plans, or inspiration images (max total upload size 30 MiB)
             </small>
           </div>
           <div class="form-actions">
@@ -228,7 +228,7 @@
       var submitButton = form.querySelector('button[type="submit"]');
       var formError = document.getElementById('formError');
       var formSubmitStatus = document.getElementById('formSubmitStatus');
-      var maxBytes = 10 * 1024 * 1024;
+      var maxBytes = 30 * 1024 * 1024;
 
       function clearValidationUi() {
         if (formError) formError.hidden = true;
@@ -276,16 +276,16 @@
         var totalBytes = getTotalAttachmentBytes();
         if (!totalBytes) {
           submitButton.disabled = false;
-          attachmentHelp.textContent = 'You can attach photos of the project site, plans, or inspiration images (max total upload size 10MB)';
+          attachmentHelp.textContent = 'You can attach photos of the project site, plans, or inspiration images (max total upload size 30 MiB)';
           return;
         }
         var totalMb = totalBytes / (1024 * 1024);
         if (totalBytes > maxBytes) {
           submitButton.disabled = true;
-          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB. Please keep total under 10MB.';
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB. Please keep total at or under 30 MiB.';
         } else {
           submitButton.disabled = false;
-          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB (max 10MB).';
+          attachmentHelp.textContent = 'Attachments selected: ' + totalMb.toFixed(1) + 'MB (max 30 MiB).';
         }
       }
 
@@ -322,7 +322,7 @@
         var totalBytes = getTotalAttachmentBytes();
         if (totalBytes > maxBytes) {
           updateAttachmentUi();
-          alert('Attachments are too large. Please keep total upload size under 10MB.');
+          alert('Attachments are too large. Please keep total upload size at or under 30 MiB.');
           return;
         }
 
