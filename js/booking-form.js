@@ -133,7 +133,13 @@
         var result = await response.json();
         if (!response.ok || !result.success) throw new Error(result.message || 'Could not send. Please try again.');
         var next = form.querySelector('input[name="_next"]');
-        window.location.assign(next && next.value ? next.value : '/thank-you-page/');
+        var target = next && next.value ? next.value : '/thank-you-page/';
+        var navigated = false;
+        function goToThankYou() { if (navigated) return; navigated = true; window.location.assign(target); }
+        // Confirmed server success only; tag managers can wait for this event before navigation.
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'booking_form_success', form_id: form.id || 'bookingForm', service_type: (form.querySelector('#serviceType') || {}).value || '', eventCallback: goToThankYou, eventTimeout: 1500 });
+        setTimeout(goToThankYou, 1500);
       } catch (error) {
         setText(formError, error instanceof Error ? error.message : 'Could not send. Please try again.');
         if (submitButton) { submitButton.disabled = false; submitButton.removeAttribute('aria-busy'); submitButton.textContent = submitButton.dataset.originalText || 'Send Booking Request'; }
