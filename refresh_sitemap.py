@@ -3,7 +3,7 @@
 Rebuild sitemap.xml so that:
   - Every indexable page on disk is listed (currently 25 location pages are missing).
   - <lastmod> is set to today on every entry — signals fresh content to Google.
-  - noindex / dup-canonical pages are excluded.
+  - noindex, redirect, and dup-canonical pages are excluded.
   - Existing priority + changefreq are preserved when present, otherwise
     sensible defaults are computed by page kind.
 
@@ -24,7 +24,16 @@ if __name__ == '__main__':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
 ROOT = Path(__file__).resolve().parent
-SITE = 'https://amaximumconstruction.com'
+SITE = 'https://www.amaximumconstruction.com'
+CANONICAL_RE = re.compile(
+    r'<link\b(?=[^>]*\brel=["\']canonical["\'])'
+    r'(?=[^>]*\bhref=["\']([^"\']+)["\'])[^>]*>',
+    re.I,
+)
+META_REFRESH_RE = re.compile(
+    r'<meta\b(?=[^>]*\bhttp-equiv=["\']refresh["\'])',
+    re.I,
+)
 
 import site_audit  # reuse discovery + indexability logic
 import restructure_hubs as rh  # reuse hub list + classifier
@@ -95,15 +104,28 @@ def main(argv: list[str]) -> int:
     indexable: list[tuple[str, str, str]] = []  # (url, priority, changefreq)
 
     skipped_noindex = 0
+    skipped_redirect = 0
+    skipped_duplicate = 0
+    redirect_sources = site_audit.load_redirect_sources()
     for url, p in pages:
         # Skip booking forms.
         if p.parent == ROOT and p.name in site_audit.NOINDEX_OK:
             continue
+        if site_audit.is_redirect_url(url, redirect_sources):
+            skipped_redirect += 1
+            continue
         # Read once for noindex check.
         html = p.read_text(encoding='utf-8', errors='replace')
+        if META_REFRESH_RE.search(html):
+            skipped_redirect += 1
+            continue
         robots_m = site_audit.ROBOTS_META_RE.search(html)
         if robots_m and 'noindex' in robots_m.group(1).lower():
             skipped_noindex += 1
+            continue
+        canonical_m = CANONICAL_RE.search(html)
+        if canonical_m and canonical_m.group(1).rstrip('/') != (SITE + url).rstrip('/'):
+            skipped_duplicate += 1
             continue
         prio, freq = page_priority(url)
         # Preserve existing values when set.
@@ -142,6 +164,8 @@ def main(argv: list[str]) -> int:
     print(f'Discovered indexable pages: {len(indexable)}')
     print(f'Existing sitemap URLs:      {len(existing)}')
     print(f'Skipped (noindex):          {skipped_noindex}')
+    print(f'Skipped (redirect):         {skipped_redirect}')
+    print(f'Skipped (alternate canonical): {skipped_duplicate}')
     print(f'Added:                      {len(added)}')
     print(f'Removed:                    {len(removed)}')
     print(f'Output:                     {target.name}')

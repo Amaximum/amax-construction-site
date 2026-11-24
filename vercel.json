@@ -23,6 +23,11 @@
       "permanent": true
     },
     {
+      "source": "/main/trusted-local-handyman-services/",
+      "destination": "/handyman-services/",
+      "permanent": true
+    },
+    {
       "source": "/main/trusted-local-handyman-services/:path*",
       "destination": "/handyman-services/",
       "permanent": true

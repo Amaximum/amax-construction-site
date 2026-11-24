@@ -1,12 +1,4 @@
-"""
-Mark form/utility pages as noindex and remove them from sitemap.xml.
-- All root-level book-*.html
-- /book-now/index.html
-- /thank-you-page/index.html
-- /sitemap/index.html
-
-Live content (services, locations, blog, hubs) is kept indexable.
-"""
+"""Mark booking and confirmation pages as noindex and remove them from sitemap.xml."""
 from __future__ import annotations
 import re
 from pathlib import Path
@@ -14,17 +6,17 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 SITEMAP = ROOT / "sitemap.xml"
 
-# Build the list of form/utility files to mark noindex.
+# Build the list of booking and form-confirmation files to mark noindex.
 targets: list[Path] = []
 targets += sorted(ROOT.glob("book-*.html"))
-for sub in ("book-now", "thank-you-page", "sitemap"):
+for sub in ("book-now", "thank-you-page"):
     p = ROOT / sub / "index.html"
     if p.exists():
         targets.append(p)
 
 # URLs (relative paths) to strip from sitemap.
 strip_urls: set[str] = set()
-for sub in ("book-now", "thank-you-page", "sitemap"):
+for sub in ("book-now", "thank-you-page"):
     strip_urls.add(f"https://www.amaximumconstruction.com/{sub}/")
 for f in ROOT.glob("book-*.html"):
     strip_urls.add(f"https://www.amaximumconstruction.com/{f.name}")

@@ -12,7 +12,7 @@ CANON_RE = re.compile(r'<link\s+rel="canonical"\s+href="([^"]+)"', re.I)
 TITLE_RE = re.compile(r'<title[^>]*>(.*?)</title>', re.I | re.S)
 H1_RE = re.compile(r'<h1\b[^>]*>(.*?)</h1>', re.I | re.S)
 
-SKIP_DIRS = {'.git', '.venv', 'node_modules', '__pycache__',
+SKIP_DIRS = {'.git', '.venv', '.vercel', 'node_modules', '__pycache__',
              'css', 'js', 'images', 'img', 'fonts', 'assets'}
 
 def discover() -> list[Path]:
@@ -33,14 +33,16 @@ def main() -> int:
             text = p.read_text(encoding='utf-8', errors='replace')
         except OSError:
             continue
+        rel = p.relative_to(ROOT).as_posix()
         has_form = bool(FORM_RE.search(text))
-        if not has_form and not p.name.startswith('book-') and 'thank-you' not in p.name:
+        is_booking_page = p.name.startswith('book-') or rel.startswith('book-now/')
+        is_confirmation_page = rel.startswith('thank-you-page/')
+        if not has_form and not is_booking_page and not is_confirmation_page:
             continue
         rm = ROBOTS_RE.search(text)
         robots = rm.group(1).lower() if rm else ''
         is_noindex = 'noindex' in robots
-        rel = p.relative_to(ROOT).as_posix()
-        if p.name.startswith('book-') or 'thank-you' in p.name or 'book-now' in rel:
+        if is_booking_page or is_confirmation_page:
             book_pages.append((p, robots, is_noindex))
         else:
             other_form_pages.append((p, robots, is_noindex))

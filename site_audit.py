@@ -14,6 +14,7 @@ Usage:
 from __future__ import annotations
 
 import io
+import json
 import re
 import sys
 from pathlib import Path
@@ -23,7 +24,7 @@ if __name__ == '__main__':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
 ROOT = Path(__file__).resolve().parent
-SITE = 'https://amaximumconstruction.com'
+SITE = 'https://www.amaximumconstruction.com'
 
 # Pages that are intentionally non-indexable (forms, thank-you pages, drafts).
 NOINDEX_OK = {
@@ -33,8 +34,8 @@ NOINDEX_OK = {
     'book-excavation.html', 'book-fence.html', 'book-handy.html',
     'book-interlock.html', 'book-landscaping.html', 'book-painting.html',
     'book-plumbing.html', 'book-railing.html', 'book-renovation.html',
-    'thank-you.html',
 }
+NOINDEX_OK_PATHS = {'book-now/index.html', 'thank-you-page/index.html'}
 
 # Files we should not consider as "pages" at all.
 SKIP_FILES = {
@@ -97,6 +98,24 @@ def parse_sitemap(sitemap_path: Path) -> set[str]:
     return out
 
 
+def load_redirect_sources() -> list[str]:
+    config = json.loads((ROOT / 'vercel.json').read_text(encoding='utf-8'))
+    return [redirect['source'] for redirect in config['redirects']]
+
+
+def is_redirect_url(url: str, sources: list[str]) -> bool:
+    path = url.rstrip('/') or '/'
+    for source in sources:
+        normalized = source.rstrip('/') or '/'
+        if ':path*' in normalized:
+            prefix = normalized.split(':path*', 1)[0].rstrip('/')
+            if path == prefix or path.startswith(prefix + '/'):
+                return True
+        elif path == normalized:
+            return True
+    return False
+
+
 def keyword_overlap(title: str, h1: str) -> tuple[bool, set[str]]:
     """Return (overlap_ok, missing_words). H1 must share >=1 significant word
     with title (or H1 should be substring of title or vice versa)."""
@@ -112,8 +131,21 @@ def keyword_overlap(title: str, h1: str) -> tuple[bool, set[str]]:
     return (bool(overlap), hw - tw)
 
 
-def audit_page(url: str, p: Path) -> dict:
+def audit_page(url: str, p: Path, redirect_sources: list[str]) -> dict:
     html = read(p)
+    if is_redirect_url(url, redirect_sources):
+        return {
+            'url': url,
+            'path': str(p.relative_to(ROOT)),
+            'title': '',
+            'h1': '',
+            'h1_count': 0,
+            'canonical': '',
+            'robots': '',
+            'is_form': False,
+            'is_redirect': True,
+            'issues': [],
+        }
     title_m = TITLE_RE.search(html)
     title_raw = strip_tags(title_m.group(1)) if title_m else ''
     h1s = H1_RE.findall(html)
@@ -124,7 +156,8 @@ def audit_page(url: str, p: Path) -> dict:
     robots = robots_m.group(1).strip() if robots_m else ''
 
     issues: list[str] = []
-    is_form = p.name in NOINDEX_OK
+    rel_path = p.relative_to(ROOT).as_posix()
+    is_form = p.name in NOINDEX_OK or rel_path in NOINDEX_OK_PATHS
     has_noindex = 'noindex' in robots.lower()
 
     if is_form:
@@ -162,6 +195,7 @@ def audit_page(url: str, p: Path) -> dict:
         'canonical': canonical,
         'robots': robots,
         'is_form': is_form,
+        'is_redirect': False,
         'issues': issues,
     }
 
@@ -169,11 +203,13 @@ def audit_page(url: str, p: Path) -> dict:
 def main() -> int:
     pages = discover_pages()
     sitemap_urls = parse_sitemap(ROOT / 'sitemap.xml')
+    redirect_sources = load_redirect_sources()
 
-    results = [audit_page(url, p) for url, p in pages]
+    results = [audit_page(url, p, redirect_sources) for url, p in pages]
 
     print(f'Total pages discovered: {len(results)}')
     print(f'Sitemap URLs:           {len(sitemap_urls)}')
+    print(f'Redirect sources skipped: {sum(1 for r in results if r["is_redirect"])}')
     print()
 
     by_issue: dict[str, list[dict]] = {}
@@ -182,7 +218,7 @@ def main() -> int:
             key = code.split(' ')[0]
             by_issue.setdefault(key, []).append(r)
 
-    indexable = [r for r in results if not r['is_form']]
+    indexable = [r for r in results if not r['is_form'] and not r['is_redirect']]
     in_sitemap = [r for r in indexable if r['url'] in sitemap_urls]
     not_in_sitemap = [r for r in indexable if r['url'] not in sitemap_urls]
 
