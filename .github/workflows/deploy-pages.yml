@@ -38,6 +38,7 @@ jobs:
             --exclude '.venv/' \
             --exclude '__pycache__/' \
             --exclude '.claude/' \
+            --exclude 'services/service-template.html' \
             --exclude '*.py' \
             --exclude '*.md'
           touch _site/.nojekyll

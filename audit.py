@@ -9,6 +9,8 @@ from html.parser import HTMLParser
 from collections import defaultdict
 from pathlib import Path
 
+from verify_site_invariants import iter_html_files
+
 ROOT = Path("c:/Users/maxim/Desktop/amax-Construction-site")
 
 # ── HTML parser ─────────────────────────────────────────────────────────────
@@ -122,7 +124,7 @@ def link_exists(href: str) -> tuple[bool, str]:
     return (False, " OR ".join(str(p) for p in candidates))
 
 def collect_html_files():
-    return sorted(ROOT.rglob("*.html"))
+    return list(iter_html_files(ROOT))
 
 # ── NAV expected links ────────────────────────────────────────────────────────
 

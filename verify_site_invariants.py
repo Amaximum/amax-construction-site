@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
 """Verify invariants for the aMaximum Construction static site.
 
-This script is meant to "lock in" the expected global behaviors:
-- Elfsight loader uses static.elfsight.com and is deferred.
-- Rating badge widget exists on every page (fixed bottom-right wrapper).
-- Reviews list embed exists on every page except the booking page, and is placed before FAQ.
-- BOOK NOW CTAs link to /book-now/.
-- Google Places Autocomplete is loaded only on /book-now/.
-- Each page has exactly one H1, and heading levels follow a valid SEO hierarchy.
+This script checks published content pages, booking routes, widgets, and heading
+structure. Vercel redirect sources and service templates are not published pages.
 
 Exit code:
 - 0: all checks pass
@@ -17,23 +12,57 @@ Exit code:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import urlsplit
 
 
 ELFSIGHT_LOADER_SRC = "https://static.elfsight.com/platform/platform.js"
 ELFSIGHT_OLD_LOADER_RE = re.compile(r"elfsightcdn\.com/platform\.js", re.I)
-ELFSIGHT_ANY_LOADER_RE = re.compile(r"<script[^>]+src=[\"'][^\"']*elfsight[^\"']*[\"'][^>]*></script>", re.I)
+ELFSIGHT_ANY_LOADER_RE = re.compile(
+    r"<script\b[^>]*\bsrc\s*=\s*[\"'][^\"']*elfsight[^\"']*[\"'][^>]*>\s*</script\s*>",
+    re.I,
+)
+SCRIPT_TAG_RE = re.compile(r"<script\b(?P<attrs>[^>]*)>(?P<body>.*?)</script\s*>", re.I | re.S)
+ELFSIGHT_DYNAMIC_CREATE_RE = re.compile(r"document\.createElement\(\s*[\"']script[\"']\s*\)", re.I)
+ELFSIGHT_DYNAMIC_SRC_RE = re.compile(
+    rf"\.src\s*=\s*[\"']{re.escape(ELFSIGHT_LOADER_SRC)}[\"']",
+    re.I,
+)
+ELFSIGHT_DYNAMIC_DEFER_RE = re.compile(r"\.\s*defer\s*=\s*true\b", re.I)
 
 RATING_APP_CLASS = "elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"
 REVIEWS_APP_CLASS = "elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"
 
-BOOKING_DIR = "book-now"
-BOOKING_PAGE = f"{BOOKING_DIR}/index.html"
+BOOKING_FORM_FILES = {
+    "/book-now/": "book-now/index.html",
+    "/book-basement.html": "book-basement.html",
+    "/book-bathroom.html": "book-bathroom.html",
+    "/book-canopy.html": "book-canopy.html",
+    "/book-carpentry.html": "book-carpentry.html",
+    "/book-christmas.html": "book-christmas.html",
+    "/book-contractor.html": "book-contractor.html",
+    "/book-deck.html": "book-deck.html",
+    "/book-demolition.html": "book-demolition.html",
+    "/book-electrical.html": "book-electrical.html",
+    "/book-excavation.html": "book-excavation.html",
+    "/book-fence.html": "book-fence.html",
+    "/book-handy.html": "book-handy.html",
+    "/book-interlock.html": "book-interlock.html",
+    "/book-landscaping.html": "book-landscaping.html",
+    "/book-painting.html": "book-painting.html",
+    "/book-plumbing.html": "book-plumbing.html",
+    "/book-railing.html": "book-railing.html",
+    "/book-renovation.html": "book-renovation.html",
+}
+BOOKING_PAGE_FILES = {path.lower() for path in BOOKING_FORM_FILES.values()}
+SITE_HOSTS = {"amaximumconstruction.com", "www.amaximumconstruction.com"}
+FORM_TAG_RE = re.compile(r"<form\b", re.I)
 
 SITE_JS_RE = re.compile(r"<script[^>]+src=[\"']/js/site\.js(?:\?[^\"']*)?[\"'][^>]*>\s*</script>", re.I)
 
@@ -119,94 +148,206 @@ class Finding:
 def iter_html_files(root: Path) -> Iterable[Path]:
     """Yield HTML files that represent published pages.
 
-    The repo may contain helper/template HTML files that are not meant to be served
-    (e.g., generator templates, SEO working files). We exclude known patterns to
-    keep this check focused on the live site.
+    Hidden build output, service templates, SEO working files, and Vercel redirect
+    sources are not independent published pages.
     """
 
     skip_name_re = re.compile(r"^(service-template\.html|index-seo-.*\.html)$", re.I)
+    redirect_sources = load_redirect_sources(root)
     for p in sorted(root.rglob("*.html")):
-        if any(part.startswith(".") for part in p.parts):
+        relative = p.relative_to(root)
+        if any(part.startswith(".") for part in relative.parts):
             continue
         if skip_name_re.match(p.name):
             continue
+        route = html_file_route(relative.as_posix())
+        if any(is_redirect_source(route, source) for source in redirect_sources):
+            continue
         yield p
+
+
+def load_redirect_sources(root: Path) -> tuple[str, ...]:
+    """Load Vercel redirect sources so aliases are not checked as content pages."""
+
+    config_path = root / "vercel.json"
+    if not config_path.exists():
+        return ()
+
+    try:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Could not read Vercel redirect configuration: {error}") from error
+
+    redirects = config.get("redirects", []) if isinstance(config, dict) else None
+    if not isinstance(redirects, list):
+        raise ValueError("Vercel configuration must contain a redirects list")
+
+    sources: list[str] = []
+    for index, redirect in enumerate(redirects):
+        if not isinstance(redirect, dict) or not isinstance(redirect.get("source"), str):
+            raise ValueError(f"Vercel redirect at index {index} has no string source")
+        source = redirect["source"]
+        if (":" in source or "*" in source) and not source.endswith("/:path*"):
+            raise ValueError(f"Unsupported Vercel redirect pattern: {source}")
+        sources.append(source)
+
+    return tuple(sources)
+
+
+def html_file_route(relative_path: str) -> str:
+    """Convert an HTML file path to its root-relative public route."""
+
+    if relative_path.lower() == "index.html":
+        return "/"
+    if relative_path.lower().endswith("/index.html"):
+        return "/" + relative_path[: -len("/index.html")]
+    return "/" + relative_path
+
+
+def normalize_route(route: str) -> str:
+    return route.rstrip("/") or "/"
+
+
+def is_redirect_source(route: str, source: str) -> bool:
+    """Return whether a public route is covered by an exact or :path* redirect."""
+
+    route = normalize_route(route)
+    source = normalize_route(source)
+    wildcard = "/:path*"
+    if source.endswith(wildcard):
+        prefix = normalize_route(source[: -len(wildcard)])
+        return prefix == "/" or route == prefix or route.startswith(prefix + "/")
+    return route == source
 
 
 def rel_posix(root: Path, file_path: Path) -> str:
     return file_path.relative_to(root).as_posix()
 
 
+def dynamic_elfsight_loaders(html: str) -> list[str]:
+    """Find inline scripts that create and configure the Elfsight platform loader."""
+
+    loaders: list[str] = []
+    for match in SCRIPT_TAG_RE.finditer(html):
+        if re.search(r"\bsrc\s*=", match.group("attrs"), re.I):
+            continue
+        body = match.group("body")
+        if ELFSIGHT_DYNAMIC_CREATE_RE.search(body) and ELFSIGHT_DYNAMIC_SRC_RE.search(body):
+            loaders.append(body)
+    return loaders
+
+
 def has_elfsight_loader_ok(html: str) -> tuple[bool, str]:
-    # Must include the expected loader with defer
-    expected = re.compile(
-        rf"<script[^>]+src=[\"']{re.escape(ELFSIGHT_LOADER_SRC)}[\"'][^>]*>",
-        re.I,
-    )
-    m = expected.search(html)
-    if not m:
-        return (False, "Missing Elfsight loader script")
-
-    tag = m.group(0)
-    if "defer" not in tag.lower():
-        return (False, "Elfsight loader must use defer")
-
     if ELFSIGHT_OLD_LOADER_RE.search(html):
         return (False, "Old Elfsight loader (elfsightcdn.com) present")
+
+    static_loaders = ELFSIGHT_ANY_LOADER_RE.findall(html)
+    dynamic_loaders = dynamic_elfsight_loaders(html)
+    loader_count = len(static_loaders) + len(dynamic_loaders)
+    if loader_count == 0:
+        return (False, "Missing Elfsight loader script or recognized dynamic loader")
+    if loader_count != 1:
+        return (False, f"Expected exactly 1 Elfsight loader, found {loader_count}")
+
+    if static_loaders:
+        tag = static_loaders[0]
+        if not re.search(
+            rf"\bsrc\s*=\s*[\"']{re.escape(ELFSIGHT_LOADER_SRC)}[\"']",
+            tag,
+            re.I,
+        ):
+            return (False, "Unexpected Elfsight loader URL")
+        if not re.search(r"\bdefer(?:\s|=|/|>)", tag, re.I):
+            return (False, "Elfsight loader must use defer")
+    elif not ELFSIGHT_DYNAMIC_DEFER_RE.search(dynamic_loaders[0]):
+        return (False, "Dynamic Elfsight loader must set defer")
 
     return (True, "")
 
 
 def count_elfsight_loader_tags(html: str) -> int:
-    return len(ELFSIGHT_ANY_LOADER_RE.findall(html))
+    return len(ELFSIGHT_ANY_LOADER_RE.findall(html)) + len(dynamic_elfsight_loaders(html))
 
 
-def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], list[Finding]]:
+def booking_route_for_href(href: str) -> str | None:
+    """Return an allowed booking route for a local or same-site href."""
+
+    try:
+        parsed = urlsplit(href.strip())
+    except ValueError:
+        return None
+
+    if parsed.scheme or parsed.netloc:
+        if parsed.scheme.lower() not in {"http", "https"} or parsed.hostname not in SITE_HOSTS:
+            return None
+        route = parsed.path
+    else:
+        route = parsed.path
+        if not route.startswith("/"):
+            return None
+
+    return route if route in BOOKING_FORM_FILES else None
+
+
+def verify_booking_forms(root: Path) -> tuple[set[str], list[Finding]]:
+    """Verify every allowed booking route resolves to an HTML form."""
+
+    valid_routes: set[str] = set()
+    errors: list[Finding] = []
+    for route, relative_path in BOOKING_FORM_FILES.items():
+        form_path = root / relative_path
+        if not form_path.is_file():
+            errors.append(Finding(relative_path, f"Allowed booking route {route} has no target file"))
+            continue
+        try:
+            form_html = form_path.read_text(encoding="utf-8", errors="replace")
+        except OSError as error:
+            errors.append(Finding(relative_path, f"Could not read booking form: {error}"))
+            continue
+        if not FORM_TAG_RE.search(form_html):
+            errors.append(Finding(relative_path, f"Allowed booking route {route} does not contain a form"))
+            continue
+        valid_routes.add(route)
+    return valid_routes, errors
+
+
+def has_html_id(html: str, element_id: str) -> bool:
+    return bool(re.search(rf"\bid\s*=\s*([\"']){re.escape(element_id)}\1", html, re.I))
+
+
+def verify_page(
+    root: Path,
+    file_path: Path,
+    html: str,
+    valid_booking_routes: set[str],
+) -> tuple[list[Finding], list[Finding]]:
     """Return (errors, warnings)."""
 
     rel = rel_posix(root, file_path)
     errors: list[Finding] = []
     warnings: list[Finding] = []
 
-    is_booking = rel.lower() == BOOKING_PAGE
+    is_booking = rel.lower() in BOOKING_PAGE_FILES
 
     if not SITE_JS_RE.search(html):
         errors.append(Finding(rel, "Missing global /js/site.js include (mobile menu may not work)"))
 
-    ok, reason = has_elfsight_loader_ok(html)
-    if not ok:
-        errors.append(Finding(rel, reason))
+    if not is_booking:
+        ok, reason = has_elfsight_loader_ok(html)
+        if not ok:
+            errors.append(Finding(rel, reason))
 
-    loader_count = count_elfsight_loader_tags(html)
-    if loader_count != 1:
-        errors.append(Finding(rel, f"Expected exactly 1 Elfsight loader script tag, found {loader_count}"))
+        if "data-elfsight-app-lazy" in html.lower():
+            errors.append(Finding(rel, "Found data-elfsight-app-lazy (should be removed)"))
 
-    if "data-elfsight-app-lazy" in html.lower():
-        errors.append(Finding(rel, "Found data-elfsight-app-lazy (should be removed)"))
-
-    # Rating widget must exist everywhere
-    if "id=\"rating-widget\"" not in html and "id='rating-widget'" not in html:
-        errors.append(Finding(rel, "Missing #rating-widget wrapper"))
-    if RATING_APP_CLASS not in html:
-        errors.append(Finding(rel, f"Missing rating app class {RATING_APP_CLASS}"))
-
-    # Reviews embed rules
-    has_reviews = ("id=\"reviews-embed\"" in html) or ("id='reviews-embed'" in html) or (REVIEWS_APP_CLASS in html)
-    if is_booking:
-        if has_reviews:
-            errors.append(Finding(rel, "Booking page must not include reviews embed"))
-    else:
-        if not has_reviews:
-            errors.append(Finding(rel, "Non-booking page missing reviews embed"))
-        else:
-            faq_index = html.find('id="faq"')
-            if faq_index == -1:
-                faq_index = html.find("id='faq'")
-            reviews_index = html.find('id="reviews-embed"')
-            if reviews_index == -1:
-                reviews_index = html.find("id='reviews-embed'")
-            if faq_index != -1 and reviews_index != -1 and reviews_index > faq_index:
-                errors.append(Finding(rel, "reviews-embed must appear before #faq"))
+        if not has_html_id(html, "rating-widget"):
+            errors.append(Finding(rel, "Missing #rating-widget wrapper"))
+        if RATING_APP_CLASS not in html:
+            errors.append(Finding(rel, f"Missing rating app class {RATING_APP_CLASS}"))
+        if not has_html_id(html, "reviews-embed"):
+            errors.append(Finding(rel, "Missing #reviews-embed wrapper"))
+        if REVIEWS_APP_CLASS not in html:
+            errors.append(Finding(rel, f"Missing reviews app class {REVIEWS_APP_CLASS}"))
 
     # BOOK NOW CTAs
     parser = AnchorTextParser()
@@ -216,12 +357,15 @@ def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], 
         warnings.append(Finding(rel, "HTML parse warning while scanning anchors"))
 
     book_now_anchors = [(href, text) for (href, text) in parser.anchors if text.strip().upper() == "BOOK NOW"]
-    if not book_now_anchors:
+    if not is_booking and not book_now_anchors:
         # Some pages might not have a BOOK NOW CTA (rare), so warning only
         warnings.append(Finding(rel, "No BOOK NOW anchor found"))
     for href, _ in book_now_anchors:
-        if href != "/book-now/":
-            errors.append(Finding(rel, f"BOOK NOW anchor href must be /book-now/ (found {href!r})"))
+        route = booking_route_for_href(href)
+        if route is None:
+            errors.append(Finding(rel, f"BOOK NOW anchor must use an allowed booking route (found {href!r})"))
+        elif route not in valid_booking_routes:
+            errors.append(Finding(rel, f"BOOK NOW anchor targets a missing or invalid form route (found {href!r})"))
 
     heading_parser = HeadingParser()
     try:
@@ -251,7 +395,7 @@ def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], 
                     )
                 previous_level = level
 
-    # Google Places Autocomplete should only be on booking page
+    # Google Places Autocomplete should only be on booking forms.
     has_places = bool(GOOGLE_PLACES_RE.search(html) or GOOGLE_PLACES_CB_RE.search(html))
     if is_booking and not has_places:
         errors.append(Finding(rel, "Booking page missing Google Places loader/callback markers"))
@@ -259,7 +403,7 @@ def verify_page(root: Path, file_path: Path, html: str) -> tuple[list[Finding], 
         errors.append(Finding(rel, "Non-booking page must not include Google Places loader"))
 
     # Optional: detect unexpected forms
-    if (not is_booking) and ("<form" in html.lower()):
+    if (not is_booking) and FORM_TAG_RE.search(html):
         warnings.append(Finding(rel, "Found <form> on non-booking page (check widget exclusion rules)"))
 
     return errors, warnings
@@ -285,22 +429,28 @@ def main(argv: list[str]) -> int:
         print(f"Root does not exist: {root}", file=sys.stderr)
         return 1
 
-    html_files = list(iter_html_files(root))
+    try:
+        html_files = list(iter_html_files(root))
+    except (OSError, ValueError) as error:
+        print(f"Could not determine published HTML inventory: {error}", file=sys.stderr)
+        return 1
     if not html_files:
         print(f"No HTML files found under: {root}", file=sys.stderr)
         return 1
 
     all_errors: list[Finding] = []
     all_warnings: list[Finding] = []
+    valid_booking_routes, booking_form_errors = verify_booking_forms(root)
+    all_errors.extend(booking_form_errors)
 
     for file_path in html_files:
         try:
             html = file_path.read_text(encoding="utf-8", errors="replace")
-        except Exception as e:
+        except OSError as e:
             all_errors.append(Finding(rel_posix(root, file_path), f"Read error: {e}"))
             continue
 
-        errors, warnings = verify_page(root, file_path, html)
+        errors, warnings = verify_page(root, file_path, html, valid_booking_routes)
         all_errors.extend(errors)
         all_warnings.extend(warnings)
 

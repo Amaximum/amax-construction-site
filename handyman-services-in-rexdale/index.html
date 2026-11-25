@@ -13,6 +13,40 @@
   <meta property="og:image" content="https://www.amaximumconstruction.com/img/services/handyman-1.webp">
   <link rel="canonical" href="https://www.amaximumconstruction.com/handyman-services-in-rexdale/">
   <title>Handyman Services in Rexdale | aMaximum Construction</title>
+  <link rel="preconnect" href="https://static.elfsight.com" crossorigin>
+  <link rel="dns-prefetch" href="https://static.elfsight.com">
+  <script>
+  (function(){
+    var loaded = false;
+    function load(){
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.src = 'https://static.elfsight.com/platform/platform.js';
+      s.defer = true;
+      document.head.appendChild(s);
+      cleanup();
+    }
+    function cleanup(){
+      ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+        window.removeEventListener(e, load, {passive:true});
+      });
+    }
+    ['scroll','touchstart','mousemove','keydown','click'].forEach(function(e){
+      window.addEventListener(e, load, {passive:true, once:true});
+    });
+    if ('IntersectionObserver' in window) {
+      document.addEventListener('DOMContentLoaded', function(){
+        var targets = document.querySelectorAll('[class*="elfsight-app-"]');
+        if (!targets.length) return;
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(en){ if (en.isIntersecting){ load(); io.disconnect(); } });
+        }, {rootMargin: '300px'});
+        targets.forEach(function(t){ io.observe(t); });
+      });
+    }
+    setTimeout(load, 15000);
+  })();
+  </script>
   <script src="/js/site.js?v=20261112a" defer></script>
   <link rel="stylesheet" href="/css/styles.css?v=20260923mobile">
   <script type="application/ld+json">
@@ -214,6 +248,9 @@
         <a class="btn" href="/book-handy.html">BOOK NOW</a>
       </section>
     </div>
+    <section id="reviews-embed" class="shell">
+      <div class="elfsight-app-b029cad3-6f49-425c-9793-f556870797bb"></div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -247,5 +284,8 @@
       </div>
     </div>
   </footer>
+  <div id="rating-widget" style="position:fixed;right:14px;bottom:14px;z-index:9999;max-width:220px;pointer-events:auto;">
+    <div class="elfsight-app-3935cedc-67a1-44d8-b85e-f841374ae875"></div>
+  </div>
 </body>
 </html>
